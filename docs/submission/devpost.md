@@ -1,0 +1,223 @@
+# Hackathon
+
+> SignalScout
+
+## Your tracks
+
+Built with AWS powered by Amazon Web Services
+
+## Locked problem statements
+
+Built with AWS powered by Amazon Web Services / P1: Build a production-ready AI application using AWS AI/ML
+
+# Project title
+
+SignalScout
+
+# Elevator pitch
+
+SignalScout is an evidence-first early-warning system for corporate restructuring and third-party risk.
+
+Instead of treating layoffs, executive departures, debt amendments, delayed filings, and store closures as isolated news, SignalScout connects them across time into one auditable risk story. It applies transparent, time-decayed scoring to verified evidence, uses AI to investigate the emerging pattern and challenge its own conclusions, and produces an actionable report in which every factual claim links back to its source.
+
+Our MVP replays the real Bed Bath & Beyond restructuring using historical SEC filings. It shows when the system would have moved from monitoring to investigation and then to high risk-helping suppliers, procurement teams, lenders, and other counterparties act before Chapter 11 narrowed their options.
+
+# Project details
+
+About the project
+
+````
+## Inspiration
+
+Enterprise risk rarely arrives as one clear headline.
+
+A supplier may announce workforce reductions. Weeks later, it may terminate a debt exchange, file a financial report late, amend its credit agreement, or replace senior executives. Each event can have a reasonable explanation on its own. The real information lies in the cluster-and in how that cluster evolves over time.
+
+Today, procurement, supply-chain, sales, and risk teams often monitor counterparties through manual searches, spreadsheets, news alerts, and individual analyst judgment. This process is slow, difficult to audit, and especially weak at connecting small signals spread across different documents and dates.
+
+The 2023 collapse of Bed Bath & Beyond illustrates the problem. Public evidence accumulated over several months:
+
+- In August 2022, the company announced workforce reductions across corporate and supply-chain functions, lower capital expenditure, and store closures.
+- In January 2023, a debt exchange was terminated and financial reporting was delayed.
+- Credit-agreement defaults and lender waivers followed.
+- The company repeatedly amended its financing arrangements through March and April.
+- On April 23, 2023, Bed Bath & Beyond filed for Chapter 11.
+
+For a supplier extending unsecured credit, these were not merely financial-market events. They were signals to reconsider payment terms, shipment volumes, insurance coverage, and alternative distribution channels.
+
+We built SignalScout to transform those scattered disclosures into a traceable and actionable early-warning timeline.
+
+## What it does
+
+SignalScout converts verified public documents into structured risk signals and correlates them over time.
+
+For the MVP, the system focuses on one deeply researched historical case rather than pretending to monitor the entire market. The replay uses only evidence that was publicly available at each point in time.
+
+### 1. Structures raw evidence
+
+Each source document is converted into normalized events such as:
+
+- workforce reduction;
+- executive departure;
+- debt or covenant event;
+- delayed filing;
+- guidance or capital-expenditure reduction;
+- asset or store closure;
+- going-concern warning.
+
+Each signal includes:
+
+- company;
+- event type;
+- event and publication dates;
+- confidence;
+- source URL;
+- exact evidence excerpt;
+- immutable evidence identifier.
+
+### 2. Calculates an explainable risk score
+
+A deterministic scoring function weights signals by type, confidence, source quality, and recency.
+
+Only the strongest event of each type contributes fully within a time window, preventing repeated news coverage of the same event from inflating the score. Synergy rules recognize combinations such as a workforce reduction followed by a debt default or delayed filing.
+
+The AI does not invent or override this score.
+
+### 3. Builds a historical replay
+
+The dashboard reconstructs what SignalScout would have known on each historical date. Future documents are excluded from earlier replay states.
+
+As evidence accumulates, the case progresses through:
+
+```text
+MONITORING → INVESTIGATING → HIGH RISK → OUTCOME
+```
+
+For Bed Bath & Beyond, the replay shows how operational cuts, failed financing actions, covenant problems, and repeated lender amendments gradually formed a much stronger risk pattern.
+
+### 4. Challenges its own conclusion
+
+Before producing the final report, an AI Challenger searches for reasonable benign explanations:
+
+- Was the workforce reduction part of a normal efficiency program?
+- Was the financing amendment routine?
+- Did the company still have credible alternatives?
+- Are several signals simply duplicates of the same disclosure?
+
+The system records the strongest counterargument instead of hiding uncertainty.
+
+### 5. Produces evidence-backed actions
+
+SignalScout generates persona-specific recommendations.
+
+For a supplier, these may include:
+
+- review unsecured receivables;
+- reduce credit limits;
+- request partial prepayment;
+- reduce in-transit inventory;
+- qualify alternative sales channels;
+- review trade-credit insurance.
+
+Every factual claim in the report references an evidence ID. If the supporting evidence is missing, the claim is rejected rather than displayed.
+
+### 6. Lets judges inspect the evidence live
+
+The historical replay is presented as a pre-recorded video for reliability. After the video, judges can use the live dashboard to inspect the timeline, risk report, Challenger verdict, and recommended actions.
+
+Selecting a citation opens the exact source excerpt supporting that claim. The video is controlled; the evidence is real and independently verifiable.
+
+## How we built it
+
+SignalScout uses an evidence-first architecture with four layers.
+
+### Evidence layer
+
+We curate primary-source SEC filings and selected public disclosures for the historical case.
+
+Every document is stored with its publication date, retrieval timestamp, source URL, and evidence excerpt. Historical replay queries enforce an `as-of` boundary so future evidence cannot leak into earlier dates.
+
+### Signal and scoring layer
+
+Documents are converted into a small, fixed signal taxonomy. Structured outputs are validated against a schema before being accepted.
+
+A deterministic scoring engine then applies:
+
+- event-type weights;
+- confidence and source-quality adjustments;
+- temporal decay;
+- per-type deduplication;
+- cluster synergy rules;
+- investigation and high-risk thresholds.
+
+This separation keeps the alert logic reproducible and prevents an LLM from silently changing the risk score.
+
+### AI reasoning layer
+
+AI is used offline for three bounded tasks:
+
+1. **Correlator:** explains the pattern formed by the accepted signals.
+2. **Challenger:** constructs the strongest benign interpretation and identifies weak evidence.
+3. **Assessor:** generates the final risk summary and recommended actions.
+
+The AI receives structured evidence rather than unrestricted web content. It cannot add an unsupported source to the final report.
+
+### Validation layer
+
+A deterministic validator checks that:
+
+- the output matches the report schema;
+- every referenced signal exists;
+- every claim has at least one evidence ID;
+- every evidence ID resolves to a source;
+- replay evidence was published on or before the selected date;
+- duplicate documents are not counted as independent confirmation.
+
+Invalid reports fail closed.
+
+### Experience layer
+
+A React dashboard presents:
+
+- company status;
+- historical score progression;
+- signal timeline;
+- investigation and high-risk markers;
+- Challenger verdict;
+- recommended actions;
+- clickable evidence citations.
+
+The replay is pre-generated for a stable presentation, while the evidence dashboard remains live and interactive.
+
+## Challenges we ran into
+
+### Preventing hindsight leakage
+
+Historical backtests can appear impressive while accidentally using information published after the date being replayed.
+
+We addressed this by separating `event_date`, `published_at`, and `retrieved_at`, and by requiring every replay query to enforce `published_at <= as_of_date`.
+
+### Preventing hallucinated citations
+
+Prompting a model to “include citations” is not a sufficient guardrail. A citation may exist but fail to support the sentence attached to it.
+
+We structured reports as claims linked to evidence IDs and added deterministic checks for citation existence and source resolution. Unsupported claims are removed rather than rewritten as facts.
+
+### Avoiding duplicated evidence
+
+A single corporate announcement may be repeated by dozens of news outlets. Counting every article would produce an artificially high risk score.
+
+SignalScout deduplicates events and prevents multiple reports of the same underlying disclosure from being treated as independent confirmation.
+
+### Keeping the demo reliable
+
+A live crawler and multi-agent workflow would introduce unpredictable latency and network failures without improving the central product demonstration.
+
+We therefore run AI analysis before the presentation, store the validated result, and use a recorded historical replay followed by a live evidence inspection. This preserves the substance of the system without depending on a perfect network connection.
+
+### Balancing warning and prediction
+
+SignalScout does not claim to predict the exact date of a bankruptcy. Its purpose is to recognize when a cluster becomes important enough for a human to investigate or reduce exposure.
+
+The dashboard therefore distinguishes an early investigation marker from a later high-risk alert and from the final known outcome.
+````
