@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SignalScout · Strategic Change Radar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            canvas:'#F3F5F1', ink:'#17211D', muted:'#69736E', line:'#DCE2DC', soft:'#EDF1EC',
+            forest:'#123F36', green2:'#176455', lime:'#C9F269', amber:'#EF9E58', danger:'#A44336', paper:'#FFFFFF',
+            dcanvas:'#0B1512', dsurface:'#0F211C', dsurface2:'#12352E', dline:'#22463D',
+          },
+          fontFamily:{ display:['Manrope','sans-serif'], sans:['Inter','system-ui','sans-serif'] },
+          boxShadow:{ brand:'0 18px 55px rgba(20,48,40,.09)', panel:'0 8px 30px rgba(23,33,29,.045)' },
+          maxWidth:{ shell:'1240px' },
+        }
+      }
+    }
+  </script>
+  <style>
+    html{ scroll-padding-top:92px; }
+    body{ font-family:Inter,system-ui,sans-serif; }
+    .font-display{ font-family:Manrope,sans-serif; }
+    .eyebrow{ font-size:.72rem; font-weight:800; letter-spacing:.16em; text-transform:uppercase; }
+    .hero-name{ font-size:clamp(3.4rem,7vw,6.4rem); line-height:.9; letter-spacing:-.06em; }
+    .section-title{ font-size:clamp(2rem,4vw,3.1rem); line-height:1.04; letter-spacing:-.045em; }
+    .glow{ background:radial-gradient(circle at 84% 14%, rgba(201,242,105,.20), transparent 40%); }
+    .fit-ring{ background:conic-gradient(#C9F269 var(--fit), rgba(255,255,255,.14) 0); }
+    @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } .pulse{ animation:none; } }
+    @keyframes pulse{ 0%,100%{ opacity:1 } 50%{ opacity:.35 } }
+    .pulse{ animation:pulse 1.6s ease-in-out infinite; }
+    .no-scrollbar::-webkit-scrollbar{ display:none; } .no-scrollbar{ scrollbar-width:none; }
+  </style>
+</head>
+<body class="bg-canvas text-ink dark:bg-dcanvas dark:text-white/90 antialiased selection:bg-lime selection:text-ink">
+
+  <!-- 1 · NAV -->
+  <header class="sticky top-0 z-30 border-b border-line/80 dark:border-dline/80 bg-canvas/80 dark:bg-dcanvas/80 backdrop-blur-xl">
+    <div class="mx-auto max-w-shell px-5 h-[68px] flex items-center gap-6">
+      <a href="#overview" class="flex items-center gap-2.5 shrink-0" aria-label="SignalScout home">
+        <span class="grid place-items-center w-9 h-9 rounded-xl bg-forest text-lime font-display font-extrabold text-xs">SC</span>
+        <strong class="font-display tracking-tight hidden sm:block">signalScout</strong>
+      </a>
+      <nav aria-label="Primary" class="flex-1 flex items-center gap-6 overflow-x-auto no-scrollbar text-sm font-semibold text-muted dark:text-white/55">
+        <a href="#overview" class="whitespace-nowrap hover:text-ink dark:hover:text-white transition-colors">Overview</a>
+        <a href="#strategy" class="whitespace-nowrap hover:text-ink dark:hover:text-white transition-colors">Strategy</a>
+        <a href="#evidence" class="whitespace-nowrap hover:text-ink dark:hover:text-white transition-colors">Evidence</a>
+        <a href="#metrics" class="whitespace-nowrap hover:text-ink dark:hover:text-white transition-colors">Metrics</a>
+        <a href="#operations" class="whitespace-nowrap hover:text-ink dark:hover:text-white transition-colors">Operations</a>
+      </nav>
+      <button id="themeToggle" aria-label="Toggle theme" class="shrink-0 grid place-items-center w-9 h-9 rounded-xl border border-line dark:border-dline text-muted dark:text-white/60 hover:text-ink dark:hover:text-white cursor-pointer transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber">
+        <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+        <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path stroke-linecap="round" d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-shell px-5 pb-20">
+
+    <!-- 2 · OVERVIEW HERO -->
+    <section id="overview" class="mt-7 rounded-[28px] shadow-brand text-white bg-gradient-to-br from-forest to-[#0B302A] relative overflow-hidden">
+      <div class="absolute inset-0 glow pointer-events-none"></div>
+      <div class="relative p-7 sm:p-12 grid gap-9">
+        <div class="grid lg:grid-cols-[1.45fr_.72fr] gap-8 lg:gap-12 items-end">
+          <div>
+            <p class="eyebrow text-lime">Strategic change radar · validated replay</p>
+            <h1 class="hero-name font-display font-extrabold mt-3 mb-5">Bed Bath &amp; Beyond</h1>
+            <p class="max-w-[640px] text-[1.12rem] leading-relaxed text-white/80">How should a home-retail competitor respond as restructuring signals cluster?</p>
+            <a href="#strategy" class="mt-7 inline-flex items-center gap-2 h-11 px-5 rounded-xl bg-lime text-ink font-bold cursor-pointer hover:bg-lime/90 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber">
+              Review strategy
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></svg>
+            </a>
+          </div>
+          <div class="rounded-2xl bg-lime text-ink p-6">
+            <span class="eyebrow">Recommended posture</span>
+            <strong class="block font-display text-[2.7rem] leading-none tracking-tight my-3">ADAPT</strong>
+            <p class="text-sm leading-relaxed">Use bounded inventory and channel moves while leadership validates demand, liquidity and supplier exposure.</p>
+            <div class="flex justify-between pt-3 mt-4 border-t border-ink/20 text-sm font-bold">
+              <small>OUTCOME</small><small>Index 90 / 100</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inline evidence-agent chat -->
+        <section aria-labelledby="agent-title" class="rounded-2xl bg-white/[.07] border border-white/15 backdrop-blur-md p-5 sm:p-6 grid gap-3">
+          <header class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-lime pulse"></span>
+            <small class="text-white/60 uppercase tracking-[.12em] text-xs font-semibold">signalScout evidence agent</small>
+            <h2 id="agent-title" class="font-display text-2xl ml-auto sr-only">Ask signalScout</h2>
+          </header>
+          <h2 class="font-display text-2xl -mt-1">Ask signalScout</h2>
+
+          <div class="grid gap-3 max-h-[300px] overflow-y-auto pr-1 no-scrollbar" aria-live="polite">
+            <article class="w-[92%] max-w-[560px] bg-white text-ink rounded-2xl rounded-bl-sm p-3.5">
+              <span class="text-[.62rem] font-extrabold uppercase tracking-[.1em] text-muted">signalScout</span>
+              <p class="mt-1.5 text-sm leading-relaxed">What would you like to investigate? I can request public evidence, while signalScout policy selects and validates the collection route.</p>
+            </article>
+            <article class="w-[88%] max-w-[520px] ml-auto bg-lime text-ink rounded-2xl rounded-br-sm p-3.5">
+              <span class="text-[.62rem] font-extrabold uppercase tracking-[.1em] text-ink/60">You</span>
+              <p class="mt-1.5 text-sm leading-relaxed">Find current restructuring evidence for Bed Bath &amp; Beyond.</p>
+            </article>
+            <article class="w-[92%] max-w-[560px] bg-white text-ink rounded-2xl rounded-bl-sm p-3.5">
+              <span class="text-[.62rem] font-extrabold uppercase tracking-[.1em] text-muted">signalScout</span>
+              <p class="mt-1.5 text-sm leading-relaxed">A court-supervised restructuring process was publicly disclosed in April 2023. Verified against the approved filing.</p>
+              <a href="#evidence" class="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-green2 hover:underline">Public restructuring outcome · Approved
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7m0 0H8m9 0v9"/></svg>
+              </a>
+            </article>
+          </div>
+
+          <div class="flex gap-2 overflow-x-auto no-scrollbar">
+            <button class="shrink-0 px-3 py-1.5 rounded-full border border-white/25 text-white/80 text-xs hover:bg-white/10 cursor-pointer transition-colors">Find current restructuring evidence</button>
+            <button class="shrink-0 px-3 py-1.5 rounded-full border border-white/25 text-white/80 text-xs hover:bg-white/10 cursor-pointer transition-colors">Validate a known public URL</button>
+            <button class="shrink-0 px-3 py-1.5 rounded-full border border-white/25 text-white/80 text-xs hover:bg-white/10 cursor-pointer transition-colors">Explain the collector route</button>
+          </div>
+
+          <details class="rounded-xl bg-white/[.06] border border-white/10 px-4 py-2.5 text-sm">
+            <summary class="cursor-pointer font-semibold text-white/80 select-none">Tool execution log · 3</summary>
+            <div class="mt-2 space-y-2 text-white/70">
+              <p><span class="inline-block px-2 py-0.5 rounded-md bg-lime/20 text-lime text-[.62rem] font-bold uppercase tracking-wide">planning · started</span> Deciding whether approved evidence is sufficient.</p>
+              <p><span class="inline-block px-2 py-0.5 rounded-md bg-lime/20 text-lime text-[.62rem] font-bold uppercase tracking-wide">routing · tinyfish_fetch</span> Route selected by policy for a known public URL.</p>
+              <p><span class="inline-block px-2 py-0.5 rounded-md bg-lime/20 text-lime text-[.62rem] font-bold uppercase tracking-wide">validating · passed</span> Evidence Gate approved: schema, public URL, replay time, rights.</p>
+            </div>
+          </details>
+
+          <form class="grid gap-2 pt-3 border-t border-white/15" onsubmit="return false">
+            <label for="prompt" class="eyebrow text-white/60">Investigation prompt</label>
+            <textarea id="prompt" maxlength="4000" rows="2" placeholder="Ask about a company, filing, signal, or known URL…" class="w-full rounded-xl border-0 bg-white text-ink p-3 text-sm resize-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber"></textarea>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-white/50">0 / 4000</span>
+              <button class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-lime text-ink font-extrabold cursor-pointer hover:bg-lime/90 transition-colors">
+                Send
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m22 2-7 20-4-9-9-4Z"/></svg>
+              </button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </section>
+
+    <!-- 3 · SNAPSHOT -->
+    <section aria-label="Case snapshot" class="relative z-10 -mt-6 mx-auto w-[calc(100%-2rem)] grid grid-cols-2 sm:grid-cols-4 rounded-2xl bg-paper dark:bg-dsurface border border-line dark:border-dline shadow-brand">
+      <article class="p-5 sm:p-6 border-r border-b sm:border-b-0 border-line dark:border-dline">
+        <span class="block mb-1.5 text-muted dark:text-white/45 text-[.7rem] uppercase tracking-wide">As-of</span>
+        <strong class="font-display text-xl">Apr 24, 2023</strong>
+      </article>
+      <article class="p-5 sm:p-6 border-b sm:border-b-0 sm:border-r border-line dark:border-dline">
+        <span class="block mb-1.5 text-muted dark:text-white/45 text-[.7rem] uppercase tracking-wide">Evidence visible</span>
+        <strong class="font-display text-xl">4 / 4</strong>
+      </article>
+      <article class="p-5 sm:p-6 border-r border-line dark:border-dline">
+        <span class="block mb-1.5 text-muted dark:text-white/45 text-[.7rem] uppercase tracking-wide">Metric coverage</span>
+        <strong class="font-display text-xl">100%</strong>
+      </article>
+      <article class="p-5 sm:p-6">
+        <span class="block mb-1.5 text-muted dark:text-white/45 text-[.7rem] uppercase tracking-wide">Decision readiness</span>
+        <strong class="font-display text-xl inline-flex items-center gap-1.5"><svg class="w-4 h-4 text-green2" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m20 6-11 11-5-5"/></svg>Ready</strong>
+      </article>
+    </section>
+
+    <!-- 4 · STRATEGY FIT -->
+    <section id="strategy" class="pt-24 border-b border-line dark:border-dline">
+      <div class="flex flex-wrap justify-between items-end gap-8 mb-9">
+        <div class="max-w-[760px]">
+          <p class="eyebrow text-green2">Strategy fit</p>
+          <h2 class="section-title font-display font-bold mt-2.5">Compare response posture</h2>
+          <p class="mt-3 text-muted dark:text-white/55">A bounded fit index across three postures - informed by evidence, not forecast.</p>
+        </div>
+        <div class="grid place-content-center text-center w-32 h-32 rounded-full fit-ring shrink-0" style="--fit:281deg">
+          <div class="grid place-content-center w-[104px] h-[104px] rounded-full bg-canvas dark:bg-dcanvas mx-auto">
+            <strong class="font-display text-3xl">78</strong>
+            <span class="text-muted dark:text-white/45 text-[.68rem] uppercase">fit index</span>
+          </div>
+        </div>
+      </div>
+      <div class="grid md:grid-cols-3 gap-4">
+        <!-- MAINTAIN -->
+        <article class="rounded-2xl bg-paper dark:bg-dsurface border border-line dark:border-dline p-6 hover:shadow-panel transition-shadow cursor-pointer">
+          <div class="flex justify-between items-start gap-3">
+            <div><small class="text-muted dark:text-white/45 text-[.7rem]">Posture</small><h3 class="font-display text-lg mt-1">MAINTAIN</h3></div>
+            <strong class="font-display text-3xl text-muted dark:text-white/40">42</strong>
+          </div>
+          <div class="h-2 my-5 rounded-full bg-soft dark:bg-dsurface2 overflow-hidden"><i class="block h-full rounded-full bg-gradient-to-r from-green2 to-[#80af52]" style="width:42%"></i></div>
+          <p class="min-h-[64px] text-sm text-muted dark:text-white/55">Hold current plan; treat the signals as noise until liquidity confirms distress.</p>
+          <dl class="mt-1">
+            <div class="flex justify-between gap-3 py-2.5 border-t border-line dark:border-dline"><dt class="text-muted dark:text-white/45 text-xs uppercase">Cost</dt><dd class="font-bold text-sm">Low</dd></div>
+            <div class="flex justify-between gap-3 py-2.5 border-t border-line dark:border-dline"><dt class="text-muted dark:text-white/45 text-xs uppercase">Benefit</dt><dd class="font-bold text-sm">Continuity</dd></div>
+            <div class="flex justify-between gap-3 py-2.5 border-t border-line dark:border-dline"><dt class="text-muted dark:text-white/45 text-xs uppercase">Risk</dt><dd class="font-bold text-sm text-danger">Late to move</dd></div>
+          </dl>
+        </article>
+        <!-- ADAPT (selected) -->
+        <article class="rounded-2xl bg-paper dark:bg-dsurface border border-green2 p-6 shadow-brand relative overflow-hidden cursor-pointer">
+          <span class="absolute inset-x-0 top-0 h-1 bg-green2"></span>
+          <div class="flex justify-between items-start gap-3">
+            <div><small class="text-green2 text-[.7rem] font-bold uppercase">Recommended</small><h3 class="font-display text-lg mt-1">ADAPT</h3></div>
+            <strong class="font-display text-3xl text-green2">78</strong>
+          </div>
+          <div class="h-2 my-5 rounded-full bg-soft dark:bg-dsurface2 overflow-hidden"><i class="block h-full rounded-full bg-gradient-to-r from-green2 to-[#80af52]" style="width:78%"></i></div>
+          <p class="min-h-[64px] text-sm text-muted dark:text-white/60">Bounded inventory and channel moves while leadership validates demand, liquidity and supplier exposure.</p>
+          <dl class="mt-1">
+            <div class="flex justify-between gap-3 py-2.5 border-t border-line dark:border-dline"><dt class="text-muted dark:text-white/45 text-xs uppercase">Cost</dt><dd class="font-bold text-sm">Medium</dd></div>
+            <div class="flex justify-between gap-3 py-2.5 border-t border-line dark:border-dline"><dt class="text-muted dark:text-white/45 text-xs uppercase">Benefit</dt><dd class="font-bold text-sm">Optionality</dd></div>
+            <div class="flex justify-between gap-3 py-2.5 border-t border-line dark:border-dline"><dt class="text-muted dark:text-white/45 text-xs uppercase">Risk</dt><dd class="font-bold text-sm text-amber">Reversible</dd></div>
+          </dl>
+        </article>
+        <!-- ACCELERATE -->
+        <article class="rounded-2xl bg-paper dark:bg-dsurface border border-line dark:border-dline p-6 hover:shadow-panel transition-shadow cursor-pointer">
+          <div class="flex justify-between items-start gap-3">
+            <div><small class="text-muted dark:text-white/45 text-[.7rem]">Posture</small><h3 class="font-display text-lg mt-1">ACCELERATE</h3></div>
+            <strong class="font-display text-3xl text-muted dark:text-white/40">61</strong>
+          </div>
+          <div class="h-2 my-5 rounded-full bg-soft dark:bg-dsurface2 overflow-hidden"><i class="block h-full rounded-full bg-gradient-to-r from-green2 to-[#80af52]" style="width:61%"></i></div>
+          <p class="min-h-[64px] text-sm text-muted dark:text-white/55">Aggressively capture share now, front-loading spend against a distressed competitor.</p>
+          <dl class="mt-1">
+            <div class="flex justify-between gap-3 py-2.5 border-t border-line dark:border-dline"><dt class="text-muted dark:text-white/45 text-xs uppercase">Cost</dt><dd class="font-bold text-sm text-danger">High</dd></div>
+            <div class="flex justify-between gap-3 py-2.5 border-t border-line dark:border-dline"><dt class="text-muted dark:text-white/45 text-xs uppercase">Benefit</dt><dd class="font-bold text-sm">Share gain</dd></div>
+            <div class="flex justify-between gap-3 py-2.5 border-t border-line dark:border-dline"><dt class="text-muted dark:text-white/45 text-xs uppercase">Risk</dt><dd class="font-bold text-sm text-danger">Overcommit</dd></div>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <!-- 5 · EVIDENCE TIMELINE -->
+    <section id="evidence" class="pt-24 border-b border-line dark:border-dline">
+      <div class="flex flex-wrap justify-between items-end gap-6 mb-9">
+        <div class="max-w-[760px]">
+          <p class="eyebrow text-green2">Evidence timeline</p>
+          <h2 class="section-title font-display font-bold mt-2.5">What was knowable, when</h2>
+          <p class="mt-3 text-muted dark:text-white/55">The known outcome is visible only after its public disclosure - no hindsight leakage.</p>
+        </div>
+        <label class="min-w-[190px] text-muted dark:text-white/50 text-xs font-bold uppercase tracking-wide">As-of date
+          <select class="w-full mt-2 px-3 py-2.5 rounded-lg bg-paper dark:bg-dsurface border border-line dark:border-dline text-ink dark:text-white font-medium normal-case cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber">
+            <option>Apr 21, 2021</option><option>Aug 31, 2022</option><option selected>Apr 24, 2023</option>
+          </select>
+        </label>
+      </div>
+      <ol class="max-w-[940px] space-y-7 relative">
+        <li class="grid grid-cols-[52px_1fr] gap-5 relative">
+          <div class="relative z-10"><span class="grid place-items-center w-11 h-11 rounded-full bg-forest text-white border-4 border-canvas dark:border-dcanvas text-xs font-extrabold">01</span></div>
+          <article class="rounded-2xl bg-paper dark:bg-dsurface border border-line dark:border-dline p-6">
+            <div class="flex justify-between items-center"><span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#DAF0E5] text-[#146044] text-[.62rem] font-extrabold uppercase tracking-wide"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m20 6-11 11-5-5"/></svg>Approved</span><time class="text-muted dark:text-white/45 text-xs">Apr 21, 2021</time></div>
+            <h3 class="font-display mt-3 mb-2">Reported income statement metrics</h3>
+            <p class="text-[#4e5a55] dark:text-white/60 text-sm leading-relaxed">For fiscal year 2020, net sales were $7.1 billion. Gross profit was $2,300 million.</p>
+            <a href="#" class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-green2 hover:underline">Open source <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7m0 0H8m9 0v9"/></svg></a>
+          </article>
+        </li>
+        <li class="grid grid-cols-[52px_1fr] gap-5 relative">
+          <div class="relative z-10"><span class="grid place-items-center w-11 h-11 rounded-full bg-forest text-white border-4 border-canvas dark:border-dcanvas text-xs font-extrabold">02</span></div>
+          <article class="rounded-2xl bg-paper dark:bg-dsurface border border-line dark:border-dline p-6">
+            <div class="flex justify-between items-center"><span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#DAF0E5] text-[#146044] text-[.62rem] font-extrabold uppercase tracking-wide"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m20 6-11 11-5-5"/></svg>Approved</span><time class="text-muted dark:text-white/45 text-xs">Apr 21, 2021</time></div>
+            <h3 class="font-display mt-3 mb-2">Reported balance-sheet and cash-flow metrics</h3>
+            <p class="text-[#4e5a55] dark:text-white/60 text-sm leading-relaxed">For fiscal year 2020, cash and cash equivalents were $153.5 million. Operating cash flow was $268 million.</p>
+            <a href="#" class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-green2 hover:underline">Open source <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7m0 0H8m9 0v9"/></svg></a>
+          </article>
+        </li>
+        <li class="grid grid-cols-[52px_1fr] gap-5 relative">
+          <div class="relative z-10"><span class="grid place-items-center w-11 h-11 rounded-full bg-forest text-white border-4 border-canvas dark:border-dcanvas text-xs font-extrabold">03</span></div>
+          <article class="rounded-2xl bg-paper dark:bg-dsurface border border-line dark:border-dline p-6">
+            <div class="flex justify-between items-center"><span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#DAF0E5] text-[#146044] text-[.62rem] font-extrabold uppercase tracking-wide"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m20 6-11 11-5-5"/></svg>Approved</span><time class="text-muted dark:text-white/45 text-xs">Apr 21, 2021</time></div>
+            <h3 class="font-display mt-3 mb-2">Reported debt and operating footprint</h3>
+            <p class="text-[#4e5a55] dark:text-white/60 text-sm leading-relaxed">For fiscal year 2020, short-term debt was $236 million. Long-term debt was $1,700 million across a 953-store footprint.</p>
+            <a href="#" class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-green2 hover:underline">Open source <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7m0 0H8m9 0v9"/></svg></a>
+          </article>
+        </li>
+        <li class="grid grid-cols-[52px_1fr] gap-5 relative">
+          <div class="relative z-10"><span class="grid place-items-center w-11 h-11 rounded-full bg-amber text-ink border-4 border-canvas dark:border-dcanvas text-xs font-extrabold">04</span></div>
+          <article class="rounded-2xl bg-paper dark:bg-dsurface border border-line dark:border-dline p-6">
+            <div class="flex justify-between items-center"><span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#DAF0E5] text-[#146044] text-[.62rem] font-extrabold uppercase tracking-wide"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m20 6-11 11-5-5"/></svg>Approved</span><time class="text-muted dark:text-white/45 text-xs">Apr 24, 2023</time></div>
+            <h3 class="font-display mt-3 mb-2">Public restructuring outcome</h3>
+            <p class="text-[#4e5a55] dark:text-white/60 text-sm leading-relaxed">The company publicly disclosed the commencement of a court-supervised restructuring process.</p>
+            <a href="#" class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-green2 hover:underline">Open source <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7m0 0H8m9 0v9"/></svg></a>
+          </article>
+        </li>
+      </ol>
+    </section>
+
+    <!-- 6 · PATTERN RADAR -->
+    <section class="pt-24 border-b border-line dark:border-dline">
+      <div class="mb-9"><p class="eyebrow text-green2">Pattern radar</p><h2 class="section-title font-display font-bold mt-2.5">Why this cluster matters</h2></div>
+      <div class="grid md:grid-cols-3 gap-4">
+        <article class="rounded-2xl bg-paper dark:bg-dsurface border border-line dark:border-dline p-6 flex flex-col min-h-[210px]">
+          <span class="font-display font-bold text-3xl text-amber">01</span>
+          <p class="flex-1 mt-5 text-sm leading-relaxed">The approved filing reports a 953-store operating footprint.</p>
+          <div class="flex flex-wrap gap-1.5 mt-3"><a href="#evidence" class="px-2 py-1 rounded-md bg-soft dark:bg-dsurface2 text-xs no-underline">ev-operations</a></div>
+        </article>
+        <article class="rounded-2xl bg-paper dark:bg-dsurface border border-line dark:border-dline p-6 flex flex-col min-h-[210px]">
+          <span class="font-display font-bold text-3xl text-amber">02</span>
+          <p class="flex-1 mt-5 text-sm leading-relaxed">Reported cash and cash equivalents were $153.5 million for FY2020.</p>
+          <div class="flex flex-wrap gap-1.5 mt-3"><a href="#evidence" class="px-2 py-1 rounded-md bg-soft dark:bg-dsurface2 text-xs no-underline">ev-financials-b</a></div>
+        </article>
+        <article class="rounded-2xl bg-paper dark:bg-dsurface border border-line dark:border-dline p-6 flex flex-col min-h-[210px]">
+          <span class="font-display font-bold text-3xl text-amber">03</span>
+          <p class="flex-1 mt-5 text-sm leading-relaxed">A court-supervised restructuring process was publicly disclosed in April 2023.</p>
+          <div class="flex flex-wrap gap-1.5 mt-3"><a href="#evidence" class="px-2 py-1 rounded-md bg-soft dark:bg-dsurface2 text-xs no-underline">ev-outcome</a></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 7 · METRIC LENS -->
+    <section id="metrics" class="pt-24 border-b border-line dark:border-dline">
+      <div class="flex flex-wrap justify-between items-end gap-6 mb-9">
+        <div class="max-w-[760px]"><p class="eyebrow text-green2">Metric lens</p><h2 class="section-title font-display font-bold mt-2.5">Coverage before conviction</h2><p class="mt-3 text-muted dark:text-white/55">Reported observations, normalized units and direct provenance.</p></div>
+        <div class="grid place-items-center min-w-[104px] p-4 rounded-2xl bg-forest text-white"><strong class="font-display text-2xl">100%</strong><span class="text-[.68rem] uppercase text-lime">coverage</span></div>
+      </div>
+      <div class="rounded-2xl bg-paper dark:bg-dsurface border border-line dark:border-dline shadow-panel overflow-x-auto">
+        <table class="w-full border-collapse text-sm min-w-[560px]">
+          <caption class="text-left p-4 text-muted dark:text-white/45 text-xs">Reported metric observations</caption>
+          <thead><tr class="text-muted dark:text-white/45 text-[.7rem] uppercase tracking-wide">
+            <th class="text-left font-semibold px-4 py-3 border-b border-line dark:border-dline">Metric</th>
+            <th class="text-left font-semibold px-4 py-3 border-b border-line dark:border-dline">Value</th>
+            <th class="text-left font-semibold px-4 py-3 border-b border-line dark:border-dline">Period</th>
+            <th class="text-left font-semibold px-4 py-3 border-b border-line dark:border-dline">Quality</th>
+            <th class="text-left font-semibold px-4 py-3 border-b border-line dark:border-dline">Evidence</th>
+          </tr></thead>
+          <tbody>
+            <script>/* rows below */</script>
+            <tr><th class="text-left font-medium px-4 py-3.5 border-b border-line dark:border-dline">Revenue / net sales</th><td class="px-4 py-3.5 border-b border-line dark:border-dline font-bold">7,100 <span class="text-muted dark:text-white/40 font-normal">USD m</span></td><td class="px-4 py-3.5 border-b border-line dark:border-dline">FY2020</td><td class="px-4 py-3.5 border-b border-line dark:border-dline"><span class="px-2 py-1 rounded-md bg-[#DAF0E5] text-[#146044] text-[.62rem] font-bold uppercase">Reported</span></td><td class="px-4 py-3.5 border-b border-line dark:border-dline"><a href="#evidence" class="text-green2 font-semibold">ev-financials-a</a></td></tr>
+            <tr><th class="text-left font-medium px-4 py-3.5 border-b border-line dark:border-dline">Gross profit</th><td class="px-4 py-3.5 border-b border-line dark:border-dline font-bold">2,300 <span class="text-muted dark:text-white/40 font-normal">USD m</span></td><td class="px-4 py-3.5 border-b border-line dark:border-dline">FY2020</td><td class="px-4 py-3.5 border-b border-line dark:border-dline"><span class="px-2 py-1 rounded-md bg-[#DAF0E5] text-[#146044] text-[.62rem] font-bold uppercase">Reported</span></td><td class="px-4 py-3.5 border-b border-line dark:border-dline"><a href="#evidence" class="text-green2 font-semibold">ev-financials-a</a></td></tr>
+            <tr><th class="text-left font-medium px-4 py-3.5 border-b border-line dark:border-dline">Operating income</th><td class="px-4 py-3.5 border-b border-line dark:border-dline font-bold">180 <span class="text-muted dark:text-white/40 font-normal">USD m</span></td><td class="px-4 py-3.5 border-b border-line dark:border-dline">FY2020</td><td class="px-4 py-3.5 border-b border-line dark:border-dline"><span class="px-2 py-1 rounded-md bg-[#DAF0E5] text-[#146044] text-[.62rem] font-bold uppercase">Reported</span></td><td class="px-4 py-3.5 border-b border-line dark:border-dline"><a href="#evidence" class="text-green2 font-semibold">ev-financials-a</a></td></tr>
+            <tr><th class="text-left font-medium px-4 py-3.5 border-b border-line dark:border-dline">Cash &amp; equivalents</th><td class="px-4 py-3.5 border-b border-line dark:border-dline font-bold">153.5 <span class="text-muted dark:text-white/40 font-normal">USD m</span></td><td class="px-4 py-3.5 border-b border-line dark:border-dline">FY2020</td><td class="px-4 py-3.5 border-b border-line dark:border-dline"><span class="px-2 py-1 rounded-md bg-[#DAF0E5] text-[#146044] text-[.62rem] font-bold uppercase">Reported</span></td><td class="px-4 py-3.5 border-b border-line dark:border-dline"><a href="#evidence" class="text-green2 font-semibold">ev-financials-b</a></td></tr>
+            <tr><th class="text-left font-medium px-4 py-3.5 border-b border-line dark:border-dline">Operating cash flow</th><td class="px-4 py-3.5 border-b border-line dark:border-dline font-bold">268 <span class="text-muted dark:text-white/40 font-normal">USD m</span></td><td class="px-4 py-3.5 border-b border-line dark:border-dline">FY2020</td><td class="px-4 py-3.5 border-b border-line dark:border-dline"><span class="px-2 py-1 rounded-md bg-[#DAF0E5] text-[#146044] text-[.62rem] font-bold uppercase">Reported</span></td><td class="px-4 py-3.5 border-b border-line dark:border-dline"><a href="#evidence" class="text-green2 font-semibold">ev-financials-b</a></td></tr>
+            <tr><th class="text-left font-medium px-4 py-3.5">Store count</th><td class="px-4 py-3.5 font-bold">953 <span class="text-muted dark:text-white/40 font-normal">count</span></td><td class="px-4 py-3.5">FY2020</td><td class="px-4 py-3.5"><span class="px-2 py-1 rounded-md bg-[#DAF0E5] text-[#146044] text-[.62rem] font-bold uppercase">Reported</span></td><td class="px-4 py-3.5"><a href="#evidence" class="text-green2 font-semibold">ev-operations</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 8 · OPERATIONS -->
+    <section id="operations" class="pt-24 border-b border-line dark:border-dline">
+      <div class="flex flex-wrap justify-between items-end gap-6 mb-9">
+        <div class="max-w-[760px]"><p class="eyebrow text-green2">Agent operations</p><h2 class="section-title font-display font-bold mt-2.5">Observable by design</h2></div>
+        <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#dff0e9] text-[#23604e] text-sm font-bold"><i class="w-2 h-2 rounded-full bg-[#26a36f] pulse"></i>Live</span>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4">
+        <article class="rounded-xl bg-paper dark:bg-dsurface border border-line dark:border-dline p-4"><span class="block text-muted dark:text-white/45 text-[.68rem] uppercase">Total runs</span><strong class="block mt-2 font-display text-2xl">128</strong></article>
+        <article class="rounded-xl bg-paper dark:bg-dsurface border border-line dark:border-dline p-4"><span class="block text-muted dark:text-white/45 text-[.68rem] uppercase">Pass rate</span><strong class="block mt-2 font-display text-2xl">94%</strong></article>
+        <article class="rounded-xl bg-paper dark:bg-dsurface border border-line dark:border-dline p-4"><span class="block text-muted dark:text-white/45 text-[.68rem] uppercase">Tool calls</span><strong class="block mt-2 font-display text-2xl">71</strong></article>
+        <article class="rounded-xl bg-paper dark:bg-dsurface border border-line dark:border-dline p-4"><span class="block text-muted dark:text-white/45 text-[.68rem] uppercase">Candidates</span><strong class="block mt-2 font-display text-2xl">42</strong></article>
+        <article class="rounded-xl bg-paper dark:bg-dsurface border border-line dark:border-dline p-4"><span class="block text-muted dark:text-white/45 text-[.68rem] uppercase">Approved</span><strong class="block mt-2 font-display text-2xl">38</strong></article>
+        <article class="rounded-xl bg-paper dark:bg-dsurface border border-line dark:border-dline p-4"><span class="block text-muted dark:text-white/45 text-[.68rem] uppercase">Avg latency</span><strong class="block mt-2 font-display text-2xl">1.2s</strong></article>
+      </div>
+      <div class="grid lg:grid-cols-2 gap-4">
+        <article class="rounded-2xl bg-paper dark:bg-dsurface border border-line dark:border-dline p-6">
+          <h3 class="font-display text-lg mb-5">Route distribution</h3>
+          <div class="space-y-4 text-xs">
+            <div class="grid grid-cols-[130px_1fr_28px] gap-2.5 items-center"><span class="text-muted dark:text-white/55">TINYFISH SEARCH</span><div class="h-2.5 rounded-lg bg-soft dark:bg-dsurface2"><i class="block h-full rounded-lg bg-amber" style="width:64%"></i></div><b>32</b></div>
+            <div class="grid grid-cols-[130px_1fr_28px] gap-2.5 items-center"><span class="text-muted dark:text-white/55">TINYFISH FETCH</span><div class="h-2.5 rounded-lg bg-soft dark:bg-dsurface2"><i class="block h-full rounded-lg bg-amber" style="width:44%"></i></div><b>22</b></div>
+            <div class="grid grid-cols-[130px_1fr_28px] gap-2.5 items-center"><span class="text-muted dark:text-white/55">APIFY ASYNC</span><div class="h-2.5 rounded-lg bg-soft dark:bg-dsurface2"><i class="block h-full rounded-lg bg-amber" style="width:22%"></i></div><b>11</b></div>
+            <div class="grid grid-cols-[130px_1fr_28px] gap-2.5 items-center"><span class="text-muted dark:text-white/55">OFFICIAL API</span><div class="h-2.5 rounded-lg bg-soft dark:bg-dsurface2"><i class="block h-full rounded-lg bg-amber" style="width:12%"></i></div><b>6</b></div>
+          </div>
+        </article>
+        <article class="rounded-2xl bg-paper dark:bg-dsurface border border-line dark:border-dline p-6">
+          <h3 class="font-display text-lg mb-5">Validation pass-rate trend</h3>
+          <svg viewBox="0 0 320 150" class="w-full h-[150px] text-green2" preserveAspectRatio="none">
+            <defs><linearGradient id="area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#176455" stop-opacity=".28"/><stop offset="1" stop-color="#176455" stop-opacity="0"/></linearGradient></defs>
+            <line x1="0" y1="120" x2="320" y2="120" stroke="currentColor" stroke-opacity=".12"/>
+            <path d="M0,95 L53,80 L106,88 L160,55 L213,60 L266,35 L320,42 L320,120 L0,120 Z" fill="url(#area)"/>
+            <path d="M0,95 L53,80 L106,88 L160,55 L213,60 L266,35 L320,42" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </article>
+      </div>
+    </section>
+
+    <!-- 9 · EXECUTIVE AGENDA -->
+    <section class="pt-24 border-b border-line dark:border-dline">
+      <div class="mb-9"><p class="eyebrow text-green2">Executive agenda</p><h2 class="section-title font-display font-bold mt-2.5">Decide with a challenger</h2></div>
+      <div class="grid lg:grid-cols-[1.1fr_.9fr] gap-4">
+        <article class="rounded-2xl bg-forest text-white p-8">
+          <span class="inline-block px-2.5 py-1 rounded-md bg-lime text-ink text-[.62rem] font-extrabold uppercase tracking-wide">Recommended · ADAPT</span>
+          <h3 class="font-display text-3xl max-w-[520px] my-6">Move deliberately, preserve optionality.</h3>
+          <p class="text-white/75 leading-relaxed">Use bounded inventory and channel moves while leadership validates demand, liquidity and supplier exposure.</p>
+          <p class="mt-5 text-sm text-white/60">Evidence <a href="#evidence" class="inline-block ml-1 px-2 py-1 rounded-md bg-white/10 text-white no-underline">ev-financials-b</a> <a href="#evidence" class="inline-block ml-1 px-2 py-1 rounded-md bg-white/10 text-white no-underline">ev-operations</a></p>
+        </article>
+        <article class="rounded-2xl bg-paper dark:bg-dsurface border border-line dark:border-dline p-8">
+          <h3 class="font-display text-xl mb-4">Challenger questions</h3>
+          <ol class="list-decimal pl-5 space-y-0">
+            <li class="py-3.5 pl-2 border-b border-line dark:border-dline leading-relaxed">Could the observed changes reflect a planned transformation rather than structural distress?</li>
+            <li class="py-3.5 pl-2 leading-relaxed">Which customer and supplier signals would reverse the ADAPT posture?</li>
+          </ol>
+        </article>
+      </div>
+    </section>
+
+    <!-- 10 · FOOTER -->
+    <footer class="grid sm:grid-cols-3 gap-8 pt-11 pb-2 text-muted dark:text-white/50 text-sm">
+      <div><strong class="text-ink dark:text-white font-display">signalScout</strong><p class="mt-2">Evidence-led strategic decision support.</p></div>
+      <div><strong class="text-ink dark:text-white">Northstar Home Retail is fictional.</strong><p class="mt-2">A comparison company used only for strategic scenario framing.</p></div>
+      <div><strong class="text-ink dark:text-white">Methodology</strong><p class="mt-2">Bounded fit index, citation-linked evidence and temporal replay. Recommendations are a review posture, not a forecast.</p></div>
+    </footer>
+  </main>
+
+  <script>
+    // Theme toggle (respects prior choice; defaults to system)
+    const root = document.documentElement;
+    if (matchMedia('(prefers-color-scheme: dark)').matches) root.classList.add('dark');
+    document.getElementById('themeToggle').addEventListener('click', () => root.classList.toggle('dark'));
+    // Live char counter for the composer
+    const ta = document.getElementById('prompt');
+    ta.addEventListener('input', () => { ta.previousElementSibling; document.querySelector('#overview form span').textContent = ta.value.length + ' / 4000'; });
+  </script>
+</body>
+</html>
