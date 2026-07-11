@@ -22,8 +22,7 @@ it("renders chat controls and agent operations dashboard", async () => {
   vi.stubGlobal("fetch", vi.fn().mockImplementation((url: string) => Promise.resolve({ ok: true, json: async () => url === "/api/metrics" ? { summary: { totalRuns: 2, successfulRuns: 1, failedRuns: 1, toolCalls: 1, candidates: 3, approved: 1, validationPassRate: .75, averageLatencyMs: 1200, inputTokens: 100, outputTokens: 40 }, providerDistribution: [{ provider: "TINYFISH_SEARCH", count: 1 }], validationTrend: [{ at: new Date().toISOString(), passRate: .75, latencyMs: 1200 }], recentRuns: [] } : buildCase() })));
   render(<App />); await screen.findByRole("heading", { name: "Bed Bath & Beyond" });
   expect(screen.getByRole("navigation", { name: "Primary navigation" })).toBeInTheDocument();
-  fireEvent.click(screen.getByRole("button", { name: /Open Agent/i }));
-  expect(screen.getByRole("heading", { name: /Ask CorpWatch/ })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: /Ask signalScout/ })).toBeInTheDocument();
   expect(screen.getByLabelText("Investigation prompt")).toBeInTheDocument();
   expect(screen.getByRole("heading", { name: /Observable by design/ })).toBeInTheDocument();
   await waitFor(() => expect(screen.getByText("TINYFISH SEARCH")).toBeInTheDocument());
