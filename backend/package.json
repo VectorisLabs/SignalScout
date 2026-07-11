@@ -1,0 +1,35 @@
+{
+  "name": "@corpwatch/backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./contracts": "./src/contracts/index.ts"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server-entry.ts",
+    "start": "tsx src/server-entry.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "build:case": "tsx scripts/build-case.ts",
+    "validate:public-bundle": "tsx scripts/validate-public-bundle.ts",
+    "preflight:partners": "tsx scripts/preflight-partners.ts",
+    "publish:langfuse-prompt": "tsx scripts/publish-langfuse-prompt.ts"
+  },
+  "dependencies": {
+    "@langfuse/client": "latest",
+    "@langfuse/openai": "latest",
+    "@langfuse/otel": "latest",
+    "@langfuse/tracing": "latest",
+    "@opentelemetry/sdk-node": "latest",
+    "dotenv": "latest",
+    "openai": "latest",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "tsx": "latest",
+    "typescript": "latest",
+    "vitest": "latest"
+  }
+}

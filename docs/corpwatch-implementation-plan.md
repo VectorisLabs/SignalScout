@@ -1,4 +1,6 @@
-# CorpWatch AI — Kế hoạch triển khai hackathon 4 ngày
+# CorpWatch AI — Kế hoạch triển khai hackathon 4 ngày (legacy v1)
+
+> **Superseded ngày 2026-07-12:** Kiến trúc Bedrock AgentCore/Strands trong phần còn lại của file này chỉ còn giá trị lịch sử. Plan thực thi hiện hành là [`corpwatch-openai-chat-implementation-plan.md`](./corpwatch-openai-chat-implementation-plan.md): OpenAI Responses API chat agent, provider-neutral collector tool, application-side TinyFish/Apify router, deterministic Evidence Gate, Langfuse tracing/evaluation và operations dashboard.
 
 > **Mục đích tài liệu:** Spec hoàn chỉnh để đưa vào coding agent (Kiro / Claude Code / TRAE) hoặc chia task cho team. Mọi schema, công thức, contract giữa các module đã được chốt — người code chỉ việc implement theo.
 >
