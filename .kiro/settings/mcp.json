@@ -1,0 +1,85 @@
+{
+    "mcpServers": {
+        "AWS API MCP Server": {
+            "command": "uvx",
+            "args": [
+                "awslabs.aws-api-mcp-server@latest"
+            ],
+            "env": {
+                "AWS_REGION": "us-east-1"
+            },
+            "type": "stdio"
+        },
+        "aws-knowledge-mcp": {
+            "type": "http",
+            "url": "https://knowledge-mcp.global.api.aws"
+        },
+        "AWS Documentation MCP Server": {
+            "command": "uvx",
+            "args": [
+                "awslabs.aws-documentation-mcp-server@latest"
+            ],
+            "env": {
+                "FASTMCP_LOG_LEVEL": "ERROR",
+                "AWS_DOCUMENTATION_PARTITION": "aws"
+            },
+            "type": "stdio"
+        },
+        "Bedrock AgentCore MCP Server": {
+            "command": "uvx",
+            "args": [
+                "awslabs.amazon-bedrock-agentcore-mcp-server@latest"
+            ],
+            "env": {
+                "FASTMCP_LOG_LEVEL": "ERROR"
+            },
+            "type": "stdio"
+        },
+        "DynamoDB MCP Server": {
+            "command": "uvx",
+            "args": [
+                "awslabs.dynamodb-mcp-server@latest"
+            ],
+            "env": {
+                "AWS_PROFILE": "default",
+                "AWS_REGION": "us-east-1",
+                "FASTMCP_LOG_LEVEL": "ERROR"
+            },
+            "type": "stdio"
+        },
+        "CloudWatch MCP Server": {
+            "command": "uvx",
+            "args": [
+                "awslabs.cloudwatch-mcp-server@latest"
+            ],
+            "env": {
+                "AWS_PROFILE": "default",
+                "FASTMCP_LOG_LEVEL": "ERROR"
+            },
+            "type": "stdio"
+        },
+        "CloudTrail MCP Server": {
+            "command": "uvx",
+            "args": [
+                "awslabs.cloudtrail-mcp-server@latest"
+            ],
+            "env": {
+                "AWS_PROFILE": "default",
+                "FASTMCP_LOG_LEVEL": "ERROR"
+            },
+            "type": "stdio"
+        },
+        "AWS IAM MCP Server": {
+            "command": "uvx",
+            "args": [
+                "awslabs.iam-mcp-server@latest"
+            ],
+            "env": {
+                "AWS_PROFILE": "default",
+                "AWS_REGION": "us-east-1",
+                "FASTMCP_LOG_LEVEL": "ERROR"
+            },
+            "type": "stdio"
+        }
+    }
+}
