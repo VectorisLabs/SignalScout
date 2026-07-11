@@ -1,0 +1,329 @@
+{
+  "schemaVersion": "1.0",
+  "caseId": "bbb-retrospective-v1",
+  "company": {
+    "name": "Bed Bath & Beyond",
+    "ticker": "BBBY",
+    "comparisonContext": "Northstar Home Retail is a fictional comparison company used only for strategic scenario framing."
+  },
+  "watchQuestion": "How should a home-retail competitor respond as restructuring signals cluster?",
+  "offline": true,
+  "sources": [
+    {
+      "id": "src-bbb-2021-10k",
+      "title": "Bed Bath & Beyond Inc. 2021 Form 10-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/886158/000088615821000009/bbby-20210227.htm",
+      "domain": "sec.gov",
+      "rightsStatus": "PUBLIC_QUOTE_APPROVED",
+      "publishedAt": "2021-04-21T12:00:00.000Z"
+    },
+    {
+      "id": "src-bbb-2023-8k",
+      "title": "Bed Bath & Beyond Inc. 2023 Form 8-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/886158/000119312523114010/d465247d8k.htm",
+      "domain": "sec.gov",
+      "rightsStatus": "PUBLIC_QUOTE_APPROVED",
+      "publishedAt": "2023-04-24T12:00:00.000Z"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev-financials-a",
+      "sourceId": "src-bbb-2021-10k",
+      "publiclyAvailableAt": "2021-04-21T12:00:00.000Z",
+      "title": "Reported income statement metrics",
+      "excerpt": "For fiscal year 2020, net sales were $7.1 billion. Gross profit was $2,300 million. Operating income was $180 million. Selling, general and administrative expenses were $2,100 million. Restructuring charges were $100 million.",
+      "knownOutcome": false
+    },
+    {
+      "id": "ev-financials-b",
+      "sourceId": "src-bbb-2021-10k",
+      "publiclyAvailableAt": "2021-04-21T12:00:00.000Z",
+      "title": "Reported balance-sheet and cash-flow metrics",
+      "excerpt": "For fiscal year 2020, cash and cash equivalents were $153.5 million. Operating cash flow was $268 million. Capital expenditures were $250 million. Inventory was $2,200 million. Accounts payable were $1,100 million.",
+      "knownOutcome": false
+    },
+    {
+      "id": "ev-operations",
+      "sourceId": "src-bbb-2021-10k",
+      "publiclyAvailableAt": "2021-04-21T12:00:00.000Z",
+      "title": "Reported debt and operating footprint",
+      "excerpt": "For fiscal year 2020, short-term debt was $236 million. Long-term debt was $1,700 million. The company operated 953 stores and employed 37,000 employees.",
+      "knownOutcome": false
+    },
+    {
+      "id": "ev-outcome",
+      "sourceId": "src-bbb-2023-8k",
+      "publiclyAvailableAt": "2023-04-24T12:00:00.000Z",
+      "title": "Public restructuring outcome",
+      "excerpt": "The company publicly disclosed the commencement of a court-supervised restructuring process.",
+      "knownOutcome": true
+    }
+  ],
+  "metrics": [
+    {
+      "metricKey": "revenue",
+      "value": 7100,
+      "unit": "USD_MILLIONS",
+      "period": "FY2020",
+      "quality": "REPORTED",
+      "sourceId": "src-bbb-2021-10k",
+      "evidenceId": "ev-financials-a"
+    },
+    {
+      "metricKey": "gross_profit",
+      "value": 2300,
+      "unit": "USD_MILLIONS",
+      "period": "FY2020",
+      "quality": "REPORTED",
+      "sourceId": "src-bbb-2021-10k",
+      "evidenceId": "ev-financials-a"
+    },
+    {
+      "metricKey": "operating_income",
+      "value": 180,
+      "unit": "USD_MILLIONS",
+      "period": "FY2020",
+      "quality": "REPORTED",
+      "sourceId": "src-bbb-2021-10k",
+      "evidenceId": "ev-financials-a"
+    },
+    {
+      "metricKey": "sga",
+      "value": 2100,
+      "unit": "USD_MILLIONS",
+      "period": "FY2020",
+      "quality": "REPORTED",
+      "sourceId": "src-bbb-2021-10k",
+      "evidenceId": "ev-financials-a"
+    },
+    {
+      "metricKey": "restructuring_cost",
+      "value": 100,
+      "unit": "USD_MILLIONS",
+      "period": "FY2020",
+      "quality": "REPORTED",
+      "sourceId": "src-bbb-2021-10k",
+      "evidenceId": "ev-financials-a"
+    },
+    {
+      "metricKey": "cash_and_equivalents",
+      "value": 153.5,
+      "unit": "USD_MILLIONS",
+      "period": "FY2020",
+      "quality": "REPORTED",
+      "sourceId": "src-bbb-2021-10k",
+      "evidenceId": "ev-financials-b"
+    },
+    {
+      "metricKey": "operating_cash_flow",
+      "value": 268,
+      "unit": "USD_MILLIONS",
+      "period": "FY2020",
+      "quality": "REPORTED",
+      "sourceId": "src-bbb-2021-10k",
+      "evidenceId": "ev-financials-b"
+    },
+    {
+      "metricKey": "capital_expenditure",
+      "value": 250,
+      "unit": "USD_MILLIONS",
+      "period": "FY2020",
+      "quality": "REPORTED",
+      "sourceId": "src-bbb-2021-10k",
+      "evidenceId": "ev-financials-b"
+    },
+    {
+      "metricKey": "inventory",
+      "value": 2200,
+      "unit": "USD_MILLIONS",
+      "period": "FY2020",
+      "quality": "REPORTED",
+      "sourceId": "src-bbb-2021-10k",
+      "evidenceId": "ev-financials-b"
+    },
+    {
+      "metricKey": "accounts_payable",
+      "value": 1100,
+      "unit": "USD_MILLIONS",
+      "period": "FY2020",
+      "quality": "REPORTED",
+      "sourceId": "src-bbb-2021-10k",
+      "evidenceId": "ev-financials-b"
+    },
+    {
+      "metricKey": "short_term_debt",
+      "value": 236,
+      "unit": "USD_MILLIONS",
+      "period": "FY2020",
+      "quality": "REPORTED",
+      "sourceId": "src-bbb-2021-10k",
+      "evidenceId": "ev-operations"
+    },
+    {
+      "metricKey": "long_term_debt",
+      "value": 1700,
+      "unit": "USD_MILLIONS",
+      "period": "FY2020",
+      "quality": "REPORTED",
+      "sourceId": "src-bbb-2021-10k",
+      "evidenceId": "ev-operations"
+    },
+    {
+      "metricKey": "store_count",
+      "value": 953,
+      "unit": "COUNT",
+      "period": "FY2020",
+      "quality": "REPORTED",
+      "sourceId": "src-bbb-2021-10k",
+      "evidenceId": "ev-operations"
+    },
+    {
+      "metricKey": "employee_count",
+      "value": 37000,
+      "unit": "COUNT",
+      "period": "FY2020",
+      "quality": "REPORTED",
+      "sourceId": "src-bbb-2021-10k",
+      "evidenceId": "ev-operations"
+    }
+  ],
+  "readiness": [
+    {
+      "section": "RESTRUCTURING_SCENARIOS",
+      "status": "READY",
+      "missingMetrics": []
+    },
+    {
+      "section": "COST_BENEFIT_RISK",
+      "status": "READY",
+      "missingMetrics": []
+    },
+    {
+      "section": "REVENUE_CASH_FLOW_OPERATING_IMPACT",
+      "status": "READY",
+      "missingMetrics": []
+    },
+    {
+      "section": "EXECUTIVE_DASHBOARD",
+      "status": "READY",
+      "missingMetrics": []
+    },
+    {
+      "section": "DECISION_REPORT",
+      "status": "READY",
+      "missingMetrics": []
+    }
+  ],
+  "replay": [
+    {
+      "asOf": "2021-04-21T12:00:00.000Z",
+      "stage": "MONITOR",
+      "score": 0.28,
+      "evidenceIds": [
+        "ev-financials-a",
+        "ev-financials-b",
+        "ev-operations"
+      ],
+      "summary": "Baseline filings establish the operating and financial lens."
+    },
+    {
+      "asOf": "2022-08-31T23:59:59.000Z",
+      "stage": "REVIEW",
+      "score": 0.68,
+      "evidenceIds": [
+        "ev-financials-a",
+        "ev-financials-b",
+        "ev-operations"
+      ],
+      "summary": "The evidence cluster warrants executive review; this score is a deterministic story index, not a probability."
+    },
+    {
+      "asOf": "2023-04-24T12:00:00.000Z",
+      "stage": "OUTCOME",
+      "score": 0.9,
+      "evidenceIds": [
+        "ev-financials-a",
+        "ev-financials-b",
+        "ev-operations",
+        "ev-outcome"
+      ],
+      "summary": "The known outcome is visible only after its public disclosure date."
+    }
+  ],
+  "claims": [
+    {
+      "id": "claim-scale",
+      "text": "The approved filing reports a 953-store operating footprint.",
+      "evidenceIds": [
+        "ev-operations"
+      ]
+    },
+    {
+      "id": "claim-liquidity",
+      "text": "Reported cash and cash equivalents were $153.5 million for FY2020.",
+      "evidenceIds": [
+        "ev-financials-b"
+      ]
+    },
+    {
+      "id": "claim-outcome",
+      "text": "A court-supervised restructuring process was publicly disclosed in April 2023.",
+      "evidenceIds": [
+        "ev-outcome"
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "posture": "MAINTAIN",
+      "headline": "Preserve optionality",
+      "cost": "Low",
+      "benefit": "Avoids premature commitments",
+      "risk": "May miss share shifts",
+      "impact": "Monitor revenue exposure and supplier terms",
+      "evidenceIds": [
+        "ev-financials-a"
+      ]
+    },
+    {
+      "posture": "ADAPT",
+      "headline": "Rebalance selectively",
+      "cost": "Medium",
+      "benefit": "Targets inventory and channel gaps",
+      "risk": "Execution complexity",
+      "impact": "Adjust working capital, assortment and store actions",
+      "evidenceIds": [
+        "ev-financials-b",
+        "ev-operations"
+      ]
+    },
+    {
+      "posture": "ACCELERATE",
+      "headline": "Capture dislocated demand",
+      "cost": "High",
+      "benefit": "Potential share and supplier access",
+      "risk": "Overextension",
+      "impact": "Fund growth only behind measured demand signals",
+      "evidenceIds": [
+        "ev-operations"
+      ]
+    }
+  ],
+  "recommendation": {
+    "posture": "ADAPT",
+    "rationale": "Use bounded inventory and channel moves while leadership validates demand, liquidity and supplier exposure.",
+    "evidenceIds": [
+      "ev-financials-b",
+      "ev-operations"
+    ]
+  },
+  "challengerQuestions": [
+    "Could the observed changes reflect a planned transformation rather than structural distress?",
+    "Which customer and supplier signals would reverse the ADAPT posture?"
+  ],
+  "limitations": [
+    "This retrospective uses a small approved evidence set.",
+    "Scenario language is decision support, not a forecast or bankruptcy prediction."
+  ]
+}

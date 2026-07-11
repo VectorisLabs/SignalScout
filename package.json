@@ -1,0 +1,21 @@
+{
+  "name": "corpwatch-strategic-change-radar",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": ["backend", "frontend"],
+  "scripts": {
+    "dev": "concurrently -k -n backend,frontend -c blue,green \"npm --workspace @corpwatch/backend run dev\" \"npm --workspace @corpwatch/frontend run dev -- --host 127.0.0.1\"",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "build:case": "npm --workspace @corpwatch/backend run build:case",
+    "validate:public-bundle": "npm --workspace @corpwatch/backend run validate:public-bundle",
+    "build": "npm run build:case && npm run validate:public-bundle && npm --workspace @corpwatch/frontend run build",
+    "preview": "npm --workspace @corpwatch/frontend run preview -- --host 127.0.0.1",
+    "preflight:partners": "npm --workspace @corpwatch/backend run preflight:partners",
+    "publish:langfuse-prompt": "npm --workspace @corpwatch/backend run publish:langfuse-prompt"
+  },
+  "devDependencies": {
+    "concurrently": "latest"
+  }
+}
