@@ -1,6 +1,6 @@
-# CorpWatch Strategic Change Radar
+# SignalScout Strategic Change Radar
 
-CorpWatch turns scattered public corporate-change signals into a cited, replayable strategic decision brief. It reconstructs what was knowable at each historical date, measures which financial and operating dimensions are supported, compares MAINTAIN / ADAPT / ACCELERATE responses, and shows executives which evidence supports—or blocks—each review posture.
+SignalScout turns scattered public corporate-change signals into a cited, replayable strategic decision brief. It reconstructs what was knowable at each historical date, measures which financial and operating dimensions are supported, compares MAINTAIN / ADAPT / ACCELERATE responses, and shows executives which evidence supports—or blocks—each review posture.
 
 The primary interaction is now an OpenAI-powered investigation chat. OpenAI can request one provider-neutral evidence collection function; deterministic backend policy selects TinyFish or Apify, validates candidates through the Evidence Gate, records traces/scores in Langfuse when configured, and exposes route, validation, latency and token metrics in the dashboard.
 
@@ -12,7 +12,7 @@ The primary interaction is now an OpenAI-powered investigation chat. OpenAI can 
 - A fail-closed public-bundle validator for schema, provenance, temporal leakage, false readiness and credential-like content.
 - A responsive, keyboard-operable offline Executive Dashboard with scenarios, impact framing, recommendation, challenger questions and limitations; final accessibility audit remains a human freeze step.
 
-Northstar Home Retail is explicitly fictional and used only as strategic comparison context. CorpWatch is not a bankruptcy predictor, its story index is not a calibrated probability, and its scenarios are decision support rather than autonomous recommendations or certified forecasts.
+Northstar Home Retail is explicitly fictional and used only as strategic comparison context. SignalScout is not a bankruptcy predictor, its story index is not a calibrated probability, and its scenarios are decision support rather than autonomous recommendations or certified forecasts.
 
 ## Technology truth
 

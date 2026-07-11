@@ -1,4 +1,6 @@
-# SignalScout Strategic Change Radar — Ultimate Agent Build Guide
+# CorpWatch Strategic Change Radar — Ultimate Agent Build Guide
+
+> **Architecture update 2026-07-12:** Bedrock/optional-live assumptions in older sections are superseded by [`corpwatch-openai-chat-implementation-plan.md`](./corpwatch-openai-chat-implementation-plan.md). The current primary agent uses OpenAI Responses API, a provider-neutral collection tool, deterministic TinyFish/Apify routing, Evidence Gate validation, Langfuse tracing/scores, and a chat-first operations dashboard. Frozen replay remains the offline fallback.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:subagent-driven-development` (recommended) or `superpowers:executing-plans` to implement this plan task-by-task. Every production-code change must follow `superpowers:test-driven-development`. If a test or runtime behavior is unexpected, stop and use `superpowers:systematic-debugging` before editing further.
 
@@ -30,11 +32,11 @@
 
 1. Read this file fully.
 2. Read, in order:
-   - `docs/ai/SignalScout-next-agent-implementation-plan.md`
-   - `docs/methodology/SignalScout-methodology-v1.md`
+   - `docs/ai/corpwatch-next-agent-implementation-plan.md`
+   - `docs/methodology/corpwatch-methodology-v1.md`
    - `docs/methodology/strategic-metric-lens.md`
    - `docs/methodology/tinyfish-search-fetch-pipeline.md`
-   - `docs/proposal/SignalScout-judge-ready-master-proposal.md`
+   - `docs/proposal/corpwatch-judge-ready-master-proposal.md`
 3. Inspect `package.json`, `src/contracts/`, and the exact source/test files named by the task being executed.
 4. Run the baseline commands before changing anything.
 5. Execute tasks in dependency order. Do not begin UI polish before the frozen case bundle and bundle validator work.
@@ -46,10 +48,10 @@ If an older document conflicts with this guide, use this precedence:
 1. Current source code and passing tests.
 2. Current contracts and methodology gates.
 3. This guide.
-4. `SignalScout-next-agent-implementation-plan.md`.
+4. `corpwatch-next-agent-implementation-plan.md`.
 5. Older handoff/proposal language.
 
-Known stale statement: `SignalScout-complete-agent-handoff.md` says implementation had not started. That statement is obsolete; OpenAI, TinyFish, metric-lens, analysis-input, review-agenda, and initial dashboard work now exist.
+Known stale statement: `corpwatch-complete-agent-handoff.md` says implementation had not started. That statement is obsolete; OpenAI, TinyFish, metric-lens, analysis-input, review-agenda, and initial dashboard work now exist.
 
 ---
 
@@ -263,7 +265,7 @@ OPENAI_API_KEY=
 OPENAI_MODEL=
 PARTNER_EXECUTION_MODE=validate
 OPENAI_ENABLE_TINYFISH_TOOLS=false
-OPENAI_LIVE_APPROVAL_JSON={"approved":true,"approver":"minhquan","approvedAt":"2026-07-11T00:00:00.000Z","purpose":"SignalScout MVP OpenAI live preflight","maxCostUsd":6}
+OPENAI_LIVE_APPROVAL_JSON={"approved":true,"approver":"minhquan","approvedAt":"2026-07-11T00:00:00.000Z","purpose":"CorpWatch MVP OpenAI live preflight","maxCostUsd":6}
 TINYFISH_API_KEY=
 ```
 
@@ -743,9 +745,9 @@ Record: timestamp, purpose, provider response ID, service-reported model identif
 ### Task 7: Demo Freeze and Submission Truth Audit
 
 **Files:**
-- Modify: `docs/proposal/SignalScout-judge-ready-master-proposal.md`
-- Create: `docs/demo/SignalScout-demo-runbook.md`
-- Create: `docs/demo/SignalScout-submission-claims.md`
+- Modify: `docs/proposal/corpwatch-judge-ready-master-proposal.md`
+- Create: `docs/demo/corpwatch-demo-runbook.md`
+- Create: `docs/demo/corpwatch-submission-claims.md`
 
 **Interfaces:**
 - Consumes: verified build/test output, final frozen bundle, screenshots/video, and partner receipts.
@@ -872,7 +874,7 @@ Never cut provenance, temporal integrity, metric blockers, bundle validation, of
 
 ### Elevator pitch
 
-> SignalScout turns scattered public corporate-change signals into a cited, replayable strategic decision brief. It reconstructs what changed, measures which financial and operating dimensions are supported, compares maintain/adapt/accelerate responses, and shows executives exactly which evidence supports—or blocks—each recommendation.
+> CorpWatch turns scattered public corporate-change signals into a cited, replayable strategic decision brief. It reconstructs what changed, measures which financial and operating dimensions are supported, compares maintain/adapt/accelerate responses, and shows executives exactly which evidence supports—or blocks—each recommendation.
 
 ### Honest technology wording
 

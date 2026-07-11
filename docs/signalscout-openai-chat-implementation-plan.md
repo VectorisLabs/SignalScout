@@ -1,13 +1,13 @@
-# CorpWatch OpenAI Chat Agent — Implementation Plan v2
+# SignalScout OpenAI Chat Agent — Implementation Plan v2
 
 **Status:** authoritative plan
 
 **Effective date:** 2026-07-12
-**Supersedes:** Bedrock AgentCore/Strands orchestration in `corpwatch-implementation-plan.md`
+**Supersedes:** Bedrock AgentCore/Strands orchestration in `SignalScout-implementation-plan.md`
 
 ## 1. Product direction
 
-CorpWatch becomes a chat-first evidence investigation agent. A user asks a question in the web UI. The backend sends the turn to OpenAI Responses API with one strict function tool named `collect_public_evidence`. The model may request bounded evidence, but it cannot choose a provider and cannot approve evidence.
+SignalScout becomes a chat-first evidence investigation agent. A user asks a question in the web UI. The backend sends the turn to OpenAI Responses API with one strict function tool named `collect_public_evidence`. The model may request bounded evidence, but it cannot choose a provider and cannot approve evidence.
 
 The application-side Collector Router applies `COLLECTOR-ROUTER-v1` and selects:
 
@@ -25,7 +25,7 @@ The frozen dashboard remains available when OpenAI or collector credentials are 
 
 ```mermaid
 flowchart LR
-    U[Chatbox user prompt] --> API[CorpWatch chat API]
+    U[Chatbox user prompt] --> API[SignalScout chat API]
     API --> OAI[OpenAI Responses API]
     OAI -->|collect_public_evidence| R[Deterministic Collector Router]
     R --> C[Approved cache / official API]

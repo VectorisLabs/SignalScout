@@ -1,4 +1,6 @@
-# SignalScout AI — Kế hoạch triển khai hackathon 4 ngày
+# CorpWatch AI — Kế hoạch triển khai hackathon 4 ngày (legacy v1)
+
+> **Superseded ngày 2026-07-12:** Kiến trúc Bedrock AgentCore/Strands trong phần còn lại của file này chỉ còn giá trị lịch sử. Plan thực thi hiện hành là [`corpwatch-openai-chat-implementation-plan.md`](./corpwatch-openai-chat-implementation-plan.md): OpenAI Responses API chat agent, provider-neutral collector tool, application-side TinyFish/Apify router, deterministic Evidence Gate, Langfuse tracing/evaluation và operations dashboard.
 
 > **Mục đích tài liệu:** Spec hoàn chỉnh để đưa vào coding agent (Kiro / Claude Code / TRAE) hoặc chia task cho team. Mọi schema, công thức, contract giữa các module đã được chốt — người code chỉ việc implement theo.
 >
@@ -10,7 +12,7 @@
 
 ## 1. Tóm tắt
 
-SignalScout AI là hệ thống multi-agent phát hiện sớm dấu hiệu **corporate restructuring** bằng cách tương quan hóa (correlate) các weak signals phân tán: layoffs, executive departures, asset sales, hiring freeze, debt events, facility closures, guidance cuts. Một tín hiệu đơn lẻ chưa đáng lo; một **cụm tín hiệu trong cửa sổ thời gian** mới là câu chuyện.
+CorpWatch AI là hệ thống multi-agent phát hiện sớm dấu hiệu **corporate restructuring** bằng cách tương quan hóa (correlate) các weak signals phân tán: layoffs, executive departures, asset sales, hiring freeze, debt events, facility closures, guidance cuts. Một tín hiệu đơn lẻ chưa đáng lo; một **cụm tín hiệu trong cửa sổ thời gian** mới là câu chuyện.
 
 Pipeline: `Ingest → Extract → Correlate → Investigate → Challenge → Assess → Alert`.
 
@@ -106,7 +108,7 @@ Mọi module giao tiếp qua JSON signal chuẩn:
   "source_url": "https://...",
   "headline": "Intel to cut 15% of workforce",
   "extract_confidence": 0.95,
-  "raw_doc_s3": "s3://SignalScout-raw/..."
+  "raw_doc_s3": "s3://corpwatch-raw/..."
 }
 ```
 
@@ -345,7 +347,7 @@ Quy tắc: tool trả **snippet + URL**, KHÔNG trả full text (giữ context g
 
 - Submissions theo công ty: `https://data.sec.gov/submissions/CIK{cik_10_digits}.json`
 - Full-text search: `https://efts.sec.gov/LATEST/search-index?q="<cụm từ>"&forms=8-K&startdt=YYYY-MM-DD&enddt=YYYY-MM-DD` *(xác minh tham số chính xác khi code — SEC đổi API thỉnh thoảng)*
-- **Bắt buộc** header `User-Agent: SignalScout-hackathon <email>` — thiếu là bị chặn. Rate ~10 req/s.
+- **Bắt buộc** header `User-Agent: corpwatch-hackathon <email>` — thiếu là bị chặn. Rate ~10 req/s.
 - **8-K items ưu tiên** (mỏ vàng): `2.05` (exit/disposal costs → layoff, closure), `5.02` (officer departure), `1.01`/`2.03` (material agreements/debt), `2.01` (asset acquisition/disposition), `2.06` (impairments), `8.01` (other events).
 - Query cụm từ gợi ý cho full-text: `"reduction in force"`, `"workforce reduction"`, `"restructuring plan"`, `"going concern"`, `"resignation of"`, `"suspend its dividend"`.
 
@@ -403,7 +405,7 @@ Contract: input = raw text/HTML + metadata → output = **JSON array of signals*
 
 1. **Watchlist** — bảng công ty: logo/ngành/headcount (enrich từ Apollo, cache tĩnh vào `config/companies.json` — 1 giờ, đừng làm live), score hiện tại, sparkline 90 ngày, state badge.
 2. **Company detail** — timeline signals (dot theo event_type, click mở source_url), hypothesis card: narrative, citations, challenger verdict + benign explanations, recommended actions theo persona.
-3. **Replay mode (money shot)** — chọn case (WeWork/Intel) → slider `as_of_date` → line chart score leo dần, đánh dấu 2 mốc: `ngày SignalScout alert` vs `ngày báo chí chính thống gọi tên` → banner "phát hiện sớm hơn X ngày".
+3. **Replay mode (money shot)** — chọn case (WeWork/Intel) → slider `as_of_date` → line chart score leo dần, đánh dấu 2 mốc: `ngày CorpWatch alert` vs `ngày báo chí chính thống gọi tên` → banner "phát hiện sớm hơn X ngày".
 
 **Data access:** KHÔNG cho browser gọi thẳng ClickHouse. Một FastAPI mỏng (Lambda + Function URL, hoặc chạy trên EC2/local cho hackathon) expose: `GET /companies`, `GET /signals?company&from&to`, `GET /hypotheses?company&as_of`, `POST /run-pipeline?company` (nút demo), `POST /ingest` (nút demo). API key qua header.
 
@@ -417,7 +419,7 @@ Contract: input = raw text/HTML + metadata → output = **JSON array of signals*
 
 1. **Slack** — Block Kit: company, label, score, top-3 evidence (headline + link), nút "Mở dashboard".
 2. **Brevo** — transactional email cùng nội dung (template HTML đơn giản).
-3. **Notion** — tạo page trong database `SignalScout Review Queue`.
+3. **Notion** — tạo page trong database `CorpWatch Review Queue`.
 
 **Notion DB properties:** `Company (title) · Label (select) · Score (number) · State (select: pending/confirmed/dismissed) · Alert date (date) · Evidence (url list trong body) · Reviewer notes (rich text)`. Analyst confirm/dismiss tại đây — feedback này là data tune trọng số sau hackathon (kể trong pitch, không build UI feedback trong 4 ngày).
 
@@ -453,7 +455,7 @@ Hypothesis `weakened` (Challenger bác) → chỉ vào Notion, không Slack/emai
 
 ## 14. Hạ tầng & cấu hình
 
-**AWS resources checklist:** 1 AgentCore Runtime (graph) · AgentCore Gateway + 3 Lambda tools (`edgar_search`, `news_search`, `extract_signals`) · S3 bucket `SignalScout-raw` · Lambda/FastAPI cho dashboard API · (tùy chọn cuối) EventBridge rule gọi ingest 2h/lần. Bedrock: bật model access cho Claude Sonnet + Haiku trong region deploy.
+**AWS resources checklist:** 1 AgentCore Runtime (graph) · AgentCore Gateway + 3 Lambda tools (`edgar_search`, `news_search`, `extract_signals`) · S3 bucket `corpwatch-raw` · Lambda/FastAPI cho dashboard API · (tùy chọn cuối) EventBridge rule gọi ingest 2h/lần. Bedrock: bật model access cho Claude Sonnet + Haiku trong region deploy.
 
 **Secrets:** hackathon dùng `.env` + AWS Secrets Manager cho phần chạy trên AWS. `.env` vào `.gitignore` NGAY commit đầu.
 
@@ -466,7 +468,7 @@ OPENAI_API_KEY=              # Challenger
 CLICKHOUSE_HOST= / CLICKHOUSE_PASSWORD=
 BRIGHTDATA_API_KEY=
 APIFY_TOKEN=
-SEC_USER_AGENT="SignalScout-hackathon your-email@x.com"
+SEC_USER_AGENT="corpwatch-hackathon your-email@x.com"
 LANGFUSE_PUBLIC_KEY= / LANGFUSE_SECRET_KEY= / LANGFUSE_HOST=
 N8N_ALERT_WEBHOOK_URL=
 NOTION_TOKEN= / NOTION_DB_ID=
@@ -481,7 +483,7 @@ AGORA_APP_ID= / AGORA_...    # stretch
 ## 15. Repo structure
 
 ```
-SignalScout/
+corpwatch/
 ├── config/
 │   ├── watchlist.yaml          # ticker, cik, aliases (hardcode)
 │   ├── weights.yaml            # w(event_type), synergy, τ, thresholds
@@ -556,7 +558,7 @@ SignalScout/
 ## 17. Kịch bản demo 3 phút
 
 1. **(30s) Vấn đề:** "Ngày 1 chỉ là một tin layoff — chưa ai lo. Ngày 12, CFO nghỉ. Ngày 20, bán nhà máy. Từng tín hiệu đều vô hại; cụm tín hiệu là câu chuyện. Analyst không thể canh 100 công ty."
-2. **(60s) Replay WeWork:** kéo slider — score leo dần, mốc alert của SignalScout vs mốc báo chí. "Sớm hơn X ngày."
+2. **(60s) Replay WeWork:** kéo slider — score leo dần, mốc alert của CorpWatch vs mốc báo chí. "Sớm hơn X ngày."
 3. **(60s) Live pipeline:** bấm Run cho 1 công ty watchlist → mở Langfuse trace: Correlator đặt giả thuyết → Investigator tự đi tìm bằng chứng thiếu trên EDGAR → **Challenger (GPT) phản biện Claude** → Assessor ra report có citation từng dòng. Alert nổ trên Slack + Notion ngay trên màn hình.
 4. **(30s) Closer:** cuộc gọi voice briefing Agora (hoặc video) + "mọi kết luận đều truy vết được về filing gốc — đây là hệ thống analyst dám tin."
 
@@ -577,7 +579,7 @@ SignalScout/
 
 ## 19. Perk mapping (điền vào slide "sponsor usage")
 
-| Perk | Vai trò trong SignalScout |
+| Perk | Vai trò trong CorpWatch |
 |---|---|
 | AWS $1,000 | Bedrock (Claude) · AgentCore Runtime/Gateway · Lambda · S3 |
 | OpenAI $150 | Challenger agent (cross-model adversarial) + LLM-as-judge backtest |
