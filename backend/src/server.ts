@@ -1,20 +1,19 @@
-import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
+import type { IncomingMessage, ServerResponse } from "node:http";
 import { randomUUID } from "node:crypto";
 import { ChatRequestSchema } from "./agent/contracts";
 import { getMetrics, recordRun, type RunRecord } from "./agent/audit-store";
 import { runChatAgent } from "./agent/openai-agent";
 import { buildChatVisualizations, buildOfflineChatTurn } from "./agent/build-chat-visualizations";
-import { flushLangfuse, isLangfuseConfigured } from "./agent/langfuse-runtime";
+import { isLangfuseConfigured } from "./agent/langfuse-runtime";
 
-const port = Number(process.env.BACKEND_PORT ?? 8787);
-const server = createServer(async (request, response) => {
+export async function handleRequest(request: IncomingMessage, response: ServerResponse) {
   setHeaders(response);
   if (request.method === "OPTIONS") return end(response, 204, null);
   if (request.method === "GET" && request.url === "/api/health") return json(response, 200, health());
   if (request.method === "GET" && request.url === "/api/metrics") return json(response, 200, getMetrics());
   if (request.method === "POST" && request.url === "/api/chat") return handleChat(request, response);
   return json(response, 404, { error: "NOT_FOUND" });
-});
+}
 
 async function handleChat(request: IncomingMessage, response: ServerResponse) {
   const started = Date.now(); const id = randomUUID(); const startedAt = new Date().toISOString();
@@ -54,6 +53,4 @@ function setHeaders(response: ServerResponse) { response.setHeader("Content-Type
 function json(response: ServerResponse, status: number, value: unknown) { response.statusCode = status; response.end(JSON.stringify(value)); }
 function end(response: ServerResponse, status: number, value: null) { response.statusCode = status; response.end(value); }
 
-server.listen(port, "127.0.0.1", () => console.log(`CorpWatch backend listening on http://127.0.0.1:${port}`));
-async function shutdown() { server.close(); await flushLangfuse(); process.exit(0); }
-process.on("SIGINT", shutdown); process.on("SIGTERM", shutdown);
+export default handleRequest;

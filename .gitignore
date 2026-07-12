@@ -5,3 +5,5 @@ dist/
 .artifacts/
 coverage/
 *.log
+.vercel
+.env*

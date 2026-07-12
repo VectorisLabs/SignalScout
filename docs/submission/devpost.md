@@ -16,11 +16,7 @@ SignalScout
 
 # Elevator pitch
 
-SignalScout is an evidence-first early-warning system for corporate restructuring and third-party risk, built as a production-ready multi-agent application on AWS.
-
-Instead of treating layoffs, executive departures, debt amendments, delayed filings, and store closures as isolated news, SignalScout connects them across time into one auditable risk story. A supervisor-worker agent system on Amazon Bedrock AgentCore collects verified public evidence, applies transparent time-decayed scoring, challenges its own conclusions, and produces an actionable report in which every factual claim links back to its source.
-
-Our showcase replays the real Bed Bath & Beyond restructuring using historical SEC filings. It shows when the system would have moved from monitoring to investigation and then to high risk—helping suppliers, procurement teams, lenders, and other counterparties act before Chapter 11 narrowed their options.
+An evidence-first, multi-agent early-warning system on AWS that connects scattered corporate-restructuring signals into one auditable risk story—every claim traceable to its verified source.
 
 # Project details
 
