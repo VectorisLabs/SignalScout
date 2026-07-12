@@ -250,3 +250,85 @@ The dashboard therefore distinguishes an early investigation marker from a later
 - Apify
 - Langfuse
 ````
+
+
+
+## Built with
+Select the tools, frameworks, platforms, cloud services, databases, APIs, or models you used. Press Enter to add a custom tool.
+- AWS
+- Amazon Bedrock AgentCore
+- Amazon Bedrock
+- AWS Strands Agents SDK
+- AWS Lambda
+- Amazon API Gateway
+- AWS AppSync
+- AWS Amplify
+- Amazon Cognito
+- Amazon DynamoDB
+- Amazon S3
+- React
+- TinyFish
+- Apify
+- Langfuse
+- OpenAI
+
+## Links and media
+### Demo URL
+https://example.com
+
+### GitHub / repository URL
+https://github.com/VectorisLabs/SignalScout
+
+### Video demo link
+https://youtu.be/c9ZgQTMOngM
+
+
+## Which AABW technology partner tools, platforms, or services did your team use in your project?
+Select at least one AABW technology partner tool, platform, or service your team used. Some partners may reward teams based on the stacks used, so be clear, specific, and honest.
+Apify x
+AWS x
+ClickHouse x
+Langfuse x
+OpenAl x
+tinyfish x
+
+## Briefly explain how you used each technology partner's tools, platform or services.
+Explain how you used the partner technologies you selected above.
+
+````
+### AWS
+
+AWS is the foundation of SignalScout's production architecture. The multi-agent system runs on Amazon Bedrock AgentCore Runtime using the AWS Strands Agents SDK in a supervisor-worker topology (Management, Crawler, Analysis), with an Amazon Bedrock foundation model and Bedrock Guardrails applied at the reasoning worker.
+
+Around the agents we use a fully serverless AWS stack: AWS Lambda for orchestration, resolvers, and webhook handling; Amazon API Gateway (HTTP API) for the user-facing and webhook endpoints; AWS AppSync for the dashboard's GraphQL data layer; AWS Amplify (Gen 2) for hosting the React dashboard; Amazon Cognito for authentication; Amazon DynamoDB for metadata and pipeline state; Amazon S3 (Intelligent-Tiering) for evidence and results; AWS Secrets Manager for credentials; and CloudWatch, CloudTrail, and IAM (least-privilege, one role per runtime) for observability, audit, and security.
+
+### OpenAI API
+
+We used the OpenAI API in our working prototype's reasoning pipeline to convert verified evidence into structured risk signals and to generate the Correlator, Challenger, and Assessor outputs. In the production design this reasoning layer maps onto Amazon Bedrock; the prompts, structured-output schemas, and validation logic are model-agnostic.
+
+The Challenger was specifically instructed to find benign explanations and weaknesses in the emerging hypothesis. Model outputs were never accepted as standalone facts: every final claim had to reference a verified evidence ID and pass deterministic validation.
+
+### tinyfish
+
+We used TinyFish as an AI web-agent evidence collector, invoked as a model tool, to read investor-relations pages and press releases for the case company.
+
+TinyFish results are treated as untrusted candidates: they are sanitized and filtered in code, normalized into our fixed signal schema, and only accepted after deterministic validation. No TinyFish output becomes a final factual claim without a resolvable evidence ID.
+
+### Apify
+
+We used Apify scraping actors as an evidence collector for news sources and SEC filing pages, also invoked as a model tool for known URLs and batch collection.
+
+As with TinyFish, Apify dataset items are untrusted candidates: sanitized, deduplicated so repeated coverage of one disclosure is not counted as independent confirmation, and validated against the signal schema before use.
+
+### Langfuse
+
+We used Langfuse to trace the evidence-extraction, correlation, challenge, and assessment steps, and to inspect model inputs and outputs, latency, token usage, and prompt versions.
+
+Langfuse also drives our self-correction loop: an LLM-as-Judge score is attached to each run, and a webhook notifies the pipeline so low-scoring results can be re-run with a critique (bounded by a retry limit) or flagged for human review. We use a fixed historical dataset and deterministic evaluation checks for structured-output validity, citation coverage, and evidence resolution.
+
+### ClickHouse
+
+> Reviewer note — confirm before submitting: the production architecture stores signals, scores, and replay state in Amazon DynamoDB + S3, not ClickHouse. Only keep this entry (and the ClickHouse selection) if ClickHouse was genuinely used in an earlier analytical/backtest prototype; otherwise remove it to stay honest. Draft below assumes prototype use.
+
+We evaluated ClickHouse Cloud in an early analytical prototype to store normalized signals, source metadata, and historical risk scores, and to reconstruct the case for any historical date while excluding future evidence. In the current production design this role is served by Amazon DynamoDB (metadata and pipeline state) and Amazon S3 (per-attempt evidence and results).
+````
