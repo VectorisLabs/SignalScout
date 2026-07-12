@@ -6,7 +6,7 @@ const OFFICIAL_SOURCE_TYPES = new Set(["SEC_8_K", "SEC_10_Q", "SEC_10_K", "SEC_E
 export interface RouteDecision { route: CollectorRoute; reason: string; policyId: "COLLECTOR-ROUTER-v1"; policyVersion: "1.0.0" }
 
 export function routeCollection(raw: unknown, budget: CollectionBudget): { request: CollectionRequest; decision: RouteDecision } {
-  const request = CollectionRequestSchema.parse(raw);
+  const request = CollectionRequestSchema.parse(normalizeDateFields(raw));
   request.known_urls.forEach(assertPublicHttpUrl);
 
   if (request.source_types.every((type) => OFFICIAL_SOURCE_TYPES.has(type)) && request.company_identifier.cik) {
@@ -27,6 +27,19 @@ export function routeCollection(raw: unknown, budget: CollectionBudget): { reque
   }
   if (budget.maxTinyFishSearchCalls < 1) return human("TinyFish Search budget exhausted");
   return selected(request, "TINYFISH_SEARCH", "Source URL is unknown and bounded live-web discovery is required");
+}
+
+/** Coerce the model's near-miss date formats so a slightly-off value never wastes a collection round.
+ *  date_from/date_to → YYYY-MM-DD; replay_as_of → full ISO-8601 datetime. */
+function normalizeDateFields(raw: unknown): unknown {
+  if (!raw || typeof raw !== "object") return raw;
+  const value = { ...(raw as Record<string, unknown>) };
+  const toDate = (input: unknown) => typeof input === "string" && /^\d{4}-\d{2}-\d{2}T/.test(input) ? input.slice(0, 10) : input;
+  const toDateTime = (input: unknown) => typeof input === "string" && /^\d{4}-\d{2}-\d{2}$/.test(input) ? `${input}T23:59:59.999Z` : input;
+  value.date_from = toDate(value.date_from);
+  value.date_to = toDate(value.date_to);
+  value.replay_as_of = toDateTime(value.replay_as_of);
+  return value;
 }
 
 function selected(request: CollectionRequest, route: CollectorRoute, reason: string) {
