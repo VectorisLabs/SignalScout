@@ -1,12 +1,49 @@
 # CorpWatch AI — Kế hoạch triển khai hackathon 4 ngày (legacy v1)
 
-> **Superseded ngày 2026-07-12:** Kiến trúc Bedrock AgentCore/Strands trong phần còn lại của file này chỉ còn giá trị lịch sử. Plan thực thi hiện hành là [`corpwatch-openai-chat-implementation-plan.md`](./corpwatch-openai-chat-implementation-plan.md): OpenAI Responses API chat agent, provider-neutral collector tool, application-side TinyFish/Apify router, deterministic Evidence Gate, Langfuse tracing/evaluation và operations dashboard.
+> **Nguồn sự thật kiến trúc production (2026-07-12):** Kiến trúc production hiện hành được chốt tại [`MEMORY.md`](../../MEMORY.md) và bản vẽ [`docs/Architect.png`](../Architect.png) — mô hình **multi-agent supervisor-worker trên Bedrock AgentCore** (Management / Crawler / Analysis), DynamoDB + S3, Langfuse-driven retry. Phần "Decision Ledger" ngay dưới đây tổng hợp các quyết định đã chốt và các quyết định còn mở theo MEMORY.md.
+>
+> **Lưu ý về nội dung cũ:** Các mục đánh số (§1 trở đi) trong file này là **plan hackathon legacy v1** và chỉ còn giá trị tham khảo. Một số chi tiết khác với production hiện hành (ví dụ: ClickHouse thay vì DynamoDB, n8n alert routing, correlation scoring cụ thể). Khi mâu thuẫn, ưu tiên `MEMORY.md` và Decision Ledger dưới đây.
+>
+> **POC đang chạy:** xem [`docs/POC/`](../POC/) (OpenAI Responses API chat agent — chỉ phục vụ demo, không phải định hướng production).
 
-> **Mục đích tài liệu:** Spec hoàn chỉnh để đưa vào coding agent (Kiro / Claude Code / TRAE) hoặc chia task cho team. Mọi schema, công thức, contract giữa các module đã được chốt — người code chỉ việc implement theo.
->
-> **Stack:** Strands Agents SDK · Amazon Bedrock AgentCore (Runtime + Gateway) · ClickHouse Cloud · React + Netlify · n8n · Langfuse
->
-> **Phiên bản:** v1.0 — cập nhật khi có quyết định mới.
+---
+
+## Decision Ledger — Kiến trúc production (nguồn: MEMORY.md)
+
+### A. Quyết định đã ĐÓNG (closed)
+
+| # | Quyết định đã chốt | Tham chiếu MEMORY.md |
+|---|---|---|
+| C1 | Mô hình **multi-agent supervisor-worker** trên Bedrock AgentCore: Management (supervisor) → Crawler + Analysis (worker) | §2 |
+| C2 | Supervisor điều phối kiểu **sao**: Management gọi A rồi gọi B; A và B **không** nối trực tiếp | §4.2 |
+| C3 | **Không** Lambda-gọi-Lambda, **không** Runtime-gọi-thẳng-Runtime worker; decouple qua supervisor / S3 event | §4.1 |
+| C4 | AgentCore Runtime gọi TinyFish/Apify **trực tiếp qua HTTPS**; **KHÔNG** dùng AgentCore Gateway / MCP (over-engineering cho 1 agent/1 tool) | §4.3 |
+| C5 | TinyFish/Apify là **tool model gọi (tool_use)**, dùng sync endpoint, giới hạn `max_duration_seconds` (không có cancel) | §4.4 |
+| C6 | Chọn TinyFish vs Apify bằng **rule / tool_use ngay trong Crawler** — **không** có "Collector Router" service tách riêng | §4.6 |
+| C7 | **Filter/sanitize bằng code thường** (Python thuần) trong Crawler trước khi đưa vào model — tiết kiệm token, chống injection | §4.5, §6 |
+| C8 | **S3 Intelligent-Tiering** cho raw + kết quả; lưu **đa-attempt, không ghi đè** (`raw-market-news/{run_id}/attempt-{n}.json`) | §4.8, §4.12 |
+| C9 | **DynamoDB On-Demand**, tách 2 bảng: `MarketThemes` (display, expose qua AppSync) + `PipelineState` (operational, không expose) | §4.11 |
+| C10 | `retry_count` dùng **atomic counter** (`ADD retry_count :inc`) | §4.10 |
+| C11 | Retry/self-correction (**Reflexion**) qua **Langfuse webhook → API Gateway riêng → Lambda Webhook-Handler**; **Option B**: trigger lại `InvokeAgentRuntime`, kèm `critique`, dùng lại session cũ; **bắt buộc giới hạn retry** | §4.9 |
+| C12 | **Guardrails BẮT BUỘC ở Analysis** (nơi web content untrusted vào model reasoning) | §6 |
+| C13 | Langfuse = prompt management + tracing + LLM-as-Judge scoring + webhook; webhook **bắt buộc verify HMAC + timestamp**; endpoint webhook **riêng, không dùng Cognito** | §5 |
+| C14 | Dashboard đọc: **Amplify → AppSync → Lambda resolver → DynamoDB → S3 presigned URL → browser tải trực tiếp**; chỉ tạo URL cho `final_s3_key` | §4.13 |
+| C15 | Thứ tự **ghi** (S3 → DynamoDB) khác thứ tự **đọc** (DynamoDB → S3); là 2 vòng đời riêng | §4.14 |
+| C16 | IAM **least-privilege**, **tách role từng Runtime**, ARN cụ thể, **không wildcard** | §10 |
+| C17 | **Secrets Manager** cho API key (TinyFish/Apify/Langfuse) + webhook signing secret | §3, §12 |
+| C18 | Observability: **CloudWatch** (logs/metrics/alarms) + **CloudTrail** (audit compliance) | §11 |
+| C19 | **100% serverless** + cost optimization: HTTP API (rẻ hơn REST ~70%), Bedrock On-Demand, Langfuse Cloud, filter trước model, không tính phí lúc I/O wait | §12 |
+| C20 | Auth: **Cognito** cho user-facing (API Gateway); webhook endpoint **verify signature** thay cho Cognito | §5, §3 |
+
+### B. Quyết định còn MỞ (open) — xem chi tiết ở mục "Open Decisions" cuối tài liệu
+
+| # | Quyết định còn mở | Tham chiếu |
+|---|---|---|
+| O1 | Guardrails ở **Management**: giữ hay bỏ? (tùy Management có dùng model reasoning để route không) | §15.1 |
+| O2 | Guardrails ở **Crawler**: có cần không? (tùy Crawler có dùng model reasoning không) | §15.2 |
+| O3 | Storage kết quả hiển thị: **S3** (nội dung dài) hay **chỉ DynamoDB** (tóm tắt ngắn)? | §15.3 |
+| O4 | **Số retry tối đa** (đề xuất 2) — chốt con số cứng | §15.4 |
+| O5 | Nguồn **critique** khi retry: Langfuse LLM-as-Judge tự sinh, hay Lambda gọi Bedrock riêng? | §15.5 |
 
 ---
 
@@ -611,3 +648,117 @@ corpwatch/
 ---
 
 *Hết. Mọi thay đổi trọng số/ngưỡng chỉ sửa `config/weights.yaml`; mọi thay đổi taxonomy phải cập nhật đồng thời: schema 4.1, Extractor prompt, bảng w, và tài liệu này.*
+
+
+---
+
+# Open Decisions — Phân tích chi tiết (production, nguồn: MEMORY.md §15)
+
+Năm quyết định dưới đây chưa chốt. Mỗi mục gồm: bối cảnh, các phương án, đánh đổi, và khuyến nghị. Khi chốt, cập nhật trạng thái tại Decision Ledger (bảng A) và ghi ngày + người quyết định.
+
+## O1 — Guardrails ở Management (supervisor)
+
+**Bối cảnh:** Bedrock Guardrails là thuộc tính gắn vào `BedrockModel` mà Strands Agent dùng (không phải service network riêng). Guardrails chỉ có tác dụng khi runtime đó thực sự **gọi model để đọc/tổng hợp nội dung**. Câu hỏi cốt lõi: Management dùng model reasoning để điều phối, hay chỉ chạy logic if/else định tuyến?
+
+**Các phương án:**
+
+| Phương án | Khi nào đúng | Guardrails |
+|---|---|---|
+| A. Management **chỉ điều phối bằng code** (if/else, đọc metadata, gọi InvokeAgentRuntime) | Luồng đơn giản, thứ tự Crawler → Analysis cố định | **Bỏ** — không có model call nên Guardrails vô nghĩa |
+| B. Management **dùng model reasoning** để quyết định gọi worker nào, tổng hợp output, viết summary | Cần orchestration linh hoạt, Management đọc lại nội dung do worker trả (có thể chứa dữ liệu web đã qua Analysis) | **Giữ** — vì nội dung tổng hợp vẫn có thể mang injection còn sót |
+
+**Đánh đổi:**
+- Bỏ Guardrails ở Management: đơn giản, rẻ, ít latency; nhưng nếu sau này Management đọc nội dung untrusted mà quên bật → lỗ hổng.
+- Giữ Guardrails: an toàn hơn theo defense-in-depth; thêm chi phí Guardrails call + latency nhỏ trên mỗi lần Management gọi model.
+
+**Khuyến nghị:** Chốt vai trò Management trước. Nếu Management **chỉ route metadata đã được worker sanitize** → **Phương án A (bỏ)**. Nếu Management **tự viết summary/quyết định dựa trên nội dung** → **Phương án B (giữ)**. Với wealth management (nhạy cảm), nếu còn phân vân, thiên về **B** cho lớp defense-in-depth.
+
+**Cần để chốt:** xác nhận Management có `BedrockModel` + system prompt reasoning hay chỉ orchestration code thuần.
+
+## O2 — Guardrails ở Crawler
+
+**Bối cảnh:** Crawler nhận JSON thô từ TinyFish/Apify (dữ liệu web **untrusted**, rủi ro prompt injection cao). MEMORY.md §4.5/§6 đã chốt Crawler **sanitize bằng code thường** (strip HTML, detect injection pattern, validate schema, truncation) **trước** khi bất kỳ nội dung nào chạm model. Câu hỏi: Crawler có bước model reasoning nào không?
+
+**Các phương án:**
+
+| Phương án | Mô tả | Guardrails |
+|---|---|---|
+| A. Crawler **thuần tool + code sanitize** (không gọi model) | Chỉ gọi TinyFish/Apify rồi lọc bằng Python | **Không cần** — không có model call; server-side sanitize là đủ lớp bảo vệ |
+| B. Crawler **có model** (ví dụ tự tóm tắt / phân loại nguồn trước khi trả Management) | Có bước reasoning trên nội dung web thô | **Cần** — đây là điểm untrusted-vào-model, rủi ro injection cao |
+
+**Đánh đổi:**
+- Phương án A khớp với thiết kế hiện tại (sanitize bằng code, filter không tốn token). Đơn giản, rẻ, đúng nguyên tắc "filter trước khi vào model".
+- Phương án B chỉ hợp lý nếu thực sự cần model ở tầng thu thập; khi đó bắt buộc Guardrails + vẫn phải sanitize code trước.
+
+**Khuyến nghị:** Giữ Crawler **thuần tool + code sanitize (Phương án A)** đúng như §4.5. Không đưa model vào Crawler; mọi reasoning dồn về Analysis (đã có Guardrails bắt buộc — C12). Điều này giữ ranh giới rõ: Crawler = thu thập + làm sạch bằng code; Analysis = reasoning có Guardrails.
+
+**Cần để chốt:** xác nhận Crawler không có `BedrockModel`. Nếu tương lai thêm model vào Crawler → bật Guardrails ngay.
+
+## O3 — Storage kết quả hiển thị: S3 hay chỉ DynamoDB
+
+**Bối cảnh:** DynamoDB giới hạn item 400KB. Kết quả theme detection hiển thị lên Advisor Dashboard có thể là tóm tắt ngắn (theme + sentiment + vài dòng) hoặc nội dung dài (full analysis, danh sách evidence, trích dẫn).
+
+**Các phương án:**
+
+| Phương án | Khi nào đúng | Hệ quả |
+|---|---|---|
+| A. **Chỉ DynamoDB** (tóm tắt ngắn) | Payload hiển thị < ~vài trăm KB, không cần trích dài | Bỏ được luồng presigned URL (C14) cho phần hiển thị chính → kiến trúc đơn giản hơn |
+| B. **DynamoDB (metadata) + S3 (nội dung dài)** | Có full analysis / evidence dài, cần replay/audit | Giữ luồng presigned URL; tận dụng S3 đa-attempt (C8/C12) làm luôn nguồn hiển thị |
+| C. **Hybrid** | Tóm tắt ngắn ở DynamoDB cho list view; S3 cho detail view khi user mở 1 theme | Cân bằng: list nhanh, detail đầy đủ |
+
+**Đánh đổi:**
+- A: đơn giản nhất, latency thấp, nhưng chạm trần 400KB nếu nội dung phình.
+- B: linh hoạt cho nội dung lớn + tái dùng S3 audit trail, nhưng thêm 1 hop presigned URL cho mọi lần đọc detail.
+- C: tối ưu UX (list nhẹ, detail đầy đủ) nhưng cần định nghĩa rõ field nào ở đâu.
+
+**Khuyến nghị:** **Phương án C (hybrid)**. DynamoDB `MarketThemes` giữ tóm tắt hiển thị nhanh (theme, sentiment, score, `final_s3_key`); S3 giữ full analysis dài để detail view tải qua presigned URL. Tận dụng luôn S3 đa-attempt đã chốt (C8/C12) làm nguồn detail + audit, không phát sinh store mới.
+
+**Cần để chốt:** xác định kích thước điển hình của payload hiển thị và có cần detail view dài không.
+
+## O4 — Số retry tối đa (MAX_RETRY)
+
+**Bối cảnh:** Reflexion loop (C11) bắt buộc giới hạn retry để tránh vòng lặp vô hạn và chi phí LLM leo thang. MEMORY.md đề xuất **2**.
+
+**Các phương án:**
+
+| MAX_RETRY | Đánh đổi |
+|---|---|
+| 1 | Rẻ nhất, phản hồi nhanh; nhưng chỉ cho agent 1 cơ hội tự sửa — có thể bỏ lỡ case sửa được ở lần 2 |
+| **2 (đề xuất)** | Cân bằng: đủ chỗ cho self-correction có ý nghĩa; chi phí tối đa 3 lần chạy (gốc + 2 retry) |
+| 3+ | Tăng khả năng đạt score cao; nhưng chi phí/latency tăng tuyến tính, và nếu lần 2 chưa sửa được thì lần 3 hiếm khi cứu được |
+
+**Đánh đổi bổ sung:** cần đảm bảo mỗi retry **kèm `critique`** (C11) — nếu không, tăng số retry chỉ lặp lại lỗi cũ và đốt tiền.
+
+**Khuyến nghị:** Chốt **MAX_RETRY = 2**. Sau 2 lần vẫn dưới ngưỡng → flag `needs_human_review` (đúng tinh thần wealth management: human oversight cho case khó). Đặt MAX_RETRY thành **config/env**, không hard-code, để tune bằng số liệu Langfuse thực tế (tỷ lệ pass ở retry 1 vs retry 2).
+
+**Cần để chốt:** xác nhận con số 2 và cơ chế đưa vào config.
+
+## O5 — Nguồn critique khi retry
+
+**Bối cảnh:** Payload retry bắt buộc kèm `critique` (verbal feedback) chứ không chỉ data gốc (C11). Câu hỏi: critique sinh ra từ đâu?
+
+**Các phương án:**
+
+| Phương án | Mô tả | Đánh đổi |
+|---|---|---|
+| A. **Langfuse LLM-as-Judge tự sinh** | Judge vừa chấm score vừa xuất luôn lý do/critique; Webhook-Handler đọc critique kèm score | Tái dùng đúng bước đã có (không thêm model call); phụ thuộc chất lượng critique của Judge và schema Langfuse trả về |
+| B. **Lambda gọi Bedrock riêng** | Webhook-Handler gọi 1 Bedrock call chuyên sinh critique từ output + score | Kiểm soát prompt critique tốt hơn, tách khỏi Judge; thêm 1 model call (chi phí + latency), thêm code/role |
+| C. **Kết hợp** | Dùng critique của Judge nếu đủ chất lượng; fallback sang Bedrock call khi Judge chỉ trả score thô | Linh hoạt nhưng phức tạp nhất |
+
+**Đánh đổi:**
+- A đơn giản, rẻ, ít bộ phận chuyển động — hợp với nguyên tắc cost optimization (§12) và "tránh network hop thừa".
+- B cho critique chất lượng/định dạng ổn định hơn nhưng đắt và thêm quyền Bedrock cho Lambda Webhook-Handler (mở rộng blast radius, ngược nguyên tắc least-privilege C16).
+- C tốt nhất về chất lượng nhưng nhiều code path để test.
+
+**Khuyến nghị:** **Phương án A (Langfuse LLM-as-Judge tự sinh critique)**. Cấu hình Judge trả cả `score` lẫn `critique` (verbal feedback có cấu trúc: điểm yếu + gợi ý sửa). Giữ Lambda Webhook-Handler mỏng (chỉ đọc DynamoDB, kiểm tra retry_count, InvokeAgentRuntime kèm critique) → đúng least-privilege, ít chi phí. Chỉ nâng lên B nếu đo được critique của Judge không đủ dẫn dắt agent sửa lỗi.
+
+**Cần để chốt:** xác nhận schema output của Langfuse Judge có trường critique, và chất lượng critique đủ để agent self-correct.
+
+---
+
+## Cách cập nhật khi chốt một Open Decision
+
+1. Sửa trạng thái mục tương ứng ở **bảng B (Open)** sang bảng **A (Closed)** với ID mới (Cxx).
+2. Ghi ngày chốt + người quyết định.
+3. Nếu quyết định ảnh hưởng bản vẽ, cập nhật `docs/Architect.png` và `MEMORY.md`.
+4. `MEMORY.md` vẫn là nguồn sự thật; tài liệu này là bản trình bày mở rộng của Decision Ledger.

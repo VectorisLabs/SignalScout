@@ -6,6 +6,11 @@
 **Applies to:** Bedrock Correlator, Challenger, and evidence-discovery workflows  
 **Status:** Approved baseline policy
 
+> **Đối chiếu với kiến trúc production (MEMORY.md, 2026-07-12):**
+> - Trong kiến trúc production hiện hành, việc chọn TinyFish vs Apify được thực hiện bằng **rule / tool_use ngay trong Crawler Subagent** (MEMORY.md §4.6) — **KHÔNG** có một "Collector Router" service tách riêng như tên policy này gợi ý. AgentCore Runtime gọi provider **trực tiếp qua HTTPS**, **không** qua AgentCore Gateway/MCP (§4.3).
+> - Các phần vẫn **còn hiệu lực** và nên áp dụng: coi mọi kết quả provider là **untrusted candidate**, **sanitize bằng code** trước khi vào model (§4.5/§6), giới hạn budget/bounds, ưu tiên nguồn chính thống khi có, và audit fields.
+> - Các phần **không áp dụng** cho production hiện tại: mô tả "application-side Collector Router" như một tầng riêng, và giả định Evidence Gate/replay theo bản OpenAI POC. Nguồn sự thật: [`MEMORY.md`](../../MEMORY.md) + Decision Ledger trong [`signalscout-implementation-plan.md`](./signalscout-implementation-plan.md).
+
 ## 1. Purpose
 
 This policy controls when a Bedrock model may request direct source APIs, TinyFish, or Apify.

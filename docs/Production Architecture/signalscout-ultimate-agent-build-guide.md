@@ -1,6 +1,8 @@
 # CorpWatch Strategic Change Radar — Ultimate Agent Build Guide
 
-> **Architecture update 2026-07-12:** Bedrock/optional-live assumptions in older sections are superseded by [`corpwatch-openai-chat-implementation-plan.md`](./corpwatch-openai-chat-implementation-plan.md). The current primary agent uses OpenAI Responses API, a provider-neutral collection tool, deterministic TinyFish/Apify routing, Evidence Gate validation, Langfuse tracing/scores, and a chat-first operations dashboard. Frozen replay remains the offline fallback.
+> **Phân loại tài liệu (2026-07-12): đây là guide cho POC, KHÔNG phải kiến trúc production.** Nội dung file này (OpenAI Responses API, frozen `CasePackage`, deterministic offline replay) mô tả **POC dùng để demo** — xem thêm [`docs/POC/`](../POC/).
+>
+> **Kiến trúc production** được chốt tại [`MEMORY.md`](../../MEMORY.md) + bản vẽ [`docs/Architect.png`](../Architect.png), và Decision Ledger tại [`signalscout-implementation-plan.md`](./signalscout-implementation-plan.md): **multi-agent supervisor-worker trên Bedrock AgentCore** (Management / Crawler / Analysis), DynamoDB + S3, Langfuse-driven retry. Khi mâu thuẫn, ưu tiên `MEMORY.md`.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:subagent-driven-development` (recommended) or `superpowers:executing-plans` to implement this plan task-by-task. Every production-code change must follow `superpowers:test-driven-development`. If a test or runtime behavior is unexpected, stop and use `superpowers:systematic-debugging` before editing further.
 

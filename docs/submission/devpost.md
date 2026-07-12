@@ -16,11 +16,11 @@ SignalScout
 
 # Elevator pitch
 
-SignalScout is an evidence-first early-warning system for corporate restructuring and third-party risk.
+SignalScout is an evidence-first early-warning system for corporate restructuring and third-party risk, built as a production-ready multi-agent application on AWS.
 
-Instead of treating layoffs, executive departures, debt amendments, delayed filings, and store closures as isolated news, SignalScout connects them across time into one auditable risk story. It applies transparent, time-decayed scoring to verified evidence, uses AI to investigate the emerging pattern and challenge its own conclusions, and produces an actionable report in which every factual claim links back to its source.
+Instead of treating layoffs, executive departures, debt amendments, delayed filings, and store closures as isolated news, SignalScout connects them across time into one auditable risk story. A supervisor-worker agent system on Amazon Bedrock AgentCore collects verified public evidence, applies transparent time-decayed scoring, challenges its own conclusions, and produces an actionable report in which every factual claim links back to its source.
 
-Our MVP replays the real Bed Bath & Beyond restructuring using historical SEC filings. It shows when the system would have moved from monitoring to investigation and then to high risk—helping suppliers, procurement teams, lenders, and other counterparties act before Chapter 11 narrowed their options.
+Our showcase replays the real Bed Bath & Beyond restructuring using historical SEC filings. It shows when the system would have moved from monitoring to investigation and then to high risk—helping suppliers, procurement teams, lenders, and other counterparties act before Chapter 11 narrowed their options.
 
 # Project details
 
@@ -51,7 +51,7 @@ We built SignalScout to transform those scattered disclosures into a traceable a
 
 SignalScout converts verified public documents into structured risk signals and correlates them over time.
 
-For the MVP, the system focuses on one deeply researched historical case rather than pretending to monitor the entire market. The replay uses only evidence that was publicly available at each point in time.
+The system focuses on one deeply researched case rather than pretending to monitor the entire market at once. The replay uses only evidence that was publicly available at each point in time.
 
 ### 1. Structures raw evidence
 
@@ -129,65 +129,67 @@ Selecting a citation opens the exact source excerpt supporting that claim. The v
 
 ## How we built it
 
-SignalScout uses an evidence-first architecture with four layers.
+SignalScout is designed as a production-ready, fully serverless application on AWS. The target architecture is a multi-agent **supervisor-worker** system on **Amazon Bedrock AgentCore**, with deterministic scoring and validation kept outside the model so risk decisions remain reproducible and auditable.
 
-### Evidence layer
+### Request and hosting path
 
-We curate primary-source SEC filings and selected public disclosures for the historical case.
+```text
+Users → Route 53 → AWS Amplify (Gen 2 hosting) → Amazon API Gateway (HTTP API, Cognito auth)
+      → AWS Lambda → Bedrock AgentCore Runtime (Management / supervisor)
+```
 
-Every document is stored with its publication date, retrieval timestamp, source URL, and evidence excerpt. Historical replay queries enforce an `as-of` boundary so future evidence cannot leak into earlier dates.
+- **Amazon Route 53** for DNS; **AWS Amplify Gen 2** for CI/CD from Git, CDN, and hosting the React dashboard.
+- **Amazon Cognito** for user authentication (user pool + identity pool); **AWS WAF** to protect the frontend and API tier.
+- **Amazon API Gateway** exposes an HTTP API (lower cost than REST) plus a separate, signature-verified endpoint for partner webhooks.
+- **AWS Lambda** triggers the agent system via `InvokeAgentRuntime`, resolves AppSync queries, and handles webhooks.
 
-### Signal and scoring layer
+### Multi-agent reasoning on Bedrock AgentCore
 
-Documents are converted into a small, fixed signal taxonomy. Structured outputs are validated against a schema before being accepted.
+We use the **AWS Strands Agents SDK** running inside **Bedrock AgentCore Runtime**, following a supervisor-worker topology:
 
-A deterministic scoring engine then applies:
+- **Management (supervisor):** orchestrates the flow using a star pattern—it invokes each worker; workers never call each other directly.
+- **Crawler (worker):** calls **TinyFish** (AI web agent for IR pages and press releases) and **Apify** (scraping actors for news and SEC filings) as model tools (`tool_use`), then sanitizes and filters raw JSON in plain code before anything reaches the model.
+- **Analysis (worker):** performs theme and risk reasoning on the structured, sanitized evidence.
 
-- event-type weights;
-- confidence and source-quality adjustments;
-- temporal decay;
-- per-type deduplication;
-- cluster synergy rules;
-- investigation and high-risk thresholds.
+Design decisions that keep this safe and cost-efficient:
 
-This separation keeps the alert logic reproducible and prevents an LLM from silently changing the risk score.
+- AgentCore Runtime calls external partner APIs directly over HTTPS; we deliberately avoid an AgentCore Gateway/MCP layer that a single-agent, single-tool use case would not justify.
+- Untrusted web content is filtered in code (HTML stripping, injection-pattern detection, schema validation, truncation) before model input, which also reduces Bedrock token cost.
+- **Amazon Bedrock Guardrails** are attached to the model in the Analysis worker—the point where untrusted content enters reasoning and prompt-injection risk is highest.
+- Cross-agent handoffs use the A2A protocol (`InvokeAgentRuntime`), so control flow is traceable and workers are independently scalable and reusable.
 
-### AI reasoning layer
+### Deterministic scoring and validation
 
-AI is used offline for three bounded tasks:
+Risk decisions never depend on the model alone. A deterministic engine applies event-type weights, confidence and source-quality adjustments, temporal decay, per-type deduplication, cluster synergy rules, and investigation/high-risk thresholds. A validator then checks that the output matches the schema, every claim resolves to a real evidence ID, and replay evidence was published on or before the selected `as-of` date. Invalid reports fail closed.
 
-1. **Correlator:** explains the pattern formed by the accepted signals.
-2. **Challenger:** constructs the strongest benign interpretation and identifies weak evidence.
-3. **Assessor:** generates the final risk summary and recommended actions.
+### Self-correction loop (Reflexion)
 
-The AI receives structured evidence rather than unrestricted web content. It cannot add an unsupported source to the final report.
+- Every agent run exports traces and an **LLM-as-Judge** score to **Langfuse**.
+- On a high score, a Langfuse webhook triggers a Lambda that writes the validated result to storage for display.
+- On a low score, a Langfuse alert webhook hits the dedicated API Gateway endpoint; a Webhook-Handler Lambda reads an atomic `retry_count` from DynamoDB and, below the retry limit, re-invokes Management with a verbal `critique` on the same session so the agent corrects itself instead of repeating the mistake. Beyond the limit, the case is flagged for human review.
 
-### Validation layer
+### Storage and data access
 
-A deterministic validator checks that:
+- **Amazon DynamoDB** (On-Demand) holds metadata in two tables: `MarketThemes` (display data exposed through AppSync) and `PipelineState` (operational data such as `retry_count`, `session_id`, and `critique`, never exposed to the client).
+- **Amazon S3** (Intelligent-Tiering) stores raw evidence and results, written per attempt without overwriting, to support replay, debugging, evaluation datasets, and compliance.
+- The dashboard reads through **AWS AppSync** (Amplify Data / GraphQL) → Lambda resolver → DynamoDB → S3 **presigned URL**, so the browser downloads content directly from private S3 without ever having public access.
 
-- the output matches the report schema;
-- every referenced signal exists;
-- every claim has at least one evidence ID;
-- every evidence ID resolves to a source;
-- replay evidence was published on or before the selected date;
-- duplicate documents are not counted as independent confirmation.
+### Security, observability, and cost
 
-Invalid reports fail closed.
+- **IAM** enforces least privilege with a separate execution role per runtime and specific resource ARNs (no wildcards), limiting blast radius given LLM-generated actions.
+- **AWS Secrets Manager** stores partner API keys and the webhook signing secret; the webhook endpoint verifies an HMAC signature and timestamp instead of Cognito.
+- **Amazon CloudWatch** captures logs, metrics, and alarms; **AWS CloudTrail** provides an account-wide audit trail—both important for a wealth-management/compliance context.
+- The system is 100% serverless (Lambda, DynamoDB On-Demand, AgentCore consumption-based) with no cost while idle; AgentCore is not billed during I/O wait for LLM or partner calls.
 
-### Experience layer
+### External services
 
-A React dashboard presents:
+- **TinyFish** — AI web agent for reading investor-relations pages and press releases.
+- **Apify** — web-scraping actors for news sites and SEC filings.
+- **Langfuse** — LLM observability, tracing, LLM-as-Judge scoring, prompt management, and the webhook that drives the self-correction loop.
 
-- company status;
-- historical score progression;
-- signal timeline;
-- investigation and high-risk markers;
-- Challenger verdict;
-- recommended actions;
-- clickable evidence citations.
+### Demo reliability
 
-The replay is pre-generated for a stable presentation, while the evidence dashboard remains live and interactive.
+To keep the presentation dependable, AI analysis is run before the demo and its validated result is stored. Judges see a recorded historical replay followed by a live, interactive evidence dashboard. This preserves the substance of the system—real, verifiable evidence and traceable citations—without depending on a perfect network connection during judging.
 
 ## Challenges we ran into
 
@@ -209,9 +211,13 @@ A single corporate announcement may be repeated by dozens of news outlets. Count
 
 SignalScout deduplicates events and prevents multiple reports of the same underlying disclosure from being treated as independent confirmation.
 
+### Keeping deterministic control over an agentic system
+
+Multi-agent systems are powerful but can drift, loop, or silently change conclusions. We kept scoring, thresholds, and validation in deterministic code outside the model, bounded the self-correction loop with an atomic retry counter and human-review fallback, and required every retry to carry a critique so the agents improve rather than repeat errors.
+
 ### Keeping the demo reliable
 
-A live crawler and multi-agent workflow would introduce unpredictable latency and network failures without improving the central product demonstration.
+A live crawler and multi-agent workflow would introduce unpredictable latency and network failures during judging without improving the central product demonstration.
 
 We therefore run AI analysis before the presentation, store the validated result, and use a recorded historical replay followed by a live evidence inspection. This preserves the substance of the system without depending on a perfect network connection.
 
@@ -220,4 +226,27 @@ We therefore run AI analysis before the presentation, store the validated result
 SignalScout does not claim to predict the exact date of a bankruptcy. Its purpose is to recognize when a cluster becomes important enough for a human to investigate or reduce exposure.
 
 The dashboard therefore distinguishes an early investigation marker from a later high-risk alert and from the final known outcome.
+
+## Built with
+
+- Amazon Bedrock AgentCore (Runtime, Memory, Identity)
+- Amazon Bedrock (foundation model + Guardrails)
+- AWS Strands Agents SDK
+- AWS Lambda
+- Amazon API Gateway (HTTP API)
+- AWS AppSync
+- AWS Amplify (Gen 2 hosting)
+- Amazon Cognito
+- AWS WAF
+- Amazon Route 53
+- Amazon DynamoDB
+- Amazon S3 (Intelligent-Tiering)
+- AWS Secrets Manager
+- Amazon CloudWatch
+- AWS CloudTrail
+- AWS IAM
+- React
+- TinyFish
+- Apify
+- Langfuse
 ````
