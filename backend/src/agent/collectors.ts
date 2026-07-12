@@ -18,12 +18,23 @@ export async function executeCollector(route: CollectorRoute, request: Collectio
 
 async function tinyFishSearch(request: CollectionRequest): Promise<CollectorResult> {
   const key = requiredEnv("TINYFISH_API_KEY");
-  const query = new URLSearchParams({ query: `${request.company_identifier.legal_name} ${request.evidence_question}`, purpose: "Discover bounded public evidence candidates for CorpWatch", domain_type: "news", after_date: request.date_from, before_date: request.date_to });
+  // TinyFish Search ranks poorly on long instruction-like queries (returns 0). Keep the query
+  // concise (company + salient keywords) and carry full intent in `purpose`, per the API guide.
+  const query = new URLSearchParams({ query: buildSearchQuery(request), purpose: request.evidence_question.slice(0, 300), domain_type: "web", after_date: request.date_from, before_date: request.date_to });
   const response = await boundedFetch(`https://api.search.tinyfish.ai?${query}`, { headers: { "X-API-Key": key, Accept: "application/json" } }, 45_000);
   if (!response.ok) throw new Error(`TINYFISH_SEARCH_${response.status}`);
   const body = await response.json() as { results?: Array<Record<string, unknown>> };
   const items = (body.results ?? []).slice(0, request.max_candidates);
   return { route: "TINYFISH_SEARCH", providerRunId: null, pending: false, message: `TinyFish Search returned ${items.length} discovery candidates`, candidates: items.flatMap((item, index) => normalizeItem(item, request, "TINYFISH_SEARCH", index, true)) };
+}
+
+const QUERY_STOPWORDS = new Set(["find", "show", "search", "look", "identify", "gather", "collect", "provide", "list", "public", "evidence", "of", "the", "a", "an", "and", "or", "for", "to", "between", "involving", "related", "events", "changes", "actions", "please", "any", "about", "regarding", "with", "from", "into", "inc", "corp", "corporation", "company", "ltd", "plc"]);
+function buildSearchQuery(request: CollectionRequest): string {
+  const keywords = request.evidence_question.toLowerCase()
+    .replace(/[^a-z0-9\s&-]/g, " ").replace(/\b\d{4}\b/g, " ")
+    .split(/\s+/).filter((word) => word.length > 2 && !QUERY_STOPWORDS.has(word));
+  const top = [...new Set(keywords)].slice(0, 5).join(" ");
+  return `${request.company_identifier.legal_name} ${top}`.replace(/\s+/g, " ").trim().slice(0, 80);
 }
 
 async function tinyFishFetch(request: CollectionRequest): Promise<CollectorResult> {

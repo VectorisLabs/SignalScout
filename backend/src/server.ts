@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { ChatRequestSchema } from "./agent/contracts";
 import { getMetrics, recordRun, type RunRecord } from "./agent/audit-store";
 import { runChatAgent } from "./agent/openai-agent";
+import { buildChatVisualizations, buildOfflineChatTurn } from "./agent/build-chat-visualizations";
 import { flushLangfuse, isLangfuseConfigured } from "./agent/langfuse-runtime";
 
 const port = Number(process.env.BACKEND_PORT ?? 8787);
@@ -19,9 +20,15 @@ async function handleChat(request: IncomingMessage, response: ServerResponse) {
   const started = Date.now(); const id = randomUUID(); const startedAt = new Date().toISOString();
   try {
     const input = ChatRequestSchema.parse(await readJson(request));
+    if (!openaiConfigured()) {
+      const offline = buildOfflineChatTurn(input.message);
+      const traceId = id.replaceAll("-", "").slice(0, 32);
+      recordRun({ id, sessionId: input.sessionId, startedAt, completedAt: new Date().toISOString(), status: "SUCCESS", provider: "NONE", routingReason: "Offline evidence replay (no provider key configured)", latencyMs: Date.now() - started, candidates: offline.citations.length, approved: offline.citations.length, validationPassRate: 1, inputTokens: null, outputTokens: null, model: null, traceId, traceUrl: null, promptVersion: 0, promptSource: "offline-bundle", errorCategory: null, toolEvents: offline.toolEvents });
+      return json(response, 200, { answer: offline.answer, citations: offline.citations, run: { id, traceId, traceUrl: null, provider: "NONE", routingReason: "Offline evidence replay", promptVersion: 0, promptSource: "offline-bundle" }, toolEvents: offline.toolEvents, visualizations: offline.visualizations, mode: "offline" });
+    }
     const result = await runChatAgent(input);
     recordRun({ id, sessionId: input.sessionId, startedAt, completedAt: new Date().toISOString(), status: "SUCCESS", provider: result.provider, routingReason: result.routingReason, latencyMs: Date.now() - started, candidates: result.candidates, approved: result.approved, validationPassRate: result.validationPassRate, inputTokens: result.inputTokens, outputTokens: result.outputTokens, model: result.model, traceId: result.traceId, traceUrl: result.traceUrl, promptVersion: result.promptVersion, promptSource: result.promptSource, errorCategory: null, toolEvents: result.toolEvents });
-    return json(response, 200, { answer: result.answer, citations: result.citations, run: { id, traceId: result.traceId, traceUrl: result.traceUrl, provider: result.provider, routingReason: result.routingReason, promptVersion: result.promptVersion, promptSource: result.promptSource }, toolEvents: result.toolEvents });
+    return json(response, 200, { answer: result.answer, citations: result.citations, run: { id, traceId: result.traceId, traceUrl: result.traceUrl, provider: result.provider, routingReason: result.routingReason, promptVersion: result.promptVersion, promptSource: result.promptSource }, toolEvents: result.toolEvents, visualizations: buildChatVisualizations(input.message, { live: true, citations: result.citations }), mode: "live" });
   } catch (error) {
     const configuration = error instanceof Error && error.message === "OPENAI_CONFIGURATION_REQUIRED";
     const providerError = classifyProviderError(error);
@@ -31,7 +38,8 @@ async function handleChat(request: IncomingMessage, response: ServerResponse) {
   }
 }
 
-function health() { return { status: "ok", openaiConfigured: Boolean(process.env.OPENAI_API_KEY && process.env.OPENAI_MODEL), collectorsConfigured: { tinyfish: Boolean(process.env.TINYFISH_API_KEY), apify: Boolean(process.env.APIFY_TOKEN && process.env.APIFY_ACTOR_ID), mode: process.env.COLLECTOR_EXECUTION_MODE ?? "validate" }, langfuseConfigured: isLangfuseConfigured() }; }
+function openaiConfigured() { return Boolean(process.env.OPENAI_API_KEY && process.env.OPENAI_MODEL); }
+function health() { return { status: "ok", openaiConfigured: openaiConfigured(), collectorsConfigured: { tinyfish: Boolean(process.env.TINYFISH_API_KEY), apify: Boolean(process.env.APIFY_TOKEN && process.env.APIFY_ACTOR_ID), mode: process.env.COLLECTOR_EXECUTION_MODE ?? "validate" }, langfuseConfigured: isLangfuseConfigured() }; }
 function classifyProviderError(error: unknown) {
   const value = error as { status?: number; code?: string; error?: { code?: string; type?: string } };
   const code = value.code ?? value.error?.code;

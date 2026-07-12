@@ -13,7 +13,8 @@
   "dependencies": {
     "@corpwatch/backend": "file:../backend",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "react-router-dom": "^7.18.1"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.2",
