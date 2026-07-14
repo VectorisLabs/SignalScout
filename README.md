@@ -1,5 +1,26 @@
+<div align="center">
+
 ![Architect](docs/Architect.png)
-# SignalScout Strategic Change Radar
+
+# 🛰️ SignalScout — Strategic Change Radar
+
+> **AI-driven corporate intelligence grounded in cited evidence, temporal integrity, and deterministic scoring.**
+
+[![Runner Up](https://img.shields.io/badge/🏆_Agentic_AI_Build_Week_2026-Runner_Up_|_AWS_Track-ff9900?style=for-the-badge)](https://awsbuildweek.dev)
+
+<img src="docs/Winner.webp" alt="SignalScout team — Runner Up, AWS Track at Agentic AI Build Week 2026" width="680" />
+
+*Our team celebrating at Agentic AI Build Week 2026 🎉*
+
+</div>
+
+---
+
+### 🎊 We did it!
+
+A massive thank you to the **AWS Build Week** organizers, judges, mentors, and every teammate who poured weekends and late nights into making SignalScout a reality. Being named **Runner Up on the AWS Track** validates our vision: restructuring intelligence should be evidence-first, temporally honest, and entirely deterministic — no hallucinations, no guesswork.
+
+---
 
 SignalScout is an OpenAI chat agent that investigates public evidence of corporate restructuring, combining cited replay, metric coverage, readiness gates, and three decision postures: `MAINTAIN`, `ADAPT`, `ACCELERATE`.
 
@@ -37,15 +58,15 @@ User chat prompt
 
 ### Trust Boundaries
 
-| Boundary | Trusted Role | Untrusted Input | Control |
-|---|---|---|---|
-| Search | URL discovery | Ranking, snippets | Allowlist/denylist, dedupe |
-| Fetch | Text retrieval | Remote content | Size limits, no instruction execution |
-| Evidence | Historical facts | Unapproved excerpt | Source/evidence IDs, rights, `available_at` |
-| Metrics | Structured observations | Ambiguous labels | Deterministic parsing, ambiguity rejection |
-| LLM | Narrative draft | Hallucinated facts | JSON schema, tool allowlist, claim validator |
-| Bundle | Judged artifact | Secrets, raw pages | Fail-closed public-bundle validator |
-| UI | Explanation | Readiness misrepresentation | Render blockers, provenance |
+| Boundary | Trusted Role            | Untrusted Input             | Control                                      |
+| -------- | ----------------------- | --------------------------- | -------------------------------------------- |
+| Search   | URL discovery           | Ranking, snippets           | Allowlist/denylist, dedupe                   |
+| Fetch    | Text retrieval          | Remote content              | Size limits, no instruction execution        |
+| Evidence | Historical facts        | Unapproved excerpt          | Source/evidence IDs, rights,`available_at` |
+| Metrics  | Structured observations | Ambiguous labels            | Deterministic parsing, ambiguity rejection   |
+| LLM      | Narrative draft         | Hallucinated facts          | JSON schema, tool allowlist, claim validator |
+| Bundle   | Judged artifact         | Secrets, raw pages          | Fail-closed public-bundle validator          |
+| UI       | Explanation             | Readiness misrepresentation | Render blockers, provenance                  |
 
 ---
 
@@ -69,18 +90,18 @@ This is a decision order, not a requirement to call every preceding tool. A know
 
 ### Routing Decision Table
 
-| Condition | Selected Route | Mode |
-|---|---|---|
-| An approved cached artifact satisfies the request | Internal cache | `cache_lookup` |
-| An official API exposes the required data | Official API | `official_api` |
-| SEC filing metadata is required | SEC API | `official_api` |
-| Source URL is unknown and live-web discovery is needed | TinyFish Search | `search` |
-| 1–10 known public URLs need clean readable content | TinyFish Fetch | `fetch` |
-| Site requires adaptive browser interaction | TinyFish Agent | `interactive` |
-| More than 10 known URLs share the same extraction schema | Apify Actor | `batch` |
-| Collection is recurring or scheduled | Apify Actor | `recurring` |
-| A tested Apify Actor already implements the exact extraction | Apify Actor | `actor` |
-| No permitted route can obtain adequate evidence | No automatic collection | `human_request` |
+| Condition                                                    | Selected Route          | Mode              |
+| ------------------------------------------------------------ | ----------------------- | ----------------- |
+| An approved cached artifact satisfies the request            | Internal cache          | `cache_lookup`  |
+| An official API exposes the required data                    | Official API            | `official_api`  |
+| SEC filing metadata is required                              | SEC API                 | `official_api`  |
+| Source URL is unknown and live-web discovery is needed       | TinyFish Search         | `search`        |
+| 1–10 known public URLs need clean readable content          | TinyFish Fetch          | `fetch`         |
+| Site requires adaptive browser interaction                   | TinyFish Agent          | `interactive`   |
+| More than 10 known URLs share the same extraction schema     | Apify Actor             | `batch`         |
+| Collection is recurring or scheduled                         | Apify Actor             | `recurring`     |
+| A tested Apify Actor already implements the exact extraction | Apify Actor             | `actor`         |
+| No permitted route can obtain adequate evidence              | No automatic collection | `human_request` |
 
 ### Default Per-Review Budget
 
@@ -111,22 +132,22 @@ The application — not the model — decrements and enforces the budget.
 
 ## Metric Dictionary
 
-| Group | Metric | Unit | Requirement |
-|---|---|---|---|
-| Revenue | Revenue / Net Sales | `USD_MILLIONS` | Required |
-| Profit | Gross Profit | `USD_MILLIONS` | Required |
-| Profit | Operating Income | `USD_MILLIONS` | Required |
-| Cost | SG&A | `USD_MILLIONS` | Required |
-| Cost | Restructuring Cost | `USD_MILLIONS` | Required |
-| Liquidity | Cash and Cash Equivalents | `USD_MILLIONS` | Required |
-| Cash flow | Operating Cash Flow | `USD_MILLIONS` | Required |
-| Investment | Capital Expenditure | `USD_MILLIONS` | Required |
-| Working capital | Inventory | `USD_MILLIONS` | Required |
-| Working capital | Accounts Payable | `USD_MILLIONS` | Required |
-| Debt | Short-term Debt | `USD_MILLIONS` | Required |
-| Debt | Long-term Debt | `USD_MILLIONS` | Required |
-| Operations | Store Count | `COUNT` | Required |
-| Workforce | Employee Count | `COUNT` | Optional |
+| Group           | Metric                    | Unit             | Requirement |
+| --------------- | ------------------------- | ---------------- | ----------- |
+| Revenue         | Revenue / Net Sales       | `USD_MILLIONS` | Required    |
+| Profit          | Gross Profit              | `USD_MILLIONS` | Required    |
+| Profit          | Operating Income          | `USD_MILLIONS` | Required    |
+| Cost            | SG&A                      | `USD_MILLIONS` | Required    |
+| Cost            | Restructuring Cost        | `USD_MILLIONS` | Required    |
+| Liquidity       | Cash and Cash Equivalents | `USD_MILLIONS` | Required    |
+| Cash flow       | Operating Cash Flow       | `USD_MILLIONS` | Required    |
+| Investment      | Capital Expenditure       | `USD_MILLIONS` | Required    |
+| Working capital | Inventory                 | `USD_MILLIONS` | Required    |
+| Working capital | Accounts Payable          | `USD_MILLIONS` | Required    |
+| Debt            | Short-term Debt           | `USD_MILLIONS` | Required    |
+| Debt            | Long-term Debt            | `USD_MILLIONS` | Required    |
+| Operations      | Store Count               | `COUNT`        | Required    |
+| Workforce       | Employee Count            | `COUNT`        | Optional    |
 
 Normalize billions to millions deterministically. Do not infer currency or reporting period when the text does not make them explicit.
 
@@ -642,12 +663,12 @@ npm run typecheck
 
 ## Related Documentation
 
-| Document | Path |
-|---|---|
-| Implementation plan (OpenAI chat) | `docs/MVP/signalscout-openai-chat-implementation-plan.md` |
-| Ultimate agent build guide | `docs/TARGET/signalscout-ultimate-agent-build-guide.md` |
-| Collector routing rules | `docs/RULES/bedrock-collector-routing-rules.md` |
-| Judge-ready master proposal | `docs/proposal/signalscout-judge-ready-master-proposal.md` |
-| Demo runbook | `docs/demo/corpwatch-demo-runbook.md` |
-| Partner API guides | `docs/SKILLS/` |
-| Legacy implementation plan (Bedrock/Strands) | `docs/TARGET/signalscout-implementation-plan.md` |
+| Document                                     | Path                                                         |
+| -------------------------------------------- | ------------------------------------------------------------ |
+| Implementation plan (OpenAI chat)            | `docs/MVP/signalscout-openai-chat-implementation-plan.md`  |
+| Ultimate agent build guide                   | `docs/TARGET/signalscout-ultimate-agent-build-guide.md`    |
+| Collector routing rules                      | `docs/RULES/bedrock-collector-routing-rules.md`            |
+| Judge-ready master proposal                  | `docs/proposal/signalscout-judge-ready-master-proposal.md` |
+| Demo runbook                                 | `docs/demo/corpwatch-demo-runbook.md`                      |
+| Partner API guides                           | `docs/SKILLS/`                                             |
+| Legacy implementation plan (Bedrock/Strands) | `docs/TARGET/signalscout-implementation-plan.md`           |
