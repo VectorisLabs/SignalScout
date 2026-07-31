@@ -90,24 +90,7 @@ These are **review postures**, not autonomous decisions. SignalScout is not a ba
 
 SignalScout is a fully serverless, multi-agent **supervisor-worker** system on **Amazon Bedrock AgentCore Runtime**, built with the **AWS Strands Agents SDK**.
 
-```text
-Users
-  → Route 53 → AWS Amplify (Gen 2 hosting)
-  → Amazon API Gateway (HTTP API, Cognito auth)
-  → AWS Lambda
-  → Bedrock AgentCore Runtime - Management (supervisor)
-      ├── Crawler Subagent
-      │     → TinyFish / Apify (model tools via tool_use, sync HTTPS)
-      │     → Code-level sanitize & filter (before model)
-      │     → S3 raw storage (multi-attempt, never overwrite)
-      └── Analysis Subagent
-            → Bedrock Guardrails (mandatory - untrusted content enters reasoning)
-            → Theme + risk reasoning
-            → Langfuse trace + LLM-as-Judge score export
-  → DynamoDB (metadata + pipeline state)
-  → AppSync → Lambda resolver → presigned URL → browser
-  → React Dashboard
-```
+![Production Architecture](docs/Architect.png)
 
 ### Multi-Agent Topology
 
@@ -122,17 +105,9 @@ The Challenger deliberately uses a **different model family** (GPT vs. Claude) t
 
 ### Self-Correction Loop (Reflexion)
 
-```text
-Analysis completes → export trace + LLM-as-Judge score → Langfuse
-  ├── Score HIGH → Webhook → Lambda → write result (S3 + DynamoDB) → display on dashboard
-  └── Score LOW  → Alert webhook → API Gateway (dedicated endpoint, HMAC-verified)
-                    → Lambda Webhook-Handler
-                    → Read retry_count (DynamoDB atomic counter)
-                    → If retry_count < MAX: re-invoke Management with critique (same session)
-                    → If retry_count >= MAX: flag "needs_human_review"
-```
+When Analysis completes, the trace and an LLM-as-Judge score are exported to Langfuse. A **high score** triggers a webhook that writes the validated result to S3 + DynamoDB for display. A **low score** triggers an alert webhook to a dedicated HMAC-verified API Gateway endpoint, where a Lambda reads the atomic `retry_count` from DynamoDB - below the limit, it re-invokes Management with a verbal `critique` on the same session; above the limit, it flags the case for human review.
 
-Every retry **must** include a verbal `critique` so the agent corrects the specific failure rather than repeating it.
+Every retry **must** include a critique so the agent corrects the specific failure rather than repeating it.
 
 ### Data Flow: Write vs. Read
 
@@ -391,6 +366,23 @@ The gate is **fail-closed**: any missing field blocks the candidate. Approved ou
 - **Not a calibrated probability.** The score is an explainable composite, not a statistical forecast.
 - **Not autonomous.** It supports decisions - it does not make them.
 - **Not a real-time monitor.** It demonstrates the pattern on deeply researched historical cases.
+
+---
+
+## Architecture v2 - AWS-Native Cost Optimization
+
+![Architect v2](docs/Architect%20v2.jpeg)
+
+The second iteration moves toward a fully AWS-native tool layer to reduce cost and simplify operations at scale:
+
+| Change | Why |
+|--------|-----|
+| **AgentCore Gateway + MCP** replaces direct HTTPS calls | Centralized tool registry, unified rate-limiting, add/remove tools without agent code changes |
+| **AgentCore Memory (Short Memory)** added | Avoids re-fetching context on retries, reduces token cost in self-correction loops |
+| **AWS X-Ray** added alongside CloudWatch/CloudTrail | End-to-end distributed tracing across multi-agent A2A handoffs |
+| Analysis → Langfuse routed through **dedicated Lambda** | Clean separation of webhook handling and trace export |
+
+The core cost model stays the same: 100% serverless, zero idle cost, AgentCore not billed during I/O wait. The Gateway adds minimal latency but removes per-agent credential management and enables budget enforcement at the tool layer.
 
 ---
 
