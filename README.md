@@ -2,108 +2,225 @@
 
 ![Architect](docs/Architect.png)
 
-# 🛰️ SignalScout - Strategic Change Radar
+# SignalScout - Strategic Change Radar
 
-> **AI-driven corporate intelligence grounded in cited evidence, temporal integrity, and deterministic scoring.**
+> **An evidence-first, multi-agent early-warning system on AWS that connects scattered corporate-restructuring signals into one auditable risk story - every claim traceable to its verified source.**
 
 [![Runner Up](https://img.shields.io/badge/🏆_Agentic_AI_Build_Week_2026-Runner_Up_|_AWS_Track-ff9900?style=for-the-badge)](https://awsbuildweek.dev)
 
 <img src="docs/Winner.webp" alt="SignalScout team - Runner Up, AWS Track at Agentic AI Build Week 2026" width="680" />
 
-*Our team celebrating at Agentic AI Build Week 2026 🎉*
+*Our team celebrating at Agentic AI Build Week 2026*
 
 </div>
 
 ---
 
-### 🎊 We did it!
+### We did it!
 
-A massive thank you to the **AWS Build Week** organizers, judges, mentors, and every teammate who poured weekends and late nights into making SignalScout a reality. Being named **Runner Up on the AWS Track** validates our vision: restructuring intelligence should be evidence-first, temporally honest, and entirely deterministic - no hallucinations, no guesswork.
-
----
-
-SignalScout is an OpenAI chat agent that investigates public evidence of corporate restructuring, combining cited replay, metric coverage, readiness gates, and three decision postures: `MAINTAIN`, `ADAPT`, `ACCELERATE`.
-
-The chat flow uses the OpenAI Responses API with a single provider-neutral function tool (`collect_public_evidence`). An application-side Collector Router selects TinyFish or Apify according to policy; the Evidence Gate determines whether a candidate qualifies as approved evidence; Langfuse records traces and evaluation scores. The frozen dashboard runs offline without any provider key.
+A massive thank you to the **AWS Build Week** organizers, judges, mentors, and every teammate who poured weekends and late nights into making SignalScout a reality. Being named **Runner Up on the AWS Track** validates our vision: corporate restructuring intelligence should be evidence-first, temporally honest, deterministically scored, and fully auditable - no hallucinations, no guesswork.
 
 ---
 
-## Architecture Overview
+## The Problem
+
+Enterprise risk rarely arrives as one clear headline.
+
+A supplier may announce workforce reductions. Weeks later, it may terminate a debt exchange, file a financial report late, amend its credit agreement, or replace senior executives. Each event can have a reasonable explanation on its own. The real information lies in the **cluster** - and in how that cluster evolves over time.
+
+Today, procurement, supply-chain, sales, and risk teams monitor counterparties through manual searches, spreadsheets, news alerts, and individual analyst judgment. This process is slow, difficult to audit, and especially weak at connecting small signals spread across different documents and dates.
+
+**The 2023 collapse of Bed Bath & Beyond illustrates the problem.** Public evidence accumulated over several months - workforce reductions, a terminated debt exchange, delayed filings, credit-agreement defaults, repeated financing amendments - before the Chapter 11 filing on April 23, 2023. For a supplier extending unsecured credit, these were not merely financial-market events. They were signals to reconsider payment terms, shipment volumes, insurance coverage, and alternative distribution channels.
+
+No single signal was alarming. The cluster was.
+
+---
+
+## What SignalScout Does
+
+SignalScout converts verified public documents into structured risk signals and correlates them over time. The system focuses on one deeply researched case rather than pretending to monitor the entire market at once. The historical replay uses only evidence that was publicly available at each point in time.
+
+### 1. Structures Raw Evidence
+
+Each source document is converted into normalized events: workforce reduction, executive departure, debt/covenant event, delayed filing, guidance cut, asset sale, facility closure. Each signal carries a company identifier, event type, date, confidence, source URL, exact excerpt, and immutable evidence ID.
+
+### 2. Calculates an Explainable Risk Score
+
+A **deterministic** scoring function weights signals by type, confidence, source quality, and recency. Only the strongest event of each type contributes within a time window, preventing repeated news coverage from inflating the score. Synergy rules recognize dangerous combinations - a workforce reduction followed by a debt default, for example. The AI does not invent or override this score.
+
+### 3. Builds a Historical Replay
+
+The dashboard reconstructs what SignalScout would have known on each historical date. Future documents are excluded. As evidence accumulates, the case progresses through: `MONITORING → INVESTIGATING → HIGH RISK → OUTCOME`.
+
+### 4. Challenges Its Own Conclusion
+
+Before producing a final report, an AI **Challenger** (running on a different model family to reduce blind spots) searches for reasonable benign explanations: Was the workforce reduction a normal efficiency program? Was the financing amendment routine? The system records the strongest counterargument instead of hiding uncertainty.
+
+### 5. Produces Evidence-Backed Actions
+
+SignalScout generates persona-specific recommendations for procurement, sales, and risk teams. Every factual claim references an evidence ID. If supporting evidence is missing, the claim is rejected rather than displayed.
+
+### 6. Lets Judges Inspect the Evidence Live
+
+The historical replay is presented as a pre-recorded video for reliability. After the video, judges use the live dashboard to inspect the timeline, risk report, Challenger verdict, and recommended actions. Selecting a citation opens the exact source excerpt supporting that claim.
+
+---
+
+## Target User
+
+Primary user: a strategy, competitive-intelligence, enterprise-risk, procurement, supplier-risk, or commercial-exposure analyst preparing an executive decision review.
+
+### Job to be Done
+
+> "When a watched company begins restructuring, show me the evidence cluster, the financial and operating metrics affected, the plausible response scenarios, and what leadership should review next."
+
+### Core Decision
+
+The executive chooses one posture:
+
+- **MAINTAIN** - monitor and preserve the current plan.
+- **ADAPT** - make bounded changes to pricing, inventory, channels, footprint, supplier exposure, or operating model.
+- **ACCELERATE** - act aggressively while the competitor is distracted or structurally weakened.
+
+These are **review postures**, not autonomous decisions. SignalScout is not a bankruptcy predictor, its story index is not a calibrated probability, and its scenarios are decision support rather than certified forecasts.
+
+---
+
+## Production Architecture
+
+SignalScout is a fully serverless, multi-agent **supervisor-worker** system on **Amazon Bedrock AgentCore Runtime**, built with the **AWS Strands Agents SDK**.
 
 ```text
-User chat prompt
-  → OpenAI Responses API (single tool: collect_public_evidence)
-  → Application Collector Router (policy-based provider selection)
-      → Approved cache
-      → Official structured API (SEC EDGAR)
-      → TinyFish Search / Fetch / Agent
-      → Apify Actor (batch/recurring)
-  → Private raw artifact storage
-  → Evidence Gate (fail-closed validation)
-  → Curator approval
-  → Deterministic metric extraction + pattern engine
-  → CasePackage (canonical state)
-  → Sanitized public bundle
-  → Offline Executive Dashboard
+Users
+  → Route 53 → AWS Amplify (Gen 2 hosting)
+  → Amazon API Gateway (HTTP API, Cognito auth)
+  → AWS Lambda
+  → Bedrock AgentCore Runtime - Management (supervisor)
+      ├── Crawler Subagent
+      │     → TinyFish / Apify (model tools via tool_use, sync HTTPS)
+      │     → Code-level sanitize & filter (before model)
+      │     → S3 raw storage (multi-attempt, never overwrite)
+      └── Analysis Subagent
+            → Bedrock Guardrails (mandatory - untrusted content enters reasoning)
+            → Theme + risk reasoning
+            → Langfuse trace + LLM-as-Judge score export
+  → DynamoDB (metadata + pipeline state)
+  → AppSync → Lambda resolver → presigned URL → browser
+  → React Dashboard
 ```
 
-### Design Principles
+### Multi-Agent Topology
 
-1. **Canonical state rule:** `CasePackage` is the only canonical object. Provider responses, raw fetched text, traces, and receipts are inputs or audit artifacts.
-2. **Deterministic authority:** Code - not AI - owns score, stage, readiness, and blocking reasons.
-3. **Temporal integrity:** An evidence item is visible only when `publicly_available_at <= as_of`.
-4. **Claim integrity:** Every factual claim references one or more approved evidence IDs.
-5. **Offline reliability:** Provider failure never breaks the primary dashboard.
-6. **Provider neutrality:** The model does not know which provider is selected. The Router decides based on policy.
+| Agent | Role | Model | Tools |
+|-------|------|-------|-------|
+| **Management** (supervisor) | Orchestrates using a star pattern - invokes each worker sequentially; workers never call each other | Claude Sonnet (Bedrock) | InvokeAgentRuntime (A2A protocol) |
+| **Crawler** (worker) | Collects evidence, applies rule-based tool selection, sanitizes raw JSON in plain code before anything reaches the model | Claude Sonnet (Bedrock) | TinyFish Search/Fetch/Agent, Apify Actors |
+| **Analysis** (worker) | Performs theme correlation and risk reasoning on clean, structured evidence | Claude Sonnet (Bedrock) + Guardrails | None - receives data via payload |
+| **Challenger** | Searches for benign explanations, weakens or supports the hypothesis | GPT (OpenAI, cross-model) | None - evidence pack only |
 
-### Trust Boundaries
+The Challenger deliberately uses a **different model family** (GPT vs. Claude) to reduce correlated blind spots. An alert fires only when `risk_score >= T_alert` **and** the Challenger does not weaken the hypothesis.
 
-| Boundary | Trusted Role            | Untrusted Input             | Control                                      |
-| -------- | ----------------------- | --------------------------- | -------------------------------------------- |
-| Search   | URL discovery           | Ranking, snippets           | Allowlist/denylist, dedupe                   |
-| Fetch    | Text retrieval          | Remote content              | Size limits, no instruction execution        |
-| Evidence | Historical facts        | Unapproved excerpt          | Source/evidence IDs, rights,`available_at` |
-| Metrics  | Structured observations | Ambiguous labels            | Deterministic parsing, ambiguity rejection   |
-| LLM      | Narrative draft         | Hallucinated facts          | JSON schema, tool allowlist, claim validator |
-| Bundle   | Judged artifact         | Secrets, raw pages          | Fail-closed public-bundle validator          |
-| UI       | Explanation             | Readiness misrepresentation | Render blockers, provenance                  |
+### Self-Correction Loop (Reflexion)
+
+```text
+Analysis completes → export trace + LLM-as-Judge score → Langfuse
+  ├── Score HIGH → Webhook → Lambda → write result (S3 + DynamoDB) → display on dashboard
+  └── Score LOW  → Alert webhook → API Gateway (dedicated endpoint, HMAC-verified)
+                    → Lambda Webhook-Handler
+                    → Read retry_count (DynamoDB atomic counter)
+                    → If retry_count < MAX: re-invoke Management with critique (same session)
+                    → If retry_count >= MAX: flag "needs_human_review"
+```
+
+Every retry **must** include a verbal `critique` so the agent corrects the specific failure rather than repeating it.
+
+### Data Flow: Write vs. Read
+
+| Phase | Flow | Rationale |
+|-------|------|-----------|
+| **Write** (pipeline completes) | S3 first → DynamoDB second | Avoid DynamoDB pointing to a file that doesn't exist yet |
+| **Read** (user opens dashboard) | DynamoDB first → S3 second (presigned URL) | Need the S3 key before generating a download URL |
+
+These are two separate lifecycles - never chained into one.
+
+---
+
+## Deterministic Signal Scoring
+
+The scoring engine is **pure code** - no model involvement.
+
+### Event Taxonomy (7 types, fixed during build)
+
+| Event Type | Weight | Magnitude Examples |
+|-----------|--------|-------------------|
+| `debt_event` | 0.30 | going-concern → 1.0, downgrade/covenant → 0.8, refinancing → 0.5 |
+| `exec_departure` | 0.25 | CEO/CFO → 0.9, COO/CTO → 0.7, VP/board → 0.4 |
+| `layoff` | 0.22 | >8% workforce → 0.9, 3-8% → 0.6, <3% → 0.3 |
+| `guidance_cut` | 0.20 | Suspend dividend → 0.9, lower guidance → 0.6, cut capex → 0.5 |
+| `asset_sale` | 0.18 | Strategic BU → 0.8, other → 0.5 |
+| `facility_closure` | 0.12 | Multiple → 0.7, single → 0.3 |
+| `hiring_freeze` | 0.10 | Company-wide → 0.6, single unit → 0.3 |
+
+### Scoring Formula
+
+```
+base(company, t) = Sum [ w(event_type) x magnitude x exp(-days_since / 30) ]
+                   (only strongest signal per event_type in 90-day window)
+
+score = min(1.0, base + synergy_bonus)
+```
+
+**Synergy bonuses** (when both types co-occur in the window):
+
+| Combination | Bonus |
+|-------------|-------|
+| layoff + debt_event | +0.15 |
+| exec_departure(CFO) + debt_event | +0.15 |
+| layoff + exec_departure | +0.10 |
+| asset_sale + debt_event | +0.10 |
+| 4+ different event types | +0.15 |
+
+**Thresholds:**
+
+- `T_investigate = 0.55` - triggers the multi-agent reasoning graph.
+- `T_alert = 0.75` - eligible for alert (requires Challenger not weakening).
+
+### Why Deterministic?
+
+- Reproducible: same inputs always produce the same score.
+- Auditable: analysts can trace exactly why a score changed.
+- Tunable: weights live in configuration, not in model behavior.
+- Safe: the AI drafts explanations, but code decides whether those explanations are admissible.
 
 ---
 
 ## Collector Routing Policy
 
-Policy ID: `COLLECTOR-ROUTER-v1` · Version: `1.0.0`
+TinyFish and Apify are invoked as **model tools** within the Crawler Subagent. Selection follows rules in code - there is no separate "Collector Router" service.
 
 ### Priority Order
 
 ```text
 1. Approved internal cache
 2. Official structured API (SEC EDGAR)
-3. TinyFish Search
-4. TinyFish Fetch
-5. TinyFish Agent
-6. Apify Actor
-7. Human evidence request
+3. TinyFish Search (URL unknown, need discovery)
+4. TinyFish Fetch (1-10 known URLs, need clean content)
+5. TinyFish Agent (requires adaptive browser interaction)
+6. Apify Actor (batch >10 URLs, recurring, tested actor exists)
+7. Human evidence request (no permitted route)
 ```
 
-This is a decision order, not a requirement to call every preceding tool. A known recurring batch job routes directly to Apify. A known URL routes directly to TinyFish Fetch after cache and official-API checks.
+### Non-Negotiable Rules
 
-### Routing Decision Table
+1. Prefer official structured APIs over every crawler.
+2. Treat every TinyFish/Apify result as `UNTRUSTED_SOURCE_CANDIDATE`.
+3. A candidate becomes evidence only after the Evidence Gate approves it.
+4. Never expose API keys, credentials, or private URLs to model, UI, or logs.
+5. Never send raw collector output into scoring or factual conclusions.
+6. Stop when the evidence request is satisfied or budget is exhausted.
+7. Do not call a more expensive tool when a cheaper one suffices.
 
-| Condition                                                    | Selected Route          | Mode              |
-| ------------------------------------------------------------ | ----------------------- | ----------------- |
-| An approved cached artifact satisfies the request            | Internal cache          | `cache_lookup`  |
-| An official API exposes the required data                    | Official API            | `official_api`  |
-| SEC filing metadata is required                              | SEC API                 | `official_api`  |
-| Source URL is unknown and live-web discovery is needed       | TinyFish Search         | `search`        |
-| 1-10 known public URLs need clean readable content          | TinyFish Fetch          | `fetch`         |
-| Site requires adaptive browser interaction                   | TinyFish Agent          | `interactive`   |
-| More than 10 known URLs share the same extraction schema     | Apify Actor             | `batch`         |
-| Collection is recurring or scheduled                         | Apify Actor             | `recurring`     |
-| A tested Apify Actor already implements the exact extraction | Apify Actor             | `actor`         |
-| No permitted route can obtain adequate evidence              | No automatic collection | `human_request` |
-
-### Default Per-Review Budget
+### Per-Review Budget (application-enforced)
 
 ```json
 {
@@ -117,558 +234,184 @@ This is a decision order, not a requirement to call every preceding tool. A know
 }
 ```
 
-The application - not the model - decrements and enforces the budget.
-
-### Non-Negotiable Rules
-
-- Prefer an official structured API over every crawler or browser tool.
-- Treat every Apify and TinyFish result as `UNTRUSTED_SOURCE_CANDIDATE`.
-- A candidate becomes usable evidence only after the Evidence Gate approves it.
-- Never expose API keys, credentials, or private URLs to the model, UI, logs, or stored evidence.
-- Stop collection when the evidence request is satisfied or the tool budget is exhausted.
-- Do not call a more expensive tool when a cheaper deterministic tool can satisfy the request.
-
----
-
-## Metric Dictionary
-
-| Group           | Metric                    | Unit             | Requirement |
-| --------------- | ------------------------- | ---------------- | ----------- |
-| Revenue         | Revenue / Net Sales       | `USD_MILLIONS` | Required    |
-| Profit          | Gross Profit              | `USD_MILLIONS` | Required    |
-| Profit          | Operating Income          | `USD_MILLIONS` | Required    |
-| Cost            | SG&A                      | `USD_MILLIONS` | Required    |
-| Cost            | Restructuring Cost        | `USD_MILLIONS` | Required    |
-| Liquidity       | Cash and Cash Equivalents | `USD_MILLIONS` | Required    |
-| Cash flow       | Operating Cash Flow       | `USD_MILLIONS` | Required    |
-| Investment      | Capital Expenditure       | `USD_MILLIONS` | Required    |
-| Working capital | Inventory                 | `USD_MILLIONS` | Required    |
-| Working capital | Accounts Payable          | `USD_MILLIONS` | Required    |
-| Debt            | Short-term Debt           | `USD_MILLIONS` | Required    |
-| Debt            | Long-term Debt            | `USD_MILLIONS` | Required    |
-| Operations      | Store Count               | `COUNT`        | Required    |
-| Workforce       | Employee Count            | `COUNT`        | Optional    |
-
-Normalize billions to millions deterministically. Do not infer currency or reporting period when the text does not make them explicit.
-
-### Readiness Sections
-
-Each section is `BLOCKED_BY_MISSING_METRICS` when required coverage is missing:
-
-- `RESTRUCTURING_SCENARIOS`
-- `COST_BENEFIT_RISK`
-- `REVENUE_CASH_FLOW_OPERATING_IMPACT`
-- `EXECUTIVE_DASHBOARD`
-- `DECISION_REPORT`
-
----
-
-## Project Structure
-
-```text
-backend/
-├── src/contracts/       Canonical CasePackage and Zod schemas
-├── src/agent/           OpenAI loop, Collector Router, Evidence Gate, audit metrics
-├── src/metrics/         Deterministic metric extraction
-├── src/report/          Metric coverage and readiness gates
-├── src/partners/        URL, SSRF, cost, and payload safety contracts
-├── src/server.ts        Chat, metrics, and health HTTP API
-├── scripts/             Case builder, bundle validator, partner preflight
-└── tests/               Backend unit and adversarial tests
-
-frontend/
-├── src/app/             Chatbox, Agent Operations, and Executive Dashboard
-├── public/demo/         Frozen validated CasePackage
-└── src/app/App.test.tsx Frontend journey and temporal tests
-
-docs/
-├── demo/                Demo runbook and task receipts
-├── design/              Figma redesign prompt and HTML prototype
-├── MVP/                 Dataset research and implementation plan
-├── proposal/            Judge-ready master proposal
-├── RULES/               Collector routing rules
-├── SKILLS/              Partner API guides (Apify, Langfuse, TinyFish)
-└── TARGET/              Architecture plans and build guides
-```
-
-All commands in this README are run from the repository root.
-
----
-
-## Requirements
-
-- Node.js 22 or later.
-- npm 10 or later.
-
-Verify your environment:
-
-```bash
-node --version
-npm --version
-```
-
-## Installation
-
-```bash
-npm install
-```
-
-The repository uses npm workspaces. The command above installs dependencies for both `backend` and `frontend`.
-
----
-
-## Quick Test Flow
-
-Run all automated gates:
-
-```bash
-npm test
-npm run typecheck
-npm run build
-npm run validate:public-bundle
-```
-
-Expected results:
-
-- Backend: 33 tests pass.
-- Frontend: 5 tests pass.
-- TypeScript typecheck passes for both workspaces.
-- Case bundle is generated at `frontend/public/demo/case-package.json`.
-- Validator prints JSON with `"status":"VALID"`.
-- Vite production build completes in `frontend/dist/`.
-
----
-
-## Detailed Test Flow
-
-### 1. Backend Unit Tests
-
-```bash
-npm --workspace @SignalScout/backend test
-```
-
-Backend tests cover:
-
-- Full metric dictionary extraction preserving `sourceId`/`evidenceId`.
-- Normalization of `$7.1 billion` to `7100 USD_MILLIONS`.
-- Rejection of financial values missing currency or scale.
-- Employee count is optional.
-- Two builds from the same input produce identical output.
-- Replay does not contain future evidence.
-- Validator rejects secrets, dangling references, false readiness, and unsafe URLs.
-- Partner safety rejects private IPs, metadata endpoints, IPv6 loopback, and oversized payloads.
-- Collector Router selects official API, TinyFish Search/Fetch, or Apify according to policy.
-- Evidence Gate keeps candidates pending until curator approval.
-
-Run a single suite:
-
-```bash
-npm --workspace @SignalScout/backend exec vitest run tests/metrics/extract-metric-observations.test.ts
-npm --workspace @SignalScout/backend exec vitest run tests/scripts/validate-public-bundle.test.ts
-```
-
-### 2. Frontend Journey Tests
-
-```bash
-npm --workspace @SignalScout/frontend test
-```
-
-Frontend tests verify:
-
-- Dashboard successfully loads the frozen bundle.
-- Replay, radar, metric lens, scenarios, and executive agenda sections render.
-- Future outcomes are not exposed when selecting an earlier replay frame.
-- Decision sections are blocked when required metrics are missing.
-- Bundle load failure displays recovery instructions.
-- Chatbox and Agent Operations metrics/charts render correctly.
-
-### 3. OpenAI Chat and Collector Test Flow
-
-Copy `.env.example` to `.env` and fill in the required variables:
-
-```dotenv
-OPENAI_API_KEY=
-OPENAI_MODEL=
-COLLECTOR_EXECUTION_MODE=validate
-TINYFISH_API_KEY=
-APIFY_TOKEN=
-APIFY_ACTOR_ID=
-LANGFUSE_PUBLIC_KEY=
-LANGFUSE_SECRET_KEY=
-LANGFUSE_BASE_URL=https://cloud.langfuse.com
-```
-
-`COLLECTOR_EXECUTION_MODE=validate` is the safe default: OpenAI can request tools, the router still selects a route and writes the audit log, but no paid collector is called.
-
-Start both backend and frontend:
-
-```bash
-npm run dev
-```
-
-Endpoints:
-
-```text
-Frontend:       http://127.0.0.1:5173/
-Backend health: http://127.0.0.1:8787/api/health
-Agent metrics:  http://127.0.0.1:8787/api/metrics
-Chat API:       POST http://127.0.0.1:8787/api/chat
-```
-
-Sample chat request:
-
-```json
-{
-  "sessionId": "demo-session-001",
-  "message": "Find public restructuring evidence for Example Retail between January and July 2026"
-}
-```
-
-UI verification:
-
-1. Send a prompt that does not require web collection and confirm the assistant responds without creating a collector route.
-2. Send a discovery prompt and check the Tool execution log.
-3. Confirm the model only calls `collect_public_evidence`; the provider is selected in the backend.
-4. With a known URL, the route must be `TINYFISH_FETCH`.
-5. With batch/recurring or more than 10 URLs, the route must be `APIFY_ASYNC`.
-6. Candidates without curator approval must not appear as approved citations.
-
-Focused routing/gate tests:
-
-```bash
-npm --workspace @SignalScout/backend exec vitest run tests/agent/router.test.ts
-npm --workspace @SignalScout/backend exec vitest run tests/agent/evidence-gate.test.ts
-```
-
-### 4. Langfuse Observability
-
-The Evidence Gate runs synchronously in the application and fails closed. Langfuse does not replace the validator; Langfuse receives:
-
-- Trace `SignalScout-chat-turn`.
-- OpenAI generation.
-- Collector route/tool execution.
-- Boolean scores for schema, public URL, replay time, content, rights, and overall gate.
-- Token, model, and latency metadata when the provider responds.
-
-When Langfuse is not configured, chat and the Evidence Gate still function. When configured, verify the Langfuse project:
-
-1. A trace exists for every chat turn.
-2. The OpenAI call appears within the corresponding trace/session.
-3. Evidence Gate scores are attached to the trace.
-4. No API key, Authorization header, or full raw page appears in traces.
-5. The local dashboard displays run logs, route distribution, validation rate, latency, and token totals.
-
-The core AI also reads the text prompt `SignalScout/chat-agent` with label `production`. Prompt retrieval uses a short timeout, 60-second cache, and the reviewed local developer prompt as fallback. The Operations run log shows `promptSource`, `promptVersion`, and a Langfuse trace link so a prompt rollout can be audited without making Langfuse a runtime dependency.
-
-**Recommended prompt release workflow:**
-
-1. Create a new `SignalScout/chat-agent` version in Langfuse without the `production` label.
-2. Run the routing/Evidence Gate dataset and compare scores against the current version.
-3. Have a human review tool behavior, citation boundaries, and replay integrity.
-4. Move the `production` label only after the eval gate passes.
-5. Roll back by moving the label to the previous version; no code deployment is required.
-
-### 5. Typecheck
-
-```bash
-npm run typecheck
-```
-
-This typechecks backend and frontend sequentially, including contract imports from `@SignalScout/backend/contracts`.
-
-### 6. Generate Frozen Case
-
-```bash
-npm run build:case
-```
-
-Output:
-
-```text
-frontend/public/demo/case-package.json
-```
-
-Do not edit this JSON file by hand. Modify fixtures or the builder in the backend, then regenerate.
-
-Verify determinism with PowerShell:
-
-```powershell
-npm run build:case
-$first = (Get-FileHash frontend\public\demo\case-package.json -Algorithm SHA256).Hash
-npm run build:case
-$second = (Get-FileHash frontend\public\demo\case-package.json -Algorithm SHA256).Hash
-$first -eq $second
-```
-
-The result must be `True`.
-
-### 7. Validate Public Bundle
-
-```bash
-npm run validate:public-bundle
-```
-
-Success output:
-
-```json
-{"status":"VALID","caseId":"bbb-retrospective-v1","sources":2,"evidence":4}
-```
-
-The validator fails closed on:
-
-- Invalid schema.
-- Evidence/source ID that does not exist.
-- Metric provenance mismatch.
-- Future evidence in a replay frame.
-- Claim without approved evidence.
-- Section declared `READY` while required metrics are missing.
-- Secret or authorization-like content.
-- Private/internal source URL.
-- Evidence violating rights policy.
-- Raw excerpt exceeding the public-safe limit.
-
-Run negative-case tests automatically:
-
-```bash
-npm --workspace @SignalScout/backend exec vitest run tests/scripts/validate-public-bundle.test.ts
-```
-
-### 8. Partner Validate-Only Preflight
-
-```powershell
-$env:PARTNER_EXECUTION_MODE = "validate"
-npm run preflight:partners
-```
-
-Expected:
-
-```json
-{
-  "mode": "validate",
-  "networkCalls": 0,
-  "status": "LOCAL_CONTRACTS_VALIDATED",
-  "partners": ["Apify", "Langfuse", "TinyFish"],
-  "liveReceipt": false
-}
-```
-
-This flow only validates request bounds and safety contracts. It makes no API calls, costs no credits, and does not prove live partner usage.
-
 ---
 
 ## Evidence Gate
 
-Before a candidate is supplied to the Correlator, Challenger, Scenario Composer, pattern scoring, or the public UI, the Evidence Gate verifies:
+Before any candidate enters scoring, reasoning, or the public UI, the Evidence Gate verifies:
 
-- Legal entity and CIK.
-- Canonical source URL and accession (where applicable).
-- Public `available_at` from authoritative metadata.
-- `available_at <= replay_as_of`.
-- Excerpt-to-observation support.
-- Frozen artifact and SHA-256 hash.
-- Duplicate source bundle identity.
-- Permitted source type and signal taxonomy.
-- Rights status for stored and displayed content.
-- Absence of later outcome leakage.
-- Curator approval.
+- Legal entity and CIK
+- Canonical source URL and accession (where applicable)
+- Public `available_at` from authoritative metadata
+- `available_at <= replay_as_of` (temporal integrity)
+- Excerpt-to-observation support
+- Frozen artifact and SHA-256 hash
+- Duplicate source bundle identity
+- Permitted source type and signal taxonomy
+- Rights status for stored and displayed content
+- Absence of later outcome leakage
+- Curator approval
 
-Approved output contains stable `evidence_id` values. AI factual claims must cite those IDs, not candidate IDs.
-
----
-
-## Collector Tool Contract
-
-A single provider-neutral tool is exposed to OpenAI:
-
-```json
-{
-  "name": "collect_public_evidence",
-  "description": "Request bounded collection of public evidence candidates. The application selects the provider and enforces policy.",
-  "inputSchema": {
-    "type": "object",
-    "required": ["request_id", "company_identifier", "evidence_question", "source_types", "date_from", "date_to", "replay_as_of", "mode", "max_candidates"],
-    "properties": {
-      "request_id": { "type": "string" },
-      "company_identifier": {
-        "type": "object",
-        "properties": {
-          "legal_name": { "type": "string" },
-          "cik": { "type": ["string", "null"] },
-          "ticker": { "type": ["string", "null"] }
-        }
-      },
-      "evidence_question": { "type": "string", "minLength": 10, "maxLength": 500 },
-      "source_types": {
-        "type": "array",
-        "items": { "enum": ["SEC_8_K", "SEC_10_Q", "SEC_10_K", "SEC_EXHIBIT", "CORPORATE_RELEASE", "REGULATOR", "COURT", "NEWS_DISCOVERY_ONLY"] }
-      },
-      "known_urls": { "type": "array", "items": { "type": "string", "format": "uri" }, "maxItems": 1000 },
-      "date_from": { "type": "string", "format": "date" },
-      "date_to": { "type": "string", "format": "date" },
-      "replay_as_of": { "type": "string", "format": "date-time" },
-      "mode": { "enum": ["discovery", "fetch_known_urls", "interactive_navigation", "batch", "recurring"] },
-      "preferred_domains": { "type": "array", "items": { "type": "string" } },
-      "max_candidates": { "type": "integer", "minimum": 1, "maximum": 20 },
-      "reason": { "type": "string", "maxLength": 300 }
-    }
-  }
-}
-```
-
-The model does not select a provider name. Provider selection belongs to the Collector Router so that routing remains deterministic and can change without modifying model prompts.
+The gate is **fail-closed**: any missing field blocks the candidate. Approved output carries stable `evidence_id` values. AI claims must cite those IDs, not candidate IDs.
 
 ---
 
-## Running Locally
+## Trust Boundaries and Safety
 
-Development mode starts both backend and frontend concurrently:
+| Boundary | Trusted Role | Untrusted Input | Control |
+|----------|-------------|----------------|---------|
+| Search | URL discovery | Ranking, snippets | Allowlist/denylist, dedupe |
+| Fetch | Text retrieval | Remote content, injection | Size limits, content-type checks, no instruction execution |
+| Evidence | Historical facts | Unapproved excerpt | Source/evidence IDs, rights, `available_at` |
+| Metrics | Structured observations | Ambiguous labels | Deterministic parsing, ambiguity rejection |
+| LLM | Narrative draft | Hallucinated facts | JSON schema, tool allowlist, claim validator |
+| Bundle | Judged artifact | Secrets, raw pages | Fail-closed validator |
+| UI | Explanation | Readiness misrepresentation | Render blockers, provenance |
 
-```bash
-npm run dev
-```
+### Guardrails Placement
 
-Open:
-
-```text
-http://127.0.0.1:5173/
-```
-
-Production preview:
-
-```bash
-npm run build
-npm run preview
-```
-
----
-
-## Manual Dashboard Test Flow
-
-### Replay and Temporal Integrity
-
-1. Open the dashboard and confirm the `Offline replay` label.
-2. Select the frame date `Apr 21, 2021`.
-3. Confirm the 2023 outcome does not appear in the timeline or pattern radar.
-4. Select the frame `Apr 24, 2023`.
-5. Confirm the outcome evidence now appears.
-6. Open an approved source link and verify it corresponds to the evidence ID.
-
-### Metric Lens
-
-1. Find the metric `Revenue / net sales`.
-2. Confirm the displayed value is `7,100 USD millions` with period `FY2020`.
-3. Confirm each metric has an evidence link.
-4. Confirm status is not conveyed by color alone.
-
-### Decision Journey
-
-1. Verify all three scenarios `MAINTAIN`, `ADAPT`, `ACCELERATE` are present.
-2. Verify each scenario has Cost, Benefit, Risk, and impact.
-3. Confirm the recommendation is a review posture, not a definitive forecast.
-4. Check challenger questions and limitations.
-5. Confirm Northstar Home Retail is always marked as fictional.
-
-### Responsive and Accessibility
-
-Test at approximate viewports:
-
-- Mobile: 360 px.
-- Tablet: 768 px.
-- Desktop: 1280 px and above.
-
-At each viewport:
-
-1. No horizontal overflow outside the metric table container.
-2. Long evidence titles wrap normally.
-3. Navigation works via `Tab`.
-4. Focus indicators are visible.
-5. The `As-of date` select, source links, and internal evidence links are keyboard-accessible.
+| Runtime | Guardrails? | Rationale |
+|---------|-------------|-----------|
+| Management | Conditional | Only if supervisor uses model reasoning to route (not just if/else) |
+| Crawler | Typically no | Code-level sanitize handles it; model doesn't reason on raw content |
+| **Analysis** | **Mandatory** | Untrusted web content enters model reasoning - highest injection risk |
 
 ---
 
-## Full Freeze Checklist
+## AWS Technology Stack
 
-Before recording video or submitting:
+| Service | Role |
+|---------|------|
+| Amazon Route 53 | DNS |
+| AWS Amplify Gen 2 | CI/CD from Git, CDN, React dashboard hosting |
+| Amazon Cognito | User authentication (user pool + identity pool) |
+| AWS WAF | Frontend and API protection |
+| Amazon API Gateway (HTTP API) | User-facing endpoint + dedicated webhook endpoint |
+| AWS Lambda | Trigger AgentCore, AppSync resolver, webhook handler |
+| AWS AppSync | GraphQL API (Amplify Data) |
+| Amazon Bedrock AgentCore Runtime | Host Strands Agents (Management, Crawler, Analysis) |
+| Amazon Bedrock + Guardrails | Foundation model + safety filter |
+| Amazon DynamoDB (On-Demand) | Two tables: `MarketThemes` (display) + `PipelineState` (operational) |
+| Amazon S3 (Intelligent-Tiering) | Raw evidence + results, per-attempt without overwrite |
+| AWS Secrets Manager | Partner API keys + webhook signing secret |
+| Amazon CloudWatch | Logs, metrics, alarms |
+| AWS CloudTrail | Account-wide audit trail (compliance) |
+| AWS IAM | Least-privilege, one role per Runtime, specific ARNs, no wildcards |
 
-```bash
-npm test
-npm run typecheck
-npm run build
-npm run validate:public-bundle
-```
+### External Services
 
-Then verify manually:
+| Service | Role |
+|---------|------|
+| **TinyFish** | AI web agent - reads investor-relations pages, press releases, structured navigation |
+| **Apify** | Web scraping actors - news sites, SEC filings, batch/recurring collection |
+| **Langfuse** | LLM observability, tracing, LLM-as-Judge scoring, prompt management, self-correction webhook |
+| **OpenAI** | Challenger agent (GPT) - cross-model bias reduction |
 
-- Frozen bundle is deterministic.
-- Dashboard runs without any provider key.
-- No `.env`, API key, raw page, or receipt exists in public assets.
-- Every factual claim has an evidence link.
-- Known outcomes do not leak into earlier replay frames.
-- Missing metrics are not presented as `READY`.
-- Demo rehearsal completes under three minutes twice consecutively.
+---
 
-The full demo script is at `docs/demo/corpwatch-demo-runbook.md`.
+## Key Architectural Decisions
+
+| # | Decision | Rationale |
+|---|----------|-----------|
+| 1 | Multi-agent supervisor-worker (star pattern) | Centralized quality control, traceable handoffs, independent worker scaling and reuse |
+| 2 | No Lambda-calls-Lambda, no Runtime-calls-Runtime directly | Decouple via supervisor/S3; avoid double billing and tight coupling |
+| 3 | AgentCore Runtime calls partners directly via HTTPS | No Gateway/MCP needed for single-agent single-tool (avoids over-engineering) |
+| 4 | TinyFish/Apify as tool_use within Crawler | Model decides when to collect; selection rule stays in code |
+| 5 | Filter/sanitize in plain code before model | Saves tokens, prevents injection, cheaper than model processing |
+| 6 | S3 Intelligent-Tiering, multi-attempt never-overwrite | Unpredictable access pattern; history for replay, debug, compliance |
+| 7 | DynamoDB atomic counter for retry_count | Prevents race conditions on concurrent retries |
+| 8 | Two DynamoDB tables (display + operational) | Security: internal pipeline data never exposed to client |
+| 9 | Guardrails mandatory at Analysis | Where untrusted web content enters model reasoning |
+| 10 | Cross-model Challenger (GPT vs Claude) | Reduces correlated blind spots in hypothesis assessment |
+| 11 | 100% serverless, consumption-based | No cost when idle; AgentCore not billed during I/O wait |
+| 12 | Webhook endpoint separate from user-facing API | Langfuse doesn't support JWT; verify HMAC signature instead |
+
+---
+
+## Cost Optimization
+
+- 100% serverless - zero cost when idle.
+- API Gateway HTTP API (~70% cheaper than REST API).
+- Bedrock On-Demand pricing (per token, no Provisioned Throughput).
+- AgentCore not billed during I/O wait (waiting for LLM or partner responses).
+- S3 Intelligent-Tiering auto-optimizes tier without retrieval fees.
+- Code-level filtering before model input reduces Bedrock token consumption.
+- DynamoDB On-Demand (pay per request).
+- Cognito free tier (50,000 MAU).
+- Event-driven architecture avoids polling.
+
+---
+
+## Backtest Validation
+
+### Case A - Bed Bath & Beyond 2023
+
+| Period | Event | Type |
+|--------|-------|------|
+| Aug 2022 | Workforce reductions, lower capex, store closures | layoff, guidance_cut, facility_closure |
+| Jan 2023 | Debt exchange terminated, reporting delayed | debt_event |
+| Feb-Mar 2023 | Credit-agreement defaults, lender waivers | debt_event |
+| Mar-Apr 2023 | Repeated financing amendments | debt_event |
+| Apr 23, 2023 | **Chapter 11** (ground truth) | - |
+
+**Expected:** Score exceeds `T_alert` months before the Chapter 11 filing, giving suppliers and partners meaningful lead time.
+
+### Case B - Intel 2024
+
+| Period | Event | Type |
+|--------|-------|------|
+| Aug 1, 2024 | Layoff ~15% (~15k people) | layoff (mag 0.9) |
+| Aug 1, 2024 | Suspend dividend from Q4 | guidance_cut (mag 0.9) |
+| Aug 2024 | Cut capex >$10B plan 2025 | guidance_cut |
+| Sep-Dec 2024 | Asset sale/spin-off talks (Altera) | asset_sale |
+| Dec 2024 | CEO Gelsinger departs | exec_departure (mag 0.9) |
+
+**Expected:** Alert immediately in Aug 2024 due to synergy (layoff + guidance_cut same day).
 
 ---
 
 ## Business Invariants
 
 1. **Temporal integrity:** An evidence item is visible only when `publicly_available_at <= as_of`.
-2. **Outcome isolation:** The known bankruptcy outcome may appear only after its public date and cannot influence earlier frames.
+2. **Outcome isolation:** Known outcomes appear only after their public date and cannot influence earlier frames.
 3. **Claim integrity:** Every factual claim references one or more approved evidence IDs.
-4. **Source integrity:** Every evidence/metric source ID exists in the source registry.
-5. **Rights integrity:** The public bundle contains only approved excerpts, never a raw page dump.
-6. **Deterministic authority:** Code owns score, stage, readiness, and blocking reasons.
-7. **Missing-data honesty:** Unavailable metrics produce blockers, not invented values.
-8. **Scenario humility:** Cost, benefit, risk, and impact outputs are structured decision support, not certified forecasts.
-9. **Replay reproducibility:** Identical frozen input produces identical public JSON.
-10. **Offline reliability:** Provider failure never breaks the primary dashboard.
+4. **Source integrity:** Every evidence/metric source ID resolves in the source registry.
+5. **Rights integrity:** Only approved excerpts in the public bundle - never raw page dumps.
+6. **Deterministic authority:** Code owns score, stage, readiness, and blocking reasons - never AI.
+7. **Missing-data honesty:** Unavailable data produces blockers, not invented values.
+8. **Scenario humility:** Outputs are structured decision support, not certified forecasts.
+9. **Replay reproducibility:** Identical input produces identical output.
+10. **Offline reliability:** Provider failure never breaks the dashboard.
 
 ---
 
-## Troubleshooting
+## What SignalScout Is Not
 
-### Dashboard reports it cannot load the bundle
-
-```bash
-npm run build:case
-npm run validate:public-bundle
-npm run dev
-```
-
-### Port 5173 is in use
-
-```bash
-npm --workspace @SignalScout/frontend run dev -- --host 127.0.0.1 --port 5174
-```
-
-Then open `http://127.0.0.1:5174/`.
-
-If backend port `8787` is busy, change `BACKEND_PORT` in `.env` and update the proxy target in `frontend/vite.config.ts`.
-
-### Workspace dependencies are not linked
-
-Run from the root:
-
-```bash
-npm install
-npm run typecheck
-```
-
-### Do not claim live partner usage
-
-`preflight:partners` and `COLLECTOR_EXECUTION_MODE=validate` are local validation only. Use the `LIVE_RECEIPT` status only when a real invocation has been made with a sanitized receipt and explicit approval per the instructions in `docs/SKILLS/`.
+- **Not a bankruptcy predictor.** It recognizes when a cluster becomes important enough for humans to investigate.
+- **Not a calibrated probability.** The score is an explainable composite, not a statistical forecast.
+- **Not autonomous.** It supports decisions - it does not make them.
+- **Not a real-time monitor.** It demonstrates the pattern on deeply researched historical cases.
 
 ---
 
-## Related Documentation
+## Built With
 
-| Document                                     | Path                                                         |
-| -------------------------------------------- | ------------------------------------------------------------ |
-| Implementation plan (OpenAI chat)            | `docs/MVP/signalscout-openai-chat-implementation-plan.md`  |
-| Ultimate agent build guide                   | `docs/TARGET/signalscout-ultimate-agent-build-guide.md`    |
-| Collector routing rules                      | `docs/RULES/bedrock-collector-routing-rules.md`            |
-| Judge-ready master proposal                  | `docs/proposal/signalscout-judge-ready-master-proposal.md` |
-| Demo runbook                                 | `docs/demo/corpwatch-demo-runbook.md`                      |
-| Partner API guides                           | `docs/SKILLS/`                                             |
-| Legacy implementation plan (Bedrock/Strands) | `docs/TARGET/signalscout-implementation-plan.md`           |
+- Amazon Bedrock AgentCore (Runtime, Memory, Identity)
+- Amazon Bedrock (foundation model + Guardrails)
+- AWS Strands Agents SDK
+- AWS Lambda
+- Amazon API Gateway (HTTP API)
+- AWS AppSync
+- AWS Amplify (Gen 2 hosting)
+- Amazon Cognito + AWS WAF
+- Amazon Route 53
+- Amazon DynamoDB
+- Amazon S3 (Intelligent-Tiering)
+- AWS Secrets Manager
+- Amazon CloudWatch + AWS CloudTrail
+- AWS IAM
+- React + TypeScript
+- TinyFish
+- Apify
+- Langfuse
+- OpenAI
