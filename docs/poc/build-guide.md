@@ -1,6 +1,6 @@
 # SignalScout Strategic Change Radar - POC Agent Build Guide
 
-> **Scope: this is the POC build guide, not the production architecture.** It describes the demo build - OpenAI Responses API, a frozen `CasePackage`, deterministic offline replay. The production target is in [`../production/decision-ledger.md`](../production/decision-ledger.md); on any conflict, `MEMORY.md` wins.
+> **Scope: this is the POC build guide, not the production architecture.** It describes the demo build - OpenAI Responses API, a frozen `CasePackage`, deterministic offline replay. The production target is in [`../production/`](../production/).
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:subagent-driven-development` (recommended) or `superpowers:executing-plans` to implement this plan task-by-task. Every production-code change must follow `superpowers:test-driven-development`. If a test or runtime behavior is unexpected, stop and use `superpowers:systematic-debugging` before editing further.
 

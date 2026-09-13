@@ -2,9 +2,9 @@
 
 **Status:** authoritative for production architecture decisions
 **Last updated:** 2026-07-12
-**Source of truth:** [`MEMORY.md`](../../MEMORY.md) + the architecture diagram [`../assets/architect-v1.png`](../assets/architect-v1.png)
+**Authority:** this file is where a production decision is settled. The reasoning behind each row lives in the rationale documents listed in [`README.md`](./README.md); the diagram is [`../assets/architect-v1.png`](../assets/architect-v1.png).
 
-The production target is a **multi-agent supervisor-worker system on Bedrock AgentCore** (Management / Crawler / Analysis) over DynamoDB + S3, with Langfuse-driven retry. This document is the expanded presentation of the decision ledger held in `MEMORY.md`; on any conflict, `MEMORY.md` wins.
+The production target is a **multi-agent supervisor-worker system on Bedrock AgentCore** (Management / Crawler / Analysis) over DynamoDB + S3, with Langfuse-driven retry. This file is the single place a decision is opened or closed. A rationale document explains a decision but never changes its status.
 
 This is **not** what currently runs. The running demo is the OpenAI Responses API POC in [`../poc/`](../poc/). The superseded first-pass plan is archived at [`../archive/hackathon-plan-v1.md`](../archive/hackathon-plan-v1.md).
 
@@ -12,46 +12,46 @@ This is **not** what currently runs. The running demo is the OpenAI Responses AP
 
 ## A. Closed decisions
 
-| # | Decision | MEMORY.md ref |
+| # | Decision | Rationale |
 |---|---|---|
-| C1 | **Multi-agent supervisor-worker** on Bedrock AgentCore: Management (supervisor) → Crawler + Analysis (workers) | §2 |
-| C2 | Supervisor orchestrates in a **star topology**: Management calls A, then calls B; A and B are **never** wired directly to each other | §4.2 |
-| C3 | **No** Lambda-calls-Lambda and **no** Runtime-calls-worker-Runtime directly; decouple through the supervisor or an S3 event | §4.1 |
-| C4 | AgentCore Runtime calls TinyFish/Apify **directly over HTTPS**; AgentCore Gateway / MCP is **not** used (over-engineering for one agent with one tool) | §4.3 |
-| C5 | TinyFish/Apify are **model-invoked tools (tool_use)** on the sync endpoint, bounded by `max_duration_seconds` (no cancel available) | §4.4 |
-| C6 | TinyFish vs Apify is chosen by **rule / tool_use inside the Crawler** - there is **no** separate "Collector Router" service | §4.6 |
-| C7 | **Filter and sanitize in plain code** (pure Python) inside the Crawler before anything reaches the model - saves tokens, blocks injection | §4.5, §6 |
-| C8 | **S3 Intelligent-Tiering** for raw content and results; store **every attempt, never overwrite** (`raw-market-news/{run_id}/attempt-{n}.json`) | §4.8, §4.12 |
-| C9 | **DynamoDB On-Demand**, split across two tables: `MarketThemes` (display, exposed via AppSync) and `PipelineState` (operational, never exposed) | §4.11 |
-| C10 | `retry_count` uses an **atomic counter** (`ADD retry_count :inc`) | §4.10 |
-| C11 | Retry / self-correction (**Reflexion**) via **Langfuse webhook → dedicated API Gateway → Lambda Webhook-Handler**; **Option B**: re-trigger `InvokeAgentRuntime` carrying a `critique` and reusing the existing session; a retry ceiling is **mandatory** | §4.9 |
-| C12 | **Guardrails are mandatory on Analysis** - that is where untrusted web content enters model reasoning | §6 |
-| C13 | Langfuse provides prompt management, tracing, LLM-as-Judge scoring and webhooks; the webhook **must verify HMAC + timestamp**; the webhook endpoint is **separate and does not use Cognito** | §5 |
-| C14 | Dashboard read path: **Amplify → AppSync → Lambda resolver → DynamoDB → S3 presigned URL → browser downloads directly**; presigned URLs are issued only for `final_s3_key` | §4.13 |
-| C15 | The **write** order (S3 → DynamoDB) differs from the **read** order (DynamoDB → S3); they are two separate lifecycles | §4.14 |
-| C16 | IAM is **least-privilege** with a **separate role per Runtime**, explicit ARNs, **no wildcards** | §10 |
-| C17 | **Secrets Manager** holds the API keys (TinyFish/Apify/Langfuse) and the webhook signing secret | §3, §12 |
-| C18 | Observability: **CloudWatch** (logs, metrics, alarms) + **CloudTrail** (audit and compliance) | §11 |
-| C19 | **100% serverless** with cost optimization: HTTP API (~70% cheaper than REST), Bedrock On-Demand, Langfuse Cloud, filtering before the model, no charge during I/O wait | §12 |
-| C20 | Auth: **Cognito** for the user-facing API Gateway; the webhook endpoint **verifies a signature** instead of using Cognito | §5, §3 |
+| C1 | **Multi-agent supervisor-worker** on Bedrock AgentCore: Management (supervisor) → Crawler + Analysis (workers) | [architecture-overview](./architecture.md) |
+| C2 | Supervisor orchestrates in a **star topology**: Management calls A, then calls B; A and B are **never** wired directly to each other | [agent-orchestration](./design-rationale.md#agent-orchestration) |
+| C3 | **No** Lambda-calls-Lambda and **no** Runtime-calls-worker-Runtime directly; decouple through the supervisor or an S3 event | [agent-orchestration](./design-rationale.md#agent-orchestration) |
+| C4 | AgentCore Runtime calls TinyFish/Apify **directly over HTTPS**; AgentCore Gateway / MCP is **not** used (over-engineering for one agent with one tool) | [agent-orchestration](./design-rationale.md#agent-orchestration) |
+| C5 | TinyFish/Apify are **model-invoked tools (tool_use)** on the sync endpoint, bounded by `max_duration_seconds` (no cancel available) | [tool-invocation](./design-rationale.md#tool-invocation-and-data-filtering) |
+| C6 | TinyFish vs Apify is chosen by **rule / tool_use inside the Crawler** - there is **no** separate "Collector Router" service | [tool-invocation](./design-rationale.md#tool-invocation-and-data-filtering) - see G2, not fully settled |
+| C7 | **Filter and sanitize in plain code** (pure Python) inside the Crawler before anything reaches the model - saves tokens, blocks injection | [tool-invocation](./design-rationale.md#tool-invocation-and-data-filtering), [guardrails](./design-rationale.md#guardrails-and-sanitization) |
+| C8 | **S3 Intelligent-Tiering** for raw content and results; store **every attempt, never overwrite** (`raw-market-news/{run_id}/attempt-{n}.json`) | [data-and-storage](./design-rationale.md#data-and-storage) |
+| C9 | **DynamoDB On-Demand**, split across two tables: `MarketThemes` (display, exposed via AppSync) and `PipelineState` (operational, never exposed) | [data-and-storage](./design-rationale.md#data-and-storage) |
+| C10 | `retry_count` uses an **atomic counter** (`ADD retry_count :inc`) | [retry-loop](./design-rationale.md#retry-and-self-correction) |
+| C11 | Retry / self-correction (**Reflexion**) via **Langfuse webhook → dedicated API Gateway → Lambda Webhook-Handler**; **Option B**: re-trigger `InvokeAgentRuntime` carrying a `critique` and reusing the existing session; a retry ceiling is **mandatory** | [retry-loop](./design-rationale.md#retry-and-self-correction) |
+| C12 | **Guardrails are mandatory on Analysis** - that is where untrusted web content enters model reasoning | [guardrails](./design-rationale.md#guardrails-and-sanitization) |
+| C13 | Langfuse provides prompt management, tracing, LLM-as-Judge scoring and webhooks; the webhook **must verify HMAC + timestamp**; the webhook endpoint is **separate and does not use Cognito** | [langfuse-integration](./design-rationale.md#langfuse-integration) |
+| C14 | Dashboard read path: **Amplify → AppSync → Lambda resolver → DynamoDB → S3 presigned URL → browser downloads directly**; presigned URLs are issued only for `final_s3_key` | [data-and-storage](./design-rationale.md#data-and-storage) |
+| C15 | The **write** order (S3 → DynamoDB) differs from the **read** order (DynamoDB → S3); they are two separate lifecycles | [data-and-storage](./design-rationale.md#data-and-storage) |
+| C16 | IAM is **least-privilege** with a **separate role per Runtime**, explicit ARNs, **no wildcards** | [iam-least-privilege](./operations.md#iam-and-least-privilege) |
+| C17 | **Secrets Manager** holds the API keys (TinyFish/Apify/Langfuse) and the webhook signing secret | [service-inventory](./architecture.md#service-inventory), [cost-optimization](./operations.md#cost-optimization) |
+| C18 | Observability: **CloudWatch** (logs, metrics, alarms) + **CloudTrail** (audit and compliance) | [observability](./operations.md#observability) |
+| C19 | **100% serverless** with cost optimization: HTTP API (~70% cheaper than REST), Bedrock On-Demand, Langfuse Cloud, filtering before the model, no charge during I/O wait | [cost-optimization](./operations.md#cost-optimization) |
+| C20 | Auth: **Cognito** for the user-facing API Gateway; the webhook endpoint **verifies a signature** instead of using Cognito | [langfuse-integration](./design-rationale.md#langfuse-integration) |
 
 ## B. Open decisions
 
 Detailed analysis for each is in section C below.
 
-| # | Open question | Ref |
+| # | Open question | Rationale |
 |---|---|---|
-| O1 | Guardrails on **Management** - keep or drop? (depends on whether Management uses model reasoning to route) | §15.1 |
-| O2 | Guardrails on **Crawler** - needed at all? (depends on whether Crawler uses model reasoning) | §15.2 |
-| O3 | Display-result storage: **S3** (long content) or **DynamoDB only** (short summaries)? | §15.3 |
-| O4 | **Maximum retry count** (proposed: 2) - fix the number | §15.4 |
-| O5 | Source of the **critique** on retry: generated by Langfuse LLM-as-Judge, or a separate Bedrock call from Lambda? | §15.5 |
+| O1 | Guardrails on **Management** - keep or drop? (depends on whether Management uses model reasoning to route) | [guardrails](./design-rationale.md#guardrails-and-sanitization) |
+| O2 | Guardrails on **Crawler** - needed at all? (depends on whether Crawler uses model reasoning) | [guardrails](./design-rationale.md#guardrails-and-sanitization) |
+| O3 | Display-result storage: **S3** (long content) or **DynamoDB only** (short summaries)? | [data-and-storage](./design-rationale.md#data-and-storage) |
+| O4 | **Maximum retry count** (proposed: 2) - fix the number | [retry-loop](./design-rationale.md#retry-and-self-correction) |
+| O5 | Source of the **critique** on retry: generated by Langfuse LLM-as-Judge, or a separate Bedrock call from Lambda? | [retry-loop](./design-rationale.md#retry-and-self-correction) |
 
 ---
 
 ## C. Open decisions - detailed analysis
 
-Source: `MEMORY.md` §15. Each entry gives the context, the options, the trade-offs, and a recommendation. When one is settled, move it from table B to table A with a new `Cxx` id and record the date and the decision owner.
+Each entry gives the context, the options, the trade-offs, and a recommendation. When one is settled, move it from table B to table A with a new `Cxx` id and record the date and the decision owner.
 
 ### O1 - Guardrails on Management (supervisor)
 
@@ -74,7 +74,7 @@ Source: `MEMORY.md` §15. Each entry gives the context, the options, the trade-o
 
 ### O2 - Guardrails on Crawler
 
-**Context:** Crawler receives raw JSON from TinyFish/Apify - **untrusted** web data with high prompt-injection risk. `MEMORY.md` §4.5/§6 already settled that Crawler **sanitizes in plain code** (strip HTML, detect injection patterns, validate schema, truncate) **before** any content touches a model. The question: does Crawler have a model-reasoning step at all?
+**Context:** Crawler receives raw JSON from TinyFish/Apify - **untrusted** web data with high prompt-injection risk. The design already settles that Crawler **sanitizes in plain code** (strip HTML, detect injection patterns, validate schema, truncate) **before** any content touches a model. The question: does Crawler have a model-reasoning step at all?
 
 **Options:**
 
@@ -114,7 +114,7 @@ Source: `MEMORY.md` §15. Each entry gives the context, the options, the trade-o
 
 ### O4 - Maximum retry count (MAX_RETRY)
 
-**Context:** The Reflexion loop (C11) requires a retry ceiling to avoid infinite loops and runaway LLM cost. `MEMORY.md` proposes **2**.
+**Context:** The Reflexion loop (C11) requires a retry ceiling to avoid infinite loops and runaway LLM cost. The original research proposed **2**.
 
 **Options:**
 
@@ -157,5 +157,5 @@ Source: `MEMORY.md` §15. Each entry gives the context, the options, the trade-o
 
 1. Move the entry from **table B (open)** to **table A (closed)** with a new id (`Cxx`).
 2. Record the date it was closed and who decided.
-3. If the decision changes the architecture drawing, update [`../assets/architect-v1.png`](../assets/architect-v1.png) and `MEMORY.md`.
-4. `MEMORY.md` remains the source of truth; this document is its expanded presentation.
+3. If the decision changes the architecture drawing, update [`../assets/architect-v1.png`](../assets/architect-v1.png), and update the rationale document that explains it.
+4. If the decision invalidates an option, record that option and its reason in [`superseded-and-rejected.md`](./superseded-and-rejected.md) so it is not re-proposed.

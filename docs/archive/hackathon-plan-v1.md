@@ -11,7 +11,7 @@
 > | Agent topology | Strands graph, direct worker-to-worker | Bedrock AgentCore supervisor-worker, star routing (C1/C2) |
 > | Correlation scoring | Deterministic weights in `config/weights.yaml` | Not carried forward; Analysis agent + Langfuse LLM-as-Judge |
 >
-> Everything below is left in Vietnamese as originally written, so the archive stays an honest record of what was decided at the time. Only the product name was updated from CorpWatch to SignalScout. On any conflict, `MEMORY.md` and [`../production/decision-ledger.md`](../production/decision-ledger.md) win.
+> Everything below is left in Vietnamese as originally written, so the archive stays an honest record of what was decided at the time. Only the product name was updated from CorpWatch to SignalScout. On any conflict, [`../production/decision-ledger.md`](../production/decision-ledger.md) wins.
 
 ---
 

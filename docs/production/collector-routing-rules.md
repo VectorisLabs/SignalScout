@@ -6,11 +6,11 @@
 **Applies to:** Bedrock Correlator, Challenger, and evidence-discovery workflows
 **Status:** Approved baseline policy
 
-> **Reconciliation with the settled production architecture (`MEMORY.md`, 2026-07-12):**
-> - In the current production architecture the TinyFish vs Apify choice is made by **rule / tool_use inside the Crawler subagent** (`MEMORY.md` §4.6) - there is **no** separate "Collector Router" service, despite what this policy name suggests. AgentCore Runtime calls the provider **directly over HTTPS**, not through AgentCore Gateway/MCP (§4.3).
-> - **Still in force, apply as written:** treat every provider result as an **untrusted candidate**, **sanitize in code** before it reaches the model (§4.5/§6), enforce budget and bounds, prefer authoritative sources where available, and keep the audit fields.
+> **Reconciliation with the settled production architecture (2026-07-12):**
+> - In the current production architecture the TinyFish vs Apify choice is made by **rule / tool_use inside the Crawler subagent** (ledger C6) - there is **no** separate "Collector Router" service, despite what this policy name suggests. AgentCore Runtime calls the provider **directly over HTTPS**, not through AgentCore Gateway/MCP (ledger C4).
+> - **Still in force, apply as written:** treat every provider result as an **untrusted candidate**, **sanitize in code** before it reaches the model (ledger C7 and C12), enforce budget and bounds, prefer authoritative sources where available, and keep the audit fields.
 > - **Does not apply to production:** the description of an application-side "Collector Router" as its own layer, and the Evidence Gate / replay assumptions carried over from the OpenAI POC.
-> - Source of truth: [`MEMORY.md`](../../MEMORY.md) plus the [decision ledger](./decision-ledger.md). The POC counterpart of this policy is [`../poc/collector-routing-rules.md`](../poc/collector-routing-rules.md).
+> - Authority: the [decision ledger](./decision-ledger.md), with rationale in [`tool-invocation.md`](./design-rationale.md#tool-invocation-and-data-filtering). The POC counterpart of this policy is [`../poc/collector-routing-rules.md`](../poc/collector-routing-rules.md).
 
 ## 1. Purpose
 
