@@ -1,8 +1,10 @@
 # SignalScout MVP Showcase Dataset Research
 
+> **Scope: POC.** Dataset selection for the frozen demo case.
+
 **Date:** 2026-07-11  
 **Status:** Recommended dataset plan; ready for demo-pack construction  
-**Related design:** `SignalScout-strategic-change-radar-design.md`
+**Related design:** the POC build guide, [`build-guide.md`](./build-guide.md)
 
 ## 1. Recommendation
 

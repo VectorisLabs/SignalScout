@@ -1,5 +1,7 @@
 # signalScout - Figma Redesign Prompt (Tailwind CSS)
 
+> **Scope: UI, POC dashboard.**
+
 > Paste the block below into your AI design/design-to-code tool (Figma Make / First Draft, v0, Lovable, Builder.io, etc.).
 > It is written to reproduce and elevate the **current** signalScout UI, output in **Tailwind CSS**.
 

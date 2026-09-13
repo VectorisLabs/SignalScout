@@ -1,4 +1,6 @@
-# CorpWatch task receipts
+# SignalScout task receipts
+
+> **Scope: POC.** Completion receipts for the hackathon build tasks.
 
 ## Baseline and contracts
 
@@ -31,7 +33,7 @@
 
 - TASK: CW-600-CW-740
 - STATUS: LIVE OPENAI/TINYFISH/LANGFUSE PROOF CAPTURED; APIFY LIVE PROOF OMITTED
-- FILES: `backend/src/partners/safety.ts`, `backend/scripts/preflight-partners.ts`, `docs/demo/*`, proposal
+- FILES: `backend/src/partners/safety.ts`, `backend/scripts/preflight-partners.ts`, `docs/poc/demo-runbook.md`, `docs/poc/submission-claims.md`, proposal
 - TESTS: partner bounds/sanitization and validate-only preflight
 - RISKS: Apify has no actor ID/live run receipt and must remain `TESTED`, not `LIVE_RECEIPT`.
 - HANDOFF: Truth-safe demo and proposal wording.
@@ -40,7 +42,7 @@
 
 - TASK: CW2-100-CW2-500
 - STATUS: AUTOMATED GATE AND LIVE RECEIPTS DONE; HUMAN CURATION PENDING
-- FILES: `backend/src/agent/*`, `backend/src/server.ts`, `frontend/src/app/*`, `docs/corpwatch-openai-chat-implementation-plan.md`, routing policy
+- FILES: `backend/src/agent/*`, `backend/src/server.ts`, `frontend/src/app/*`, `docs/poc/openai-chat-implementation-plan.md`, routing policy
 - TESTS: backend 33/33 and frontend 5/5 passing tests, including OpenAI no-tool/tool-loop/clean-output/retry regression coverage; backend health/metrics smoke test passed
 - RISKS: Live crawl records are deliberately unverified discovery context. Every collector candidate has `RIGHTS_UNKNOWN`; approved live citations require a future rights-review/curator workflow.
 - HANDOFF: Keep the judged replay on the frozen approved bundle. Present live crawl as bounded discovery plus validation, never as approved evidence.

@@ -1,19 +1,16 @@
-# SignalScout Bedrock Collector Routing Rules
+# SignalScout Collector Routing Rules - POC (OpenAI)
 
-**Policy ID:** `COLLECTOR-ROUTER-v1`  
-**Version:** `1.0.0`  
-**Effective date:** `2026-07-12`  
-**Applies to:** Bedrock Correlator, Challenger, and evidence-discovery workflows  
-**Status:** Approved baseline policy
+**Policy ID:** `COLLECTOR-ROUTER-POC-v1`
+**Version:** `1.0.0`
+**Effective date:** `2026-07-12`
+**Applies to:** the OpenAI Responses API chat agent and evidence-discovery workflows in the POC
+**Status:** Approved baseline policy for the POC
 
-> **Đối chiếu với kiến trúc production (MEMORY.md, 2026-07-12):**
-> - Trong kiến trúc production hiện hành, việc chọn TinyFish vs Apify được thực hiện bằng **rule / tool_use ngay trong Crawler Subagent** (MEMORY.md §4.6) - **KHÔNG** có một "Collector Router" service tách riêng như tên policy này gợi ý. AgentCore Runtime gọi provider **trực tiếp qua HTTPS**, **không** qua AgentCore Gateway/MCP (§4.3).
-> - Các phần vẫn **còn hiệu lực** và nên áp dụng: coi mọi kết quả provider là **untrusted candidate**, **sanitize bằng code** trước khi vào model (§4.5/§6), giới hạn budget/bounds, ưu tiên nguồn chính thống khi có, và audit fields.
-> - Các phần **không áp dụng** cho production hiện tại: mô tả "application-side Collector Router" như một tầng riêng, và giả định Evidence Gate/replay theo bản OpenAI POC. Nguồn sự thật: [`MEMORY.md`](../../MEMORY.md) + Decision Ledger trong [`signalscout-implementation-plan.md`](./signalscout-implementation-plan.md).
+> **Scope:** this is the POC policy. It describes the application-side Collector Router that sits behind one provider-neutral OpenAI function tool. The production counterpart, where routing happens inside the Crawler subagent instead, is [`../production/collector-routing-rules.md`](../production/collector-routing-rules.md).
 
 ## 1. Purpose
 
-This policy controls when a Bedrock model may request direct source APIs, TinyFish, or Apify.
+This policy controls when an OpenAI model may request public evidence collection. The model calls one provider-neutral function; application code selects direct source APIs, TinyFish, or Apify.
 
 The objectives are to:
 
@@ -144,9 +141,9 @@ An Apify Dataset item is still an untrusted candidate. Actor success means the c
 
 Do not create a new Actor during a Bedrock reasoning turn. Actor creation, code changes, deployment, and schedule changes require an application workflow and human authorization.
 
-## 7. Bedrock tool contract
+## 7. OpenAI Responses API tool contract
 
-Expose one provider-neutral tool to Bedrock:
+Expose one strict provider-neutral function tool to OpenAI Responses API:
 
 ```json
 {
@@ -243,7 +240,7 @@ Expose one provider-neutral tool to Bedrock:
 }
 ```
 
-Bedrock must not choose a provider name in the tool input. Provider selection belongs to the Collector Router so that routing remains deterministic and can change without modifying model prompts.
+OpenAI must not choose a provider name in the tool input. Provider selection belongs to the Collector Router so that routing remains deterministic and can change without modifying model prompts. Configure the function with `strict: true` and reject every argument object that fails the same server-side schema.
 
 ## 8. Collector Router pseudocode
 
@@ -408,7 +405,7 @@ Fallback must never weaken entity, replay, rights, or approval requirements.
 Record the following for every tool request:
 
 - policy ID and version;
-- Bedrock invocation/request ID;
+- OpenAI response ID and function-call ID;
 - evidence request ID;
 - selected provider and routing reason;
 - provider run ID or dataset ID;
@@ -421,9 +418,9 @@ Record the following for every tool request:
 - token usage, provider cost, and latency where available;
 - curator identity and decision timestamp.
 
-## 16. Bedrock instruction block
+## 16. OpenAI instruction block
 
-Use the following text in the system or developer prompt of every Bedrock role that can request evidence:
+Use the following text in the developer instruction of every OpenAI response that can request evidence:
 
 ```text
 You may request public evidence only through collect_public_evidence.
@@ -441,8 +438,8 @@ Stop when the evidence question is answered or the application reports that the 
 ## 17. SignalScout recommended deployment
 
 ```text
-Bedrock tool request
-  -> API Gateway or application service
+OpenAI Responses function call
+  -> SignalScout backend API
   -> Collector Router
       -> approved cache
       -> SEC official API
@@ -452,10 +449,10 @@ Bedrock tool request
   -> Evidence Gate
   -> curator approval
   -> deterministic pattern engine
-  -> approved evidence returned to Bedrock
+  -> approved evidence returned as function_call_output
 ```
 
-For long TinyFish Agent or Apify jobs, return a pending collection status to the current workflow and resume through an event-driven callback. Do not keep a synchronous Bedrock request open while waiting.
+For long TinyFish Agent or Apify jobs, return a pending collection status to the current workflow and resume through an event-driven callback. Do not keep an OpenAI response or browser request open while waiting.
 
 ## 18. Reference documentation
 
@@ -466,4 +463,3 @@ For long TinyFish Agent or Apify jobs, return a pending collection status to the
 - Apify Dataset: <https://docs.apify.com/platform/storage/dataset>
 - Apify Actor execution: <https://docs.apify.com/actors/running>
 - Amazon Bedrock Converse API: <https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference.html>
-

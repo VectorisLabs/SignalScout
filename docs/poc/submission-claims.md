@@ -1,4 +1,6 @@
-# CorpWatch submission claims ledger
+# SignalScout submission claims ledger
+
+> **Scope: POC.** What was actually demonstrated or tested in the hackathon build, and the proof for each claim.
 
 | Capability or partner | Status | Proof / wording |
 |---|---|---|
@@ -15,4 +17,4 @@
 | OpenAI | LIVE_RECEIPT | Primary runtime completed live no-tool and TinyFish tool-loop turns; model output, usage and prompt version are linked to sanitized Langfuse traces. |
 | AWS / ClickHouse | OMIT | Mentioned in an older architecture plan but not used by this frozen MVP. |
 
-Truth-safe wording: “CorpWatch uses OpenAI Responses API for its investigation chat, TinyFish Search/Fetch for bounded public-web collection, and Langfuse for prompt management, traces and deterministic evaluation scores. Live crawl output remains unverified discovery context unless it passes rights review and human curator approval. The judged replay remains available offline from a frozen, cited evidence bundle.”
+Truth-safe wording: “SignalScout uses OpenAI Responses API for its investigation chat, TinyFish Search/Fetch for bounded public-web collection, and Langfuse for prompt management, traces and deterministic evaluation scores. Live crawl output remains unverified discovery context unless it passes rights review and human curator approval. The judged replay remains available offline from a frozen, cited evidence bundle.”

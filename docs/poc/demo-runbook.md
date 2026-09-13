@@ -1,4 +1,6 @@
-# CorpWatch - 3-minute demo runbook
+# SignalScout - 3-minute demo runbook
+
+> **Scope: POC.** The demo script for the frozen-`CasePackage` build.
 
 ## Setup
 

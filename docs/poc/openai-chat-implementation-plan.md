@@ -1,9 +1,11 @@
 # SignalScout OpenAI Chat Agent - Implementation Plan v2
 
+> **Scope: POC.** The authoritative plan for the build that runs today.
+
 **Status:** authoritative plan
 
 **Effective date:** 2026-07-12
-**Supersedes:** Bedrock AgentCore/Strands orchestration in `SignalScout-implementation-plan.md`
+**Supersedes:** the Bedrock AgentCore/Strands orchestration described in [`build-guide.md`](./build-guide.md); the production Bedrock target itself lives in [`../production/decision-ledger.md`](../production/decision-ledger.md)
 
 ## 1. Product direction
 
@@ -84,7 +86,7 @@ The model must not send `provider`, `actor_id`, `api_key`, proxy, cookie or cost
 
 ## 6. Deterministic routing
 
-Use `docs/RULES/bedrock-collector-routing-rules.md` as the canonical policy despite its historical filename.
+Use [`collector-routing-rules.md`](./collector-routing-rules.md) as the canonical collector-routing policy for the POC.
 
 Key decisions:
 

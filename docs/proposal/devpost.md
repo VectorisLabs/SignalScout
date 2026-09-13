@@ -1,5 +1,7 @@
 # Hackathon
 
+> **Scope: submission.** The Devpost form content as submitted, describing the POC.
+
 > SignalScout
 
 ## Your tracks

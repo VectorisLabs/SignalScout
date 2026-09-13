@@ -1,5 +1,7 @@
 # SignalScout Strategic Change Radar
 
+> **Scope: product.** Describes the POC as demonstrated. The production target is in [`../production/decision-ledger.md`](../production/decision-ledger.md).
+
 SignalScout turns scattered public corporate-change signals into a cited, replayable strategic decision brief. It reconstructs what was knowable at each historical date, measures which financial and operating dimensions are supported, compares MAINTAIN / ADAPT / ACCELERATE responses, and shows executives which evidence supports-or blocks-each review posture.
 
 The primary interaction is now an OpenAI-powered investigation chat. OpenAI can request one provider-neutral evidence collection function; deterministic backend policy selects TinyFish or Apify, validates candidates through the Evidence Gate, records traces/scores in Langfuse when configured, and exposes route, validation, latency and token metrics in the dashboard.

@@ -1,6 +1,6 @@
 <div align="center">
 
-![Architect](docs/Architect.png)
+![Architect](docs/assets/architect-v1.png)
 
 # SignalScout - Strategic Change Radar
 
@@ -8,7 +8,7 @@
 
 [![Runner Up](https://img.shields.io/badge/🏆_Agentic_AI_Build_Week_2026-Runner_Up_|_AWS_Track-ff9900?style=for-the-badge)](https://awsbuildweek.dev)
 
-<img src="docs/Winner.webp" alt="SignalScout team - Runner Up, AWS Track at Agentic AI Build Week 2026" width="680" />
+<img src="docs/assets/winner.webp" alt="SignalScout team - Runner Up, AWS Track at Agentic AI Build Week 2026" width="680" />
 
 *Our team celebrating at Agentic AI Build Week 2026*
 
@@ -90,7 +90,7 @@ These are **review postures**, not autonomous decisions. SignalScout is not a ba
 
 SignalScout is a fully serverless, multi-agent **supervisor-worker** system on **Amazon Bedrock AgentCore Runtime**, built with the **AWS Strands Agents SDK**.
 
-![Production Architecture](docs/Architect.png)
+![Production Architecture](docs/assets/architect-v1.png)
 
 ### Multi-Agent Topology
 
@@ -371,7 +371,7 @@ The gate is **fail-closed**: any missing field blocks the candidate. Approved ou
 
 ## Architecture v2 - AWS-Native Cost Optimization
 
-![Architect v2](docs/Architect%20v2.jpeg)
+![Architect v2](docs/assets/architect-v2.jpeg)
 
 The second iteration moves toward a fully AWS-native tool layer to reduce cost and simplify operations at scale:
 
