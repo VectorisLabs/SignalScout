@@ -41,7 +41,7 @@ AgentCore Gateway is only worth it when several agents share a tool, when audit 
 
 Ledger: C4. Rejected options: R3, R4.
 
-> This is the main thing separating the production design from the POC. The POC routes provider selection through an application-side Collector Router; production puts the choice inside the Crawler and calls the provider directly. Compare [`collector-routing-rules.md`](./collector-routing-rules.md) with [`../poc/collector-routing-rules.md`](../poc/collector-routing-rules.md).
+> This is the main thing separating the production design from the POC. The POC routes provider selection through an application-side Collector Router; production puts the choice inside the Crawler and calls the provider directly. Both are bound by one shared policy - see the Version bindings table in [`../collector-routing-rules.md`](../collector-routing-rules.md).
 
 ---
 
@@ -85,11 +85,11 @@ Ledger: C7. Rejected option: R5.
 | A | Hard-coded `if/else` in Crawler code, evaluated **before** the model call | Routing is deterministic and can change without touching any prompt |
 | B | A rule in the system prompt; the model picks the provider during reasoning | Routing is flexible but changes require prompt edits, and the choice is not reproducible |
 
-The POC policy [`../poc/collector-routing-rules.md`](../poc/collector-routing-rules.md) is explicit that the model must **not** name a provider, precisely so routing stays deterministic - that is reading A. If production intends reading B, the divergence should be deliberate.
+The shared policy [`../collector-routing-rules.md`](../collector-routing-rules.md) is explicit that the model must **not** name a provider, precisely so routing stays deterministic - that is reading A. If production intends reading B, the divergence should be deliberate.
 
 **Not resolved.** Tracked as G2 in [`superseded-and-rejected.md`](./superseded-and-rejected.md).
 
-The full routing policy - when collection may be requested at all, budget bounds, authoritative-source preference, audit fields - is [`collector-routing-rules.md`](./collector-routing-rules.md).
+The full routing policy - when collection may be requested at all, budget bounds, authoritative-source preference, audit fields - is [`../collector-routing-rules.md`](../collector-routing-rules.md).
 
 ---
 

@@ -6,7 +6,7 @@ Multi-agent supervisor-worker on Bedrock AgentCore (Management / Crawler / Analy
 
 Diagram: [`../assets/architect-v1.png`](../assets/architect-v1.png), revised in [`../assets/architect-v2.jpeg`](../assets/architect-v2.jpeg).
 
-## Six documents
+## Five documents here, plus the shared collector policy
 
 | File | Answers | Lines |
 |---|---|---|
@@ -14,7 +14,7 @@ Diagram: [`../assets/architect-v1.png`](../assets/architect-v1.png), revised in 
 | [`decision-ledger.md`](./decision-ledger.md) | **What was decided?** C1-C20 closed, O1-O5 open with options and trade-offs. **The authority** | ~160 |
 | [`design-rationale.md`](./design-rationale.md) | **Why does the pipeline work this way?** Orchestration, tool invocation, storage, retry, Langfuse, guardrails | ~250 |
 | [`operations.md`](./operations.md) | **How is it run?** IAM, observability, cost, Well-Architected alignment | ~100 |
-| [`collector-routing-rules.md`](./collector-routing-rules.md) | **When may the model collect?** `COLLECTOR-ROUTER-PROD-v1`, the full policy | ~470 |
+| [`../collector-routing-rules.md`](../collector-routing-rules.md) | **When may the model collect?** `COLLECTOR-ROUTER-v2`, the shared policy. Production-specific rows are in its Version bindings table | ~450 |
 | [`superseded-and-rejected.md`](./superseded-and-rejected.md) | **What was already ruled out?** Rejected options with reasons, stale statements, unresolved gaps | ~55 |
 
 Platform background - AgentCore Runtime, Strands, A2A - is in [`../reference/aws-agent-platform.md`](../reference/aws-agent-platform.md).
@@ -28,8 +28,9 @@ Platform background - AgentCore Runtime, Strands, A2A - is in [`../reference/aws
 
 ## Before you change anything here
 
-Decisions moved fast during hackathon research, and documents from that period contradicted each other. Two rules keep that from recurring:
+Decisions moved fast during hackathon research, and documents from that period contradicted each other. Three rules keep that from recurring:
 
+0. **Business requirements are in [`../business/`](../business/) and outrank everything in this folder.** Nothing here may relax an `INV`, `AUTH`, `EV` or `GATE` id; cite the id rather than restating it.
 1. **A decision is settled in [`decision-ledger.md`](./decision-ledger.md) and nowhere else.** [`design-rationale.md`](./design-rationale.md) explains a decision; it does not change its status. Closing an open decision means editing the ledger.
 2. **A rejected option goes in [`superseded-and-rejected.md`](./superseded-and-rejected.md) with its reason.** An option dropped without a recorded reason gets re-proposed - three entries in that file exist precisely because the reason was almost lost.
 

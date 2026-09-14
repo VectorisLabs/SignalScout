@@ -2,7 +2,7 @@
 
 **Status:** authoritative for production architecture decisions
 **Last updated:** 2026-07-12
-**Authority:** this file is where a production decision is settled. The reasoning behind each row lives in the rationale documents listed in [`README.md`](./README.md); the diagram is [`../assets/architect-v1.png`](../assets/architect-v1.png).
+**Authority:** this file is where a production *technical* decision is settled. Business requirements sit above it in [`../business/`](../business/) and constrain what a decision here may choose; a `Cxx` row may never relax an `INV`, `AUTH`, `EV` or `GATE` id. The reasoning behind each row lives in the rationale documents listed in [`README.md`](./README.md); the diagram is [`../assets/architect-v1.png`](../assets/architect-v1.png).
 
 The production target is a **multi-agent supervisor-worker system on Bedrock AgentCore** (Management / Crawler / Analysis) over DynamoDB + S3, with Langfuse-driven retry. This file is the single place a decision is opened or closed. A rationale document explains a decision but never changes its status.
 

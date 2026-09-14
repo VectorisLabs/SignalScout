@@ -11,7 +11,7 @@
 
 SignalScout becomes a chat-first evidence investigation agent. A user asks a question in the web UI. The backend sends the turn to OpenAI Responses API with one strict function tool named `collect_public_evidence`. The model may request bounded evidence, but it cannot choose a provider and cannot approve evidence.
 
-The application-side Collector Router applies `COLLECTOR-ROUTER-v1` and selects:
+The application-side Collector Router applies `COLLECTOR-ROUTER-v2` ([`../collector-routing-rules.md`](../collector-routing-rules.md)) and selects:
 
 1. approved cache;
 2. official structured API;
@@ -47,13 +47,17 @@ flowchart LR
 
 ## 3. Authority boundaries
 
-- OpenAI owns conversational planning, tool-request arguments and final narrative.
-- Collector Router owns provider choice, budgets, retries and stop conditions.
-- TinyFish and Apify return `UNTRUSTED_SOURCE_CANDIDATE` only.
-- Evidence Gate owns schema, public URL, entity, temporal, hash, duplicate, rights and provenance checks.
-- Langfuse records traces and evaluation scores; it does not replace the Evidence Gate.
-- Deterministic code owns score, stage, readiness and public-bundle validation.
-- UI renders approved evidence separately from pending or rejected candidates.
+Business requirement: AUTH-01 to AUTH-07 in [`../business/domain-invariants.md`](../business/domain-invariants.md) section 2. How the rows map onto this build:
+
+| Row | Here |
+|---|---|
+| AUTH-01 conversational model | OpenAI Responses API |
+| AUTH-02 collection routing | the application-side Collector Router |
+| AUTH-03 external collectors | TinyFish and Apify |
+| AUTH-04 Evidence Gate | the deterministic gate in section 7 |
+| AUTH-05 observability and evaluation | Langfuse - it does not replace the gate |
+| AUTH-06 deterministic code | score, stage, readiness, public-bundle validation |
+| AUTH-07 UI | approved evidence rendered separately from pending or rejected candidates |
 
 ## 4. OpenAI Responses API loop
 
@@ -86,7 +90,7 @@ The model must not send `provider`, `actor_id`, `api_key`, proxy, cookie or cost
 
 ## 6. Deterministic routing
 
-Use [`collector-routing-rules.md`](./collector-routing-rules.md) as the canonical collector-routing policy for the POC.
+Use [`../collector-routing-rules.md`](../collector-routing-rules.md) as the canonical collector-routing policy. It is shared with production; the POC column of its Version bindings table is what applies here.
 
 Key decisions:
 

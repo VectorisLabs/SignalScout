@@ -32,8 +32,9 @@
 
 1. Read this file fully.
 2. Read, in order:
+   - [`../business/`](../business/) - the business requirements this build implements. Start with [`domain-invariants.md`](../business/domain-invariants.md); nothing below may relax it
    - [`openai-chat-implementation-plan.md`](./openai-chat-implementation-plan.md) - the current POC plan, which supersedes the orchestration described here
-   - [`collector-routing-rules.md`](./collector-routing-rules.md) - collector routing policy
+   - [`../collector-routing-rules.md`](../collector-routing-rules.md) - the shared collector routing policy
    - [`showcase-dataset-research.md`](./showcase-dataset-research.md) - the dataset the frozen case is built from
    - [`../proposal/master-proposal.md`](../proposal/master-proposal.md)
 3. Inspect `package.json`, `src/contracts/`, and the exact source/test files named by the task being executed.
@@ -44,52 +45,20 @@
 
 If another document conflicts with this guide, use this precedence:
 
-1. Current source code and passing tests.
-2. Current contracts and methodology gates.
-3. [`openai-chat-implementation-plan.md`](./openai-chat-implementation-plan.md), which supersedes the orchestration sections of this guide.
-4. This guide.
-5. Older handoff and proposal language.
+1. [`../business/`](../business/) for any domain statement, invariant or gate - it outranks code and this guide. Code that contradicts an invariant is a bug, not a source of truth.
+2. Current source code and passing tests.
+3. Current contracts and methodology gates.
+4. [`openai-chat-implementation-plan.md`](./openai-chat-implementation-plan.md), which supersedes the orchestration sections of this guide.
+5. This guide.
+6. Older handoff and proposal language.
 
 ---
 
 ## 2. Product Truth in One Page
 
-### 2.1 Problem
+Problem, user, job-to-be-done, the three review postures, the eight outputs, the differentiator and the explicit non-claims are business requirements: [`../business/product-definition.md`](../business/product-definition.md).
 
-Corporate change signals are fragmented across filings, financial disclosures, store actions, workforce changes, financing events, leadership moves, and news. A strategy or competitive-intelligence team needs a cited, time-ordered explanation of what changed and what response should be reviewed-not another opaque prediction.
-
-### 2.2 User
-
-Primary user: a strategy, competitive-intelligence, enterprise-risk, procurement, supplier-risk, or commercial-exposure analyst preparing an executive decision review.
-
-### 2.3 Job to be done
-
-> “When a watched company begins restructuring, show me the evidence cluster, the financial and operating metrics affected, the plausible response scenarios, and what leadership should review next.”
-
-### 2.4 Core decision
-
-The executive chooses one posture:
-
-- `MAINTAIN`: monitor and preserve the current plan.
-- `ADAPT`: make bounded changes to pricing, inventory, channels, footprint, supplier exposure, or operating model.
-- `ACCELERATE`: act aggressively while the competitor is distracted or structurally weakened.
-
-These are review postures, not autonomous decisions.
-
-### 2.5 Main outputs
-
-1. Evidence replay timeline.
-2. Strategic pattern radar.
-3. Metric coverage and missing-data warnings.
-4. Restructuring scenarios.
-5. Cost-benefit-risk comparison.
-6. Revenue, cash-flow, and operating-impact framing.
-7. Executive Dashboard.
-8. Decision recommendation and challenge questions.
-
-### 2.6 Differentiator
-
-Every factual claim is traceable to approved evidence; every replay view obeys time visibility; every decision section declares whether it is ready or blocked by missing metrics. The AI drafts explanations. Deterministic code decides whether those explanations are admissible.
+Read that file before Task 1. This guide covers only how the POC delivers it.
 
 ---
 
@@ -111,14 +80,9 @@ Every factual claim is traceable to approved evidence; every replay view obeys t
 
 ### 3.2 Explicitly out of scope
 
-- Generalized multi-company production monitoring.
-- Real-time alerts, queues, schedulers, or exactly-once ingestion.
-- Calibrated bankruptcy or revenue forecasting.
-- Autonomous restructuring recommendations.
-- Training or fine-tuning a model.
-- Full authentication, multi-tenancy, billing, or production deployment hardening.
-- A vector database unless a measured MVP requirement proves it necessary.
-- Adding AWS Bedrock, Apify, ClickHouse, or Langfuse merely to list more partners.
+Product-level non-goals are NOGO-01 to NOGO-09 in [`../business/scope-and-nongoals.md`](../business/scope-and-nongoals.md), together with the non-negotiable core that a scope cut may never touch.
+
+Additionally out of scope for this one-day build only: production deployment hardening.
 
 ---
 
@@ -166,51 +130,17 @@ flowchart LR
 
 ## 5. Business and Evidence Invariants
 
-1. **Temporal integrity:** an evidence item is visible only when `publicly_available_at <= as_of`.
-2. **Outcome isolation:** the known bankruptcy outcome may appear only after its public date and cannot influence earlier frames.
-3. **Claim integrity:** every factual claim references one or more approved evidence IDs.
-4. **Source integrity:** every evidence/metric source ID exists in the source registry.
-5. **Rights integrity:** the public bundle contains only approved excerpts and metadata, never an unrestricted page dump.
-6. **Deterministic authority:** code-not AI-owns score, stage, readiness, and blocking reasons.
-7. **Missing-data honesty:** unavailable metrics produce blockers, not invented values.
-8. **Scenario humility:** cost, benefit, risk, and impact outputs are structured decision support, not certified forecasts.
-9. **Replay reproducibility:** identical frozen input produces identical public JSON.
-10. **Offline reliability:** provider failure never breaks the primary dashboard.
+The invariants this build must satisfy are INV-01 to INV-13 and the authority boundaries AUTH-01 to AUTH-07 in [`../business/domain-invariants.md`](../business/domain-invariants.md). They are not restated here - cite the ID.
+
+Tasks 1 to 4 below exist to implement them; the acceptance matrix in section 11 is where each one gets its proof.
 
 ---
 
 ## 6. Metric Dictionary and Decision Gates
 
-### 6.1 Metrics
+The metric dictionary (MET-01 to MET-14), the normalization and ambiguity rules, the five readiness sections (RDY-01 to RDY-05) and the `BLOCKED_BY_MISSING_METRICS` rule are business requirements: [`../business/signal-taxonomy.md`](../business/signal-taxonomy.md) sections 3 and 4.
 
-| Group | Metric key | Normalized unit | Requirement |
-|---|---|---:|---|
-| Revenue | Revenue / Net Sales | `USD_MILLIONS` | Required |
-| Profit | Gross Profit | `USD_MILLIONS` | Required |
-| Profit | Operating Income | `USD_MILLIONS` | Required |
-| Cost | SG&A | `USD_MILLIONS` | Required |
-| Cost | Restructuring Cost | `USD_MILLIONS` | Required |
-| Liquidity | Cash and Cash Equivalents | `USD_MILLIONS` | Required |
-| Cash flow | Operating Cash Flow | `USD_MILLIONS` | Required |
-| Investment | Capital Expenditure | `USD_MILLIONS` | Required |
-| Working capital | Inventory | `USD_MILLIONS` | Required |
-| Working capital | Accounts Payable | `USD_MILLIONS` | Required |
-| Debt | Short-term Debt | `USD_MILLIONS` | Required |
-| Debt | Long-term Debt | `USD_MILLIONS` | Required |
-| Operations | Store Count | `COUNT` | Required |
-| Workforce | Employee Count | `COUNT` | Optional |
-
-Normalize billions to millions deterministically. Do not infer currency or reporting period when the text does not make them explicit. `REPORTED` quality means directly stated in approved text; calculated values need a distinct derivation basis supported by the existing contract.
-
-### 6.2 Readiness sections
-
-- `RESTRUCTURING_SCENARIOS`
-- `COST_BENEFIT_RISK`
-- `REVENUE_CASH_FLOW_OPERATING_IMPACT`
-- `EXECUTIVE_DASHBOARD`
-- `DECISION_REPORT`
-
-Missing required coverage must yield `BLOCKED_BY_MISSING_METRICS` for the affected section. The UI must display the blocker and the missing metrics.
+Implementation obligation for this build: the extractor emits the required metric keys in their normalized units, the metric lens computes coverage per readiness section, and the UI displays the blocker together with the specific missing metrics.
 
 ---
 
@@ -848,7 +778,7 @@ Cut order, first cut to last:
 4. Live TinyFish proof.
 5. Optional employee metric.
 
-Never cut provenance, temporal integrity, metric blockers, bundle validation, offline loading, or the demo runbook.
+Never cut the non-negotiable core in [`../business/scope-and-nongoals.md`](../business/scope-and-nongoals.md) section 2, or the demo runbook.
 
 ---
 

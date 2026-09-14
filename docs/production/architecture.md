@@ -18,11 +18,13 @@ Diagram: [`../assets/architect-v1.png`](../assets/architect-v1.png), revised in 
 
 ### What the industry implies
 
-Wealth management is a regulated, sensitive domain, and the output feeds investment decisions. Three consequences run through the whole architecture and explain choices that would otherwise look over-built:
+The three domain consequences of operating in a regulated, sensitive domain are INV-11, INV-12 and INV-13 in [`../business/domain-invariants.md`](../business/domain-invariants.md). They are the reason several choices here look over-built. Where each lands in this architecture:
 
-1. **Audit and compliance are first-class** - hence CloudTrail alongside CloudWatch ([`operations.md`](./operations.md#observability)), and the multi-attempt S3 store that never overwrites ([`design-rationale.md`](./design-rationale.md#data-and-storage)).
-2. **Human oversight is the terminal state, not an exception** - the retry loop ends in `needs_human_review`, it does not loop forever ([`design-rationale.md`](./design-rationale.md#retry-and-self-correction)).
-3. **Untrusted web content near a model is the main risk** - hence mandatory Guardrails on Analysis and code-level sanitization in the Crawler ([`design-rationale.md`](./design-rationale.md#guardrails-and-sanitization)).
+| Invariant | Implemented by |
+|---|---|
+| INV-11 audit trail is first-class | CloudTrail alongside CloudWatch ([`operations.md`](./operations.md#observability)), and the multi-attempt S3 store that never overwrites ([`design-rationale.md`](./design-rationale.md#data-and-storage)) |
+| INV-12 human oversight is the terminal state | The retry loop ends in `needs_human_review` rather than looping ([`design-rationale.md`](./design-rationale.md#retry-and-self-correction)) |
+| INV-13 untrusted content near a model is the primary risk | Mandatory Guardrails on Analysis plus code-level sanitization in the Crawler ([`design-rationale.md`](./design-rationale.md#guardrails-and-sanitization)) |
 
 The original research record called this "idea number 3" - one of several hackathon concepts under consideration. That numbering carries no meaning now.
 

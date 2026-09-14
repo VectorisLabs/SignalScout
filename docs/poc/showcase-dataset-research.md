@@ -109,59 +109,12 @@ Each source document is stored once. Several observations from the same document
 
 ## 7. Pattern content for the pack
 
-### `liquidity_defense`
+The two patterns, their eligible signal types, the three maturity states and the numeric maturity policies are business requirements: [`../business/signal-taxonomy.md`](../business/signal-taxonomy.md) sections 1 and 2. The thresholds there carry this dataset's calibration and freeze date.
 
-Eligible signal types:
+Two rules that matter specifically when building this pack:
 
-- `failed_financing_or_exchange`;
-- `going_concern_disclosure`;
-- `debt_acceleration_or_default`;
-- `waiver_or_amendment`;
-- `conditional_emergency_financing`;
-- `capex_or_budget_restriction`;
-- `vendor_term_or_credit_constraint`.
-
-Suggested deterministic maturity policy for the demo:
-
-```text
-OBSERVING
-  fewer than 2 approved signal types
-
-STRATEGIC_REVIEW
-  at least 2 approved signal types across at least 2 public releases
-
-MATERIAL_CHANGE
-  at least 4 approved signal types,
-  including one of going_concern_disclosure or debt_acceleration_or_default,
-  across at least 3 public releases within 120 days
-```
-
-### `operating_footprint_reduction`
-
-Eligible signal types:
-
-- `store_or_facility_closure`;
-- `workforce_reduction`;
-- `capex_reduction`;
-- `supply_chain_consolidation`;
-- `portfolio_or_channel_contraction`.
-
-Suggested deterministic maturity policy for the demo:
-
-```text
-OBSERVING
-  one weak or unconfirmed action
-
-STRATEGIC_REVIEW
-  at least 2 approved signal types,
-  or an announced closure program affecting at least 10% of the disclosed fleet
-
-MATERIAL_CHANGE
-  at least 3 approved signal types and a later filing confirming execution/expansion,
-  or an announced closure program affecting at least 30% of the disclosed fleet
-```
-
-Thresholds are demo policy, not statistical probabilities. Freeze them before showing the Macy's control or Dollar Tree validation case.
+- Freeze the thresholds before showing the Macy's control or the Dollar Tree validation case. A threshold tuned per case proves nothing.
+- A footprint reduction is not distress. Macy's must be able to reach `STRATEGIC_REVIEW` on `operating_footprint_reduction` without activating `liquidity_defense`.
 
 ## 8. Relevance and CompanyContext content
 
@@ -224,18 +177,9 @@ Do not invent facts and do not use the later known outcome.
 
 ### Curator checklist
 
-An evidence row can become `APPROVED` only if all checks pass:
+Business requirement: GATE-01 to GATE-12 in [`../business/evidence-policy.md`](../business/evidence-policy.md) section 2.
 
-- entity and CIK match;
-- accession and source URL resolve;
-- `available_at` comes from SEC submission metadata;
-- event date is not substituted for public availability;
-- excerpt supports the normalized observation without interpretation;
-- source artifact hash and retrieval time are recorded;
-- rights status permits the displayed excerpt;
-- duplicate statements from the same filing bundle share one source identity;
-- signal type is in the frozen taxonomy;
-- later outcome information is absent from pre-outcome evidence and prompts.
+For this dataset the checks resolve to: entity and CIK match, accession and source URL resolve, `available_at` comes from SEC submission metadata rather than the event date, the excerpt supports the normalized observation without interpretation, artifact hash and retrieval time are recorded, rights status permits the displayed excerpt, duplicate statements from one filing bundle share one source identity, the signal type is in the frozen taxonomy, and no later-outcome information is present in pre-outcome evidence or prompts.
 
 ## 10. Demo-ready UI copy
 
