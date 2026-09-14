@@ -1,0 +1,27 @@
+# Target AWS Region
+aws_region = "ap-southeast-1"
+
+# Target AWS Profile
+aws_profile = "duykhiem"
+
+# Deployment Environment Tier
+environment = "prod"
+
+# Project Identifier
+project_name = "signalscout"
+
+# Set to true when testing locally against Floci emulator
+use_floci = false
+
+# Floci endpoint (default: http://localhost:4566)
+floci_endpoint = "http://localhost:4566"
+
+# Optional SNS Topic ARN for operational alerts
+# alarm_sns_topic_arn = "arn:aws:sns:ap-southeast-1:123456789012:signalscout-alerts"
+
+# Maximum automated retries before human review
+max_retry = 2
+
+# Force destroy buckets on teardown (set false in real production)
+force_destroy = false
+

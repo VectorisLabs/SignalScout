@@ -4,7 +4,7 @@ pack: "terraform-prod"
 document: "sourcecode"
 status: "active"
 updated: "2026-09-14"
-code_ref: "6b4d647"
+code_ref: "uncommitted"
 ---
 
 # SignalScout Production Terraform Infrastructure - Code Topology
@@ -15,7 +15,7 @@ code_ref: "6b4d647"
 terraform/
 ├── modules/
 │   ├── storage/
-│   │   ├── terraform.tf                      # Terraform floor >= 1.14 and AWS provider >= 6.0
+│   │   ├── terraform.tf                      # Terraform floor >= 1.14 and AWS provider >= 5.80.0
 │   │   ├── main.tf                           # S3 raw-market-news bucket, Intelligent-Tiering, SSE, public access block
 │   │   ├── variables.tf                      # Bucket name, environment, lifecycle configurations
 │   │   ├── outputs.tf                        # bucket_arn, bucket_id, bucket_domain_name
@@ -56,13 +56,16 @@ terraform/
 │           └── observability_unit_test.tftest.hcl # Plan mode test verifying log retention and metric thresholds
 └── environments/
     └── prod/
-        ├── terraform.tf                      # S3 backend config with use_lockfile = true
-        ├── providers.tf                      # AWS provider with default_tags and region ap-southeast-1
+        ├── terraform.tf                      # Partial S3 backend configuration
+        ├── providers.tf                      # AWS provider with dual-mode support for live AWS and Floci local emulator
         ├── main.tf                           # Invokes all 5 modules and binds inputs/outputs
         ├── variables.tf                      # Environment-level variables with validation and defaults
         ├── outputs.tf                        # Production endpoints, bucket ARNs, and table names
         ├── locals.tf                         # Environment naming conventions
-        ├── terraform.tfvars.example          # Sample environment variable values
+        ├── backend-prod.hcl                  # Remote S3 backend config with use_lockfile = true
+        ├── backend-floci.hcl                 # Floci local S3 backend config (endpoint localhost:4566)
+        ├── floci.tfvars.example              # Sample variables configuration for Floci local testing
+        ├── terraform.tfvars.example          # Sample environment variable values for live AWS deployment
         └── tests/
             └── prod_unit_test.tftest.hcl     # End-to-end root plan test verifying full module orchestration
 ```
@@ -110,4 +113,3 @@ graph LR
 | `modules/database` | `pipeline_state_table_name` | `modules/api_gateway_compute` | `pipeline_state_table_name` | Configures Lambda environment variable for atomic retry count operations |
 | `modules/security_iam` | `webhook_lambda_role_arn` | `modules/api_gateway_compute` | `lambda_execution_role_arn` | Attaches least-privilege execution role to Lambda Webhook-Handler |
 | `modules/api_gateway_compute` | `api_gateway_id` | `modules/observability` | `http_api_id` | Targets CloudWatch metric alarms for API Gateway 5XX errors |
-

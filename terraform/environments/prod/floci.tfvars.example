@@ -1,0 +1,7 @@
+# Floci local emulator variables configuration
+environment   = "prod"
+project_name  = "signalscout"
+use_floci     = true
+force_destroy = true
+floci_endpoint = "http://localhost:4566"
+
