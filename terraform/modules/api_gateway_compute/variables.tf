@@ -45,6 +45,12 @@ variable "max_retry" {
   default     = 2
 }
 
+variable "enable_guardrails" {
+  description = "Controls whether to create Bedrock Guardrail, disabled in local emulators lacking API support"
+  type        = bool
+  default     = true
+}
+
 variable "tags" {
   description = "Custom resource tags merged with standard module telemetry tags"
   type        = map(string)

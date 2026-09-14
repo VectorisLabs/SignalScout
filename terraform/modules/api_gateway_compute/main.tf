@@ -21,11 +21,11 @@ resource "aws_lambda_function" "webhook_handler" {
 
   environment {
     variables = {
-      MARKET_THEMES_TABLE   = var.market_themes_table_name
-      PIPELINE_STATE_TABLE  = var.pipeline_state_table_name
+      MARKET_THEMES_TABLE    = var.market_themes_table_name
+      PIPELINE_STATE_TABLE   = var.pipeline_state_table_name
       RAW_MARKET_NEWS_BUCKET = var.raw_market_news_bucket_id
-      LANGFUSE_SECRET_NAME  = var.langfuse_webhook_secret_name
-      MAX_RETRY             = tostring(var.max_retry)
+      LANGFUSE_SECRET_NAME   = var.langfuse_webhook_secret_name
+      MAX_RETRY              = tostring(var.max_retry)
     }
   }
 
@@ -87,6 +87,7 @@ resource "aws_lambda_permission" "api_gateway" {
 }
 
 resource "aws_bedrock_guardrail" "analysis" {
+  count                     = var.enable_guardrails ? 1 : 0
   name                      = "${local.name_prefix}-analysis-guardrail"
   description               = "Bedrock guardrail protecting analysis worker reasoning from prompt injection"
   blocked_input_messaging   = "Request blocked by SignalScout prompt injection security policy"

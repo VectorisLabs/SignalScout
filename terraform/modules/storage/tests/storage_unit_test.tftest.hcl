@@ -33,7 +33,7 @@ run "verify_bucket_configuration" {
   }
 
   assert {
-    condition     = aws_s3_bucket_intelligent_tiering_configuration.raw_market_news.status == "Enabled"
+    condition     = aws_s3_bucket_intelligent_tiering_configuration.raw_market_news[0].status == "Enabled"
     error_message = "S3 Intelligent-Tiering configuration must be enabled"
   }
 }

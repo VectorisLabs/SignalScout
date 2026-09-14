@@ -35,12 +35,12 @@ run "verify_observability_configuration" {
   }
 
   assert {
-    condition     = aws_cloudtrail.main.name == "signalscout-prod-audit-trail"
+    condition     = aws_cloudtrail.main[0].name == "signalscout-prod-audit-trail"
     error_message = "CloudTrail trail name does not match expected convention"
   }
 
   assert {
-    condition     = aws_cloudtrail.main.enable_logging == true
+    condition     = aws_cloudtrail.main[0].enable_logging == true
     error_message = "CloudTrail logging must be enabled"
   }
 }

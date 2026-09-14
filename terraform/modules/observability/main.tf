@@ -73,6 +73,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
 }
 
 resource "aws_s3_bucket" "cloudtrail_logs" {
+  count         = var.enable_cloudtrail ? 1 : 0
   bucket        = "${local.name_prefix}-cloudtrail-logs"
   force_destroy = true
 
@@ -85,7 +86,8 @@ resource "aws_s3_bucket" "cloudtrail_logs" {
 }
 
 resource "aws_s3_bucket_public_access_block" "cloudtrail_logs" {
-  bucket = aws_s3_bucket.cloudtrail_logs.id
+  count  = var.enable_cloudtrail ? 1 : 0
+  bucket = aws_s3_bucket.cloudtrail_logs[0].id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -94,7 +96,8 @@ resource "aws_s3_bucket_public_access_block" "cloudtrail_logs" {
 }
 
 resource "aws_s3_bucket_policy" "cloudtrail_logs" {
-  bucket = aws_s3_bucket.cloudtrail_logs.id
+  count  = var.enable_cloudtrail ? 1 : 0
+  bucket = aws_s3_bucket.cloudtrail_logs[0].id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -106,7 +109,7 @@ resource "aws_s3_bucket_policy" "cloudtrail_logs" {
           Service = "cloudtrail.amazonaws.com"
         }
         Action   = "s3:GetBucketAcl"
-        Resource = aws_s3_bucket.cloudtrail_logs.arn
+        Resource = aws_s3_bucket.cloudtrail_logs[0].arn
       },
       {
         Sid    = "AWSCloudTrailWrite"
@@ -115,7 +118,7 @@ resource "aws_s3_bucket_policy" "cloudtrail_logs" {
           Service = "cloudtrail.amazonaws.com"
         }
         Action   = "s3:PutObject"
-        Resource = "${aws_s3_bucket.cloudtrail_logs.arn}/*"
+        Resource = "${aws_s3_bucket.cloudtrail_logs[0].arn}/*"
         Condition = {
           StringEquals = {
             "s3:x-amz-acl" = "bucket-owner-full-control"
@@ -131,8 +134,9 @@ resource "aws_s3_bucket_policy" "cloudtrail_logs" {
 }
 
 resource "aws_cloudtrail" "main" {
+  count                         = var.enable_cloudtrail ? 1 : 0
   name                          = "${local.name_prefix}-audit-trail"
-  s3_bucket_name                = aws_s3_bucket.cloudtrail_logs.id
+  s3_bucket_name                = aws_s3_bucket.cloudtrail_logs[0].id
   include_global_service_events = true
   is_multi_region_trail         = false
   enable_logging                = true

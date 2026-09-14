@@ -71,6 +71,12 @@ code_ref: "uncommitted"
 - What breaks if ignored: Changing deployment targets requires mutating source `.tf` files, risking accidental commit of local emulator endpoints to version control.
 - Rejected alternative: Local backend in prod - rejected because production requires durable remote state; separate environments/floci/ directory - rejected because it duplicates root configuration.
 
+### TP-D11: Floci Emulator Feature Isolation Flags
+- Decision: Provide feature flags `enable_intelligent_tiering`, `enable_guardrails`, and `enable_cloudtrail` defaulting to `true` across modules and root, while disabling them specifically in `floci.tfvars` for local emulator testing.
+- Why: Empirical apply verification against Floci container revealed that Floci v2.0.1 returns 400/409 errors on Bedrock `CreateGuardrail`, CloudTrail `ListTags`, and S3 `PutBucketIntelligentTieringConfiguration`. Isolating these through feature flags allows 26 out of 26 remaining core resources (DynamoDB, S3, IAM, API Gateway v2, Lambda, CloudWatch) to be deployed and validated locally on Floci with zero errors.
+- What breaks if ignored: Local developer apply cycles on Floci fail on unsupported API calls, blocking end-to-end integration testing and local webhook verification.
+- Rejected alternative: Permanently deleting Guardrail, CloudTrail, or Tiering resources - rejected because they are mandatory compliance and security requirements for live AWS production (`C8`, `C12`, `C16`); Maintaining separate module codebases for Floci - rejected because it causes drift between test and production IaC.
+
 ## Lessons Learned
 
 ### LL-01: Set Indexing in S3 Server-Side Encryption Tests
@@ -90,3 +96,9 @@ code_ref: "uncommitted"
 - Why it looked reasonable: Most AWS provider resources export `.arn`.
 - What disproved it: `aws_bedrock_guardrail` exports `guardrail_arn` rather than `arn`, producing `Error: Unsupported attribute`.
 - Fix applied: Updated output value to `aws_bedrock_guardrail.analysis.guardrail_arn`.
+
+### LL-04: Floci Emulator API Boundaries for Advanced AWS Services
+- Mistake: Attempting to provision Bedrock Guardrails, CloudTrail trails, and S3 Intelligent-Tiering directly on Floci v2.0.1 without feature flag toggles.
+- Why it looked reasonable: Floci's service catalogue reports `bedrock-runtime`, `cloudtrail`, and `s3` as enabled services.
+- What disproved it: Runtime apply calls failed with `400 InvalidAction: Could not find operation ListTags` (CloudTrail), `400 Bad Request: failed to decode response body` (Bedrock CreateGuardrail), and `409 BucketAlreadyOwnedByYou` (S3 PutBucketIntelligentTieringConfiguration).
+- Fix applied: Introduced `enable_intelligent_tiering`, `enable_guardrails`, and `enable_cloudtrail` variables defaulted to `true` and disabled in `floci.tfvars`.

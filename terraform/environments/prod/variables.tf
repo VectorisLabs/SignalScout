@@ -57,6 +57,24 @@ variable "force_destroy" {
   default     = false
 }
 
+variable "enable_intelligent_tiering" {
+  description = "Controls whether to create S3 Intelligent-Tiering configuration, disabled in emulators lacking API support"
+  type        = bool
+  default     = true
+}
+
+variable "enable_guardrails" {
+  description = "Controls whether to create Bedrock Guardrail, disabled in local emulators lacking API support"
+  type        = bool
+  default     = true
+}
+
+variable "enable_cloudtrail" {
+  description = "Controls whether to create CloudTrail audit trail, disabled in local emulators lacking API support"
+  type        = bool
+  default     = true
+}
+
 variable "tags" {
   description = "Custom resource tags merged with standard module telemetry tags"
   type        = map(string)

@@ -38,6 +38,12 @@ variable "deep_archive_access_days" {
   default     = 180
 }
 
+variable "enable_intelligent_tiering" {
+  description = "Controls whether to create S3 Intelligent-Tiering configuration, disabled in emulators lacking API support"
+  type        = bool
+  default     = true
+}
+
 variable "tags" {
   description = "Custom resource tags merged with standard module telemetry tags"
   type        = map(string)

@@ -16,6 +16,11 @@ use_floci = false
 # Floci endpoint (default: http://localhost:4566)
 floci_endpoint = "http://localhost:4566"
 
+# Feature flags (all enabled by default in live AWS)
+enable_intelligent_tiering = true
+enable_guardrails          = true
+enable_cloudtrail          = true
+
 # Optional SNS Topic ARN for operational alerts
 # alarm_sns_topic_arn = "arn:aws:sns:ap-southeast-1:123456789012:signalscout-alerts"
 
@@ -24,4 +29,3 @@ max_retry = 2
 
 # Force destroy buckets on teardown (set false in real production)
 force_destroy = false
-

@@ -65,6 +65,7 @@ terraform init -backend-config=backend-floci.hcl -reconfigure
 
 ### Step 2.4: Execute Terraform Plan on Floci
 ```powershell
+Copy-Item floci.tfvars.example floci.tfvars
 terraform plan -var-file=floci.tfvars -out=tfplan
 ```
 

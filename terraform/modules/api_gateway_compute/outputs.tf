@@ -25,11 +25,11 @@ output "lambda_function_arn" {
 
 output "guardrail_id" {
   description = "Bedrock Guardrail identifier attached to analysis model runtime"
-  value       = aws_bedrock_guardrail.analysis.guardrail_id
+  value       = var.enable_guardrails ? aws_bedrock_guardrail.analysis[0].guardrail_id : null
 }
 
 output "guardrail_arn" {
   description = "Amazon Resource Name of the Bedrock Guardrail"
-  value       = aws_bedrock_guardrail.analysis.guardrail_arn
+  value       = var.enable_guardrails ? aws_bedrock_guardrail.analysis[0].guardrail_arn : null
 }
 

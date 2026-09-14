@@ -38,6 +38,7 @@ resource "aws_s3_bucket_public_access_block" "raw_market_news" {
 }
 
 resource "aws_s3_bucket_intelligent_tiering_configuration" "raw_market_news" {
+  count  = var.enable_intelligent_tiering ? 1 : 0
   bucket = aws_s3_bucket.raw_market_news.id
   name   = "EntireBucket"
   status = "Enabled"

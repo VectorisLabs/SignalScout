@@ -20,6 +20,6 @@ output "lambda_error_alarm_arn" {
 
 output "cloudtrail_arn" {
   description = "Amazon Resource Name of the CloudTrail trail providing audit governance"
-  value       = aws_cloudtrail.main.arn
+  value       = var.enable_cloudtrail ? aws_cloudtrail.main[0].arn : null
 }
 

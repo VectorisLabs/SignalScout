@@ -36,6 +36,12 @@ variable "alarm_sns_topic_arn" {
   default     = null
 }
 
+variable "enable_cloudtrail" {
+  description = "Controls whether to create CloudTrail audit trail, disabled in local emulators lacking API support"
+  type        = bool
+  default     = true
+}
+
 variable "tags" {
   description = "Custom resource tags merged with standard module telemetry tags"
   type        = map(string)

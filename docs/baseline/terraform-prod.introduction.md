@@ -19,7 +19,7 @@ SignalScout operates as a proven hackathon POC (Agentic AI Build Week runner-up)
 
 The production Terraform infrastructure has been fully built across five reusable modules (`terraform/modules/storage`, `database`, `security_iam`, `api_gateway_compute`, `observability`) and the root production orchestration environment (`terraform/environments/prod`).
 
-All configurations have been validated (`terraform validate`), canonically formatted (`terraform fmt -check`), and verified offline with 100% passing tests via native `terraform test` and mock providers (`mock_provider "aws"`). A dual-mode configuration enables zero-cloud-cost testing via the Floci emulator on Docker alongside production AWS deployment.
+All configurations have been validated (`terraform validate`), canonically formatted (`terraform fmt -check`), and verified offline with 100% passing tests via native `terraform test` and mock providers (`mock_provider "aws"`). A dual-mode configuration enables zero-cloud-cost testing via the Floci emulator on Docker alongside production AWS deployment, with 26 core resources successfully applied and verified on local Floci.
 
 ## Target
 1. Modular Architecture: Deliver a clean, decoupled IaC layout separating reusable modules (`terraform/modules/`) from environment orchestration (`terraform/environments/prod/`).

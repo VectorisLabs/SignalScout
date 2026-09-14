@@ -34,7 +34,7 @@ run "verify_api_and_compute_configuration" {
   }
 
   assert {
-    condition     = aws_bedrock_guardrail.analysis.name == "signalscout-prod-analysis-guardrail"
+    condition     = aws_bedrock_guardrail.analysis[0].name == "signalscout-prod-analysis-guardrail"
     error_message = "Bedrock Guardrail name does not match expected convention"
   }
 }

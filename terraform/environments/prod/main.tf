@@ -1,10 +1,11 @@
 module "storage" {
   source = "../../modules/storage"
 
-  environment   = var.environment
-  project_name  = var.project_name
-  force_destroy = var.force_destroy
-  tags          = var.tags
+  environment                = var.environment
+  project_name               = var.project_name
+  force_destroy              = var.force_destroy
+  enable_intelligent_tiering = var.enable_intelligent_tiering
+  tags                       = var.tags
 }
 
 module "database" {
@@ -37,6 +38,7 @@ module "api_gateway_compute" {
   pipeline_state_table_name    = module.database.pipeline_state_table_name
   langfuse_webhook_secret_name = module.security_iam.langfuse_webhook_secret_name
   max_retry                    = var.max_retry
+  enable_guardrails            = var.enable_guardrails
   tags                         = var.tags
 }
 
@@ -48,6 +50,7 @@ module "observability" {
   api_gateway_id       = module.api_gateway_compute.api_gateway_id
   lambda_function_name = module.api_gateway_compute.lambda_function_name
   alarm_sns_topic_arn  = var.alarm_sns_topic_arn
+  enable_cloudtrail    = var.enable_cloudtrail
   tags                 = var.tags
 }
 
