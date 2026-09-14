@@ -1,0 +1,246 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "SignalScout Terraform Provisioning Lifecycle",
+    "output": "terraform-provision-workflow.html",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "floci-dual-mode",
+        "label": "Offline & Floci Emulation",
+        "focus": ["node_fmt", "node_test", "node_floci"],
+        "note": "Verify formatting, run mock unit tests, and validate 26 resources on the Floci emulator."
+      },
+      {
+        "id": "approval-governance",
+        "label": "Production Governance & Safety",
+        "focus": ["node_aws_plan", "node_approval", "node_aws_apply", "node_reject"],
+        "note": "Enforce mandatory human approval gate before executing terraform apply on live AWS."
+      },
+      {
+        "id": "full-lifecycle",
+        "label": "End-to-End Delivery Pipeline",
+        "focus": ["node_fmt", "node_test", "node_floci", "node_aws_plan", "node_approval", "node_aws_apply"],
+        "note": "Trace complete lifecycle from code verification to production cloud deployment."
+      }
+    ]
+  },
+  "lanes": [
+    {
+      "id": "lane_local",
+      "label": "Local Development & Governance",
+      "variant": "normal"
+    },
+    {
+      "id": "lane_floci",
+      "label": "Floci Local Emulator (:4566)",
+      "variant": "normal"
+    },
+    {
+      "id": "lane_aws",
+      "label": "AWS Cloud Production (ap-southeast-1)",
+      "variant": "normal"
+    }
+  ],
+  "phases": [
+    {
+      "id": "phase_static",
+      "label": "Static & Unit Verification",
+      "fromCol": 0,
+      "toCol": 1,
+      "variant": "default"
+    },
+    {
+      "id": "phase_emulation",
+      "label": "Floci Emulation",
+      "fromCol": 2,
+      "toCol": 2,
+      "variant": "emphasis"
+    },
+    {
+      "id": "phase_prod",
+      "label": "AWS Governance & Live Deployment",
+      "fromCol": 3,
+      "toCol": 5,
+      "variant": "security"
+    }
+  ],
+  "groups": [
+    {
+      "id": "group_static",
+      "label": "Zero-Cost Offline Checks",
+      "lane": "lane_local",
+      "fromCol": 0,
+      "toCol": 1,
+      "variant": "default"
+    },
+    {
+      "id": "group_floci",
+      "label": "Containerized Emulation",
+      "lane": "lane_floci",
+      "fromCol": 2,
+      "toCol": 2,
+      "variant": "emphasis"
+    },
+    {
+      "id": "group_aws",
+      "label": "Live Production Infrastructure",
+      "lane": "lane_aws",
+      "fromCol": 3,
+      "toCol": 5,
+      "variant": "security"
+    }
+  ],
+  "mainPath": [
+    "node_fmt",
+    "node_test",
+    "node_floci",
+    "node_aws_plan",
+    "node_approval",
+    "node_aws_apply"
+  ],
+  "nodes": [
+    {
+      "id": "node_fmt",
+      "lane": "lane_local",
+      "col": 0,
+      "type": "backend",
+      "label": "Code & Format",
+      "sublabel": "terraform fmt -check",
+      "tag": "Zero Comments",
+      "width": 140
+    },
+    {
+      "id": "node_test",
+      "lane": "lane_local",
+      "col": 1,
+      "type": "backend",
+      "label": "Mock Unit Tests",
+      "sublabel": "terraform test",
+      "tag": "8 Suites Pass",
+      "width": 140
+    },
+    {
+      "id": "node_floci",
+      "lane": "lane_floci",
+      "col": 2,
+      "type": "cloud",
+      "label": "Floci Emulation",
+      "sublabel": "apply on :4566",
+      "tag": "26 Resources OK",
+      "width": 140
+    },
+    {
+      "id": "node_aws_plan",
+      "lane": "lane_aws",
+      "col": 3,
+      "type": "cloud",
+      "label": "AWS Remote Plan",
+      "sublabel": "terraform plan",
+      "tag": "use_lockfile",
+      "width": 140
+    },
+    {
+      "id": "node_approval",
+      "lane": "lane_local",
+      "col": 4,
+      "type": "security",
+      "label": "Approval Gate",
+      "sublabel": "Operator Sign-off",
+      "tag": "Hard Gate Rule",
+      "width": 140
+    },
+    {
+      "id": "node_aws_apply",
+      "lane": "lane_aws",
+      "col": 5,
+      "type": "cloud",
+      "label": "Production Apply",
+      "sublabel": "terraform apply",
+      "tag": "ap-southeast-1",
+      "width": 140
+    },
+    {
+      "id": "node_reject",
+      "lane": "lane_local",
+      "col": 5,
+      "type": "security",
+      "label": "Revise HCL",
+      "sublabel": "Plan Rejected",
+      "tag": "Safe Stop",
+      "width": 140
+    }
+  ],
+  "edges": [
+    {
+      "id": "fmt-to-test",
+      "from": "node_fmt",
+      "to": "node_test",
+      "label": "syntax valid",
+      "variant": "default"
+    },
+    {
+      "id": "test-to-floci",
+      "from": "node_test",
+      "to": "node_floci",
+      "label": "unit pass",
+      "variant": "emphasis"
+    },
+    {
+      "id": "floci-to-plan",
+      "from": "node_floci",
+      "to": "node_aws_plan",
+      "label": "verified runtime",
+      "variant": "emphasis"
+    },
+    {
+      "id": "plan-to-approval",
+      "from": "node_aws_plan",
+      "to": "node_approval",
+      "label": "review diff",
+      "variant": "security"
+    },
+    {
+      "id": "approval-to-apply",
+      "from": "node_approval",
+      "to": "node_aws_apply",
+      "label": "approved",
+      "variant": "emphasis"
+    },
+    {
+      "id": "approval-to-reject",
+      "from": "node_approval",
+      "to": "node_reject",
+      "label": "rejected",
+      "variant": "security",
+      "role": "error"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Static Verification",
+      "items": [
+        "Enforces zero '#' comments in HCL files with canonical formatting",
+        "100% offline unit test pass via native mock providers"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Local Emulation",
+      "items": [
+        "Quarkus Native Floci emulator running in Docker on port 4566",
+        "26 core resources verified with feature isolation flags"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Production Safety",
+      "items": [
+        "Remote S3 backend with native lockfile protection",
+        "Mandatory human approval gate strictly blocks autonomous apply"
+      ]
+    }
+  ]
+}
