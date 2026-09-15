@@ -1,201 +1,241 @@
 <div align="center">
 
-![Architect](docs/assets/architect-v1.png)
-
-# SignalScout - Strategic Change Radar
-
-> **An evidence-first, multi-agent early-warning system on AWS that connects scattered corporate-restructuring signals into one auditable risk story - every claim traceable to its verified source.**
-
-[![Runner Up](https://img.shields.io/badge/🏆_Agentic_AI_Build_Week_2026-Runner_Up_|_AWS_Track-ff9900?style=for-the-badge)](https://awsbuildweek.dev)
-
-<img src="docs/assets/winner.webp" alt="SignalScout team - Runner Up, AWS Track at Agentic AI Build Week 2026" width="680" />
-
-*Our team celebrating at Agentic AI Build Week 2026*
-
-</div>
-
 ---
 
 ### We did it!
 
-A massive thank you to the **AWS Build Week** organizers, judges, mentors, and every teammate who poured weekends and late nights into making SignalScout a reality. Being named **Runner Up on the AWS Track** validates our vision: corporate restructuring intelligence should be evidence-first, temporally honest, deterministically scored, and fully auditable - no hallucinations, no guesswork.
+A massive thank you to the **Agentic AI Build Week** organizers, judges, mentors, and every teammate who poured weekends and late nights into making SignalScout a reality. Being named **Runner Up on the AWS Track** validates our vision: corporate restructuring intelligence should be evidence-first, temporally honest, deterministically scored, and fully auditable - no hallucinations, no guesswork.
 
 ---
 
-## The Problem
+<div align="center">
+
+---
+
+## Executive Overview
 
 Enterprise risk rarely arrives as one clear headline.
 
-A supplier may announce workforce reductions. Weeks later, it may terminate a debt exchange, file a financial report late, amend its credit agreement, or replace senior executives. Each event can have a reasonable explanation on its own. The real information lies in the **cluster** - and in how that cluster evolves over time.
+Public disclosures and restructuring events accumulate across fragmented sources over months: workforce reductions, cancelled debt exchanges, delayed SEC filings, credit covenant defaults, repeated financing amendments, and sudden leadership departures. In isolation, each event often has a benign explanation. The real risk lies in the **cluster** - and how that cluster evolves over time.
 
-Today, procurement, supply-chain, sales, and risk teams monitor counterparties through manual searches, spreadsheets, news alerts, and individual analyst judgment. This process is slow, difficult to audit, and especially weak at connecting small signals spread across different documents and dates.
+Today, enterprise risk analysts, procurement leads, and commercial-exposure teams monitor counterparties through manual searches, spreadsheets, disconnected news alerts, and subjective analyst judgment. This workflow is slow, difficult to audit, and systematically vulnerable to missing subtle connections spread across disparate documents and publication dates.
 
-**The 2023 collapse of Bed Bath & Beyond illustrates the problem.** Public evidence accumulated over several months - workforce reductions, a terminated debt exchange, delayed filings, credit-agreement defaults, repeated financing amendments - before the Chapter 11 filing on April 23, 2023. For a supplier extending unsecured credit, these were not merely financial-market events. They were signals to reconsider payment terms, shipment volumes, insurance coverage, and alternative distribution channels.
+**The 2023 collapse of Bed Bath & Beyond illustrates the problem.** Over eight months prior to its Chapter 11 filing on April 23, 2023, public evidence mounted steadily: corporate layoffs, cancelled debt exchanges, delinquent reporting, lender covenant defaults, and distressed financing amendments. For a supplier extending unsecured credit or a buyer managing supply-chain continuity, these were critical early indicators to adjust payment terms, recalibrate shipment volumes, and secure alternative channels.
 
-No single signal was alarming. The cluster was.
-
----
-
-## What SignalScout Does
-
-SignalScout converts verified public documents into structured risk signals and correlates them over time. The system focuses on one deeply researched case rather than pretending to monitor the entire market at once. The historical replay uses only evidence that was publicly available at each point in time.
-
-### 1. Structures Raw Evidence
-
-Each source document is converted into normalized events: workforce reduction, executive departure, debt/covenant event, delayed filing, guidance cut, asset sale, facility closure. Each signal carries a company identifier, event type, date, confidence, source URL, exact excerpt, and immutable evidence ID.
-
-### 2. Calculates an Explainable Risk Score
-
-A **deterministic** scoring function weights signals by type, confidence, source quality, and recency. Only the strongest event of each type contributes within a time window, preventing repeated news coverage from inflating the score. Synergy rules recognize dangerous combinations - a workforce reduction followed by a debt default, for example. The AI does not invent or override this score.
-
-### 3. Builds a Historical Replay
-
-The dashboard reconstructs what SignalScout would have known on each historical date. Future documents are excluded. As evidence accumulates, the case progresses through: `MONITORING → INVESTIGATING → HIGH RISK → OUTCOME`.
-
-### 4. Challenges Its Own Conclusion
-
-Before producing a final report, an AI **Challenger** (running on a different model family to reduce blind spots) searches for reasonable benign explanations: Was the workforce reduction a normal efficiency program? Was the financing amendment routine? The system records the strongest counterargument instead of hiding uncertainty.
-
-### 5. Produces Evidence-Backed Actions
-
-SignalScout generates persona-specific recommendations for procurement, sales, and risk teams. Every factual claim references an evidence ID. If supporting evidence is missing, the claim is rejected rather than displayed.
-
-### 6. Lets Judges Inspect the Evidence Live
-
-The historical replay is presented as a pre-recorded video for reliability. After the video, judges use the live dashboard to inspect the timeline, risk report, Challenger verdict, and recommended actions. Selecting a citation opens the exact source excerpt supporting that claim.
+SignalScout transforms scattered corporate disclosures into an auditable, temporal early-warning intelligence radar. Every factual claim is rooted in immutable public evidence, scored by deterministic code, challenged by an adversarial AI, and self-corrected through an automated Reflexion loop on Amazon Bedrock AgentCore.
 
 ---
 
-## Target User
+## Target User & Strategic Postures
 
-Primary user: a strategy, competitive-intelligence, enterprise-risk, procurement, supplier-risk, or commercial-exposure analyst preparing an executive decision review.
+SignalScout is engineered for strategy, competitive-intelligence, enterprise-risk, procurement, supplier-risk, and commercial-exposure analysts preparing executive decision reviews.
 
-### Job to be Done
+### Job to Be Done
 
 > "When a watched company begins restructuring, show me the evidence cluster, the financial and operating metrics affected, the plausible response scenarios, and what leadership should review next."
 
-### Core Decision
+### Core Executive Postures
 
-The executive chooses one posture:
+SignalScout frames findings into three distinct **review postures** (decision support, not autonomous actions):
 
-- **MAINTAIN** - monitor and preserve the current plan.
-- **ADAPT** - make bounded changes to pricing, inventory, channels, footprint, supplier exposure, or operating model.
-- **ACCELERATE** - act aggressively while the competitor is distracted or structurally weakened.
-
-These are **review postures**, not autonomous decisions. SignalScout is not a bankruptcy predictor, its story index is not a calibrated probability, and its scenarios are decision support rather than certified forecasts.
+| Posture        | Strategic Intent     | Operational Meaning                                                                                   |
+| -------------- | -------------------- | ----------------------------------------------------------------------------------------------------- |
+| `MAINTAIN`   | Monitor and Preserve | Maintain the current operating plan while monitoring risk signal velocity.                            |
+| `ADAPT`      | Bounded Adjustments  | Implement bounded changes to credit limits, shipment volumes, inventory, pricing, or vendor exposure. |
+| `ACCELERATE` | Capture Advantage    | Act decisively to capture market share or talent while the counterparty is structurally distracted.   |
 
 ---
 
-## Production Architecture
+## Quickstart
 
-SignalScout is a fully serverless, multi-agent **supervisor-worker** system on **Amazon Bedrock AgentCore Runtime**, built with the **AWS Strands Agents SDK**.
+Experience SignalScout locally in under 3 minutes through two zero-cloud-cost pathways.
+
+### Track 1: Interactive Web Replay Dashboard
+
+Explore the historical backtest replay interface for Bed Bath & Beyond (2023) and Intel (2024) with pre-packaged, validated evidence bundles:
+
+```bash
+# 1. Clone repository
+git clone https://github.com/VectorisLabs/SignalScout.git
+cd SignalScout
+
+# 2. Install workspace dependencies
+npm install
+
+# 3. Launch the development workspace (Backend + Frontend)
+npm run dev
+```
+
+Open `http://localhost:5173` in your browser to interact with the timeline replay, inspect citation excerpts down to verified source URLs, review adversarial Challenger counterarguments, and explore executive posture recommendations.
+
+### Track 2: Zero-Cloud-Cost IaC Offline Verification
+
+Verify the entire production AWS Terraform infrastructure offline in 2 seconds using native Terraform mock providers (`mock_provider "aws"`):
+
+```bash
+# Execute end-to-end plan-mode unit tests across all 5 modules and production root
+terraform -chdir=terraform/environments/prod test
+```
+
+This validates 100% of the HCL logic, least-privilege IAM policies, S3 Intelligent-Tiering transitions, DynamoDB On-Demand tables, HTTP API Gateway routing, and CloudWatch alarms without requiring live AWS credentials, network access, or cloud costs.
+
+> **Local Emulation Note:** To execute live plan and apply cycles against a local Quarkus Native container, see the [Operator Guide (Floci Emulation)](docs/baseline/terraform-prod.useguide.md#2-local-floci-emulation-workflow).
+
+---
+
+## System Architecture
+
+SignalScout is built as a serverless, multi-agent **supervisor-worker** system running on **Amazon Bedrock AgentCore Runtime** with the **AWS Strands Agents SDK**.
 
 ![Production Architecture](docs/assets/architect-v1.png)
 
 ### Multi-Agent Topology
 
-| Agent | Role | Model | Tools |
-|-------|------|-------|-------|
-| **Management** (supervisor) | Orchestrates using a star pattern - invokes each worker sequentially; workers never call each other | Claude Sonnet (Bedrock) | InvokeAgentRuntime (A2A protocol) |
-| **Crawler** (worker) | Collects evidence, applies rule-based tool selection, sanitizes raw JSON in plain code before anything reaches the model | Claude Sonnet (Bedrock) | TinyFish Search/Fetch/Agent, Apify Actors |
-| **Analysis** (worker) | Performs theme correlation and risk reasoning on clean, structured evidence | Claude Sonnet (Bedrock) + Guardrails | None - receives data via payload |
-| **Challenger** | Searches for benign explanations, weakens or supports the hypothesis | GPT (OpenAI, cross-model) | None - evidence pack only |
+| Agent                             | Architecture Role                                                                                                              | Foundation Model                     | Tooling & Isolation                             |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------ | ----------------------------------------------- |
+| **Management** (Supervisor) | Orchestrates the pipeline via a star pattern; invokes workers sequentially; workers never communicate directly                 | Claude Sonnet (Bedrock)              | `InvokeAgentRuntime` (A2A protocol)           |
+| **Crawler** (Worker)        | Collects candidate documents from IR pages, news, and filings; sanitizes and filters JSON in plain code before model ingestion | Claude Sonnet (Bedrock)              | TinyFish Search/Fetch/Agent, Apify Actors       |
+| **Analysis** (Worker)       | Performs risk reasoning and theme correlation across structured evidence; guarded against prompt injection                     | Claude Sonnet (Bedrock) + Guardrails | Payload-only input; no external network tools   |
+| **Challenger** (Adversary)  | Challenges hypotheses, searches for benign explanations, and weakens ungrounded claims                                         | GPT (OpenAI, cross-model)            | Evidence pack only; cross-model bias mitigation |
 
-The Challenger deliberately uses a **different model family** (GPT vs. Claude) to reduce correlated blind spots. An alert fires only when `risk_score >= T_alert` **and** the Challenger does not weaken the hypothesis.
+The Challenger deliberately operates on a **different model family** (GPT vs. Claude) to eliminate correlated blind spots. An executive alert fires only when `risk_score >= T_alert` (0.75) **and** the Challenger does not weaken the core hypothesis.
 
 ### Self-Correction Loop (Reflexion)
 
-When Analysis completes, the trace and an LLM-as-Judge score are exported to Langfuse. A **high score** triggers a webhook that writes the validated result to S3 + DynamoDB for display. A **low score** triggers an alert webhook to a dedicated HMAC-verified API Gateway endpoint, where a Lambda reads the atomic `retry_count` from DynamoDB - below the limit, it re-invokes Management with a verbal `critique` on the same session; above the limit, it flags the case for human review.
+SignalScout implements an automated Reflexion self-correction loop to guarantee factual consistency:
 
-Every retry **must** include a critique so the agent corrects the specific failure rather than repeating it.
+```mermaid
+flowchart TD
+    Analysis["Analysis Worker"] -->|Trace & LLM-as-Judge| Langfuse["Langfuse Telemetry"]
+  
+    Langfuse -->|Score >= 0.85| WebhookPass["Webhook Trigger"]
+    Langfuse -->|Score < 0.85| WebhookFail["Alert Webhook Endpoint<br/>(HMAC Signature Verified)"]
+  
+    WebhookPass --> LambdaPass["Lambda Webhook-Handler"]
+    LambdaPass --> Persist["Write S3 (PutObject) & DynamoDB (UpdateItem)"]
+  
+    WebhookFail --> LambdaFail["Lambda Webhook-Handler"]
+    LambdaFail --> CheckRetry{"Check atomic retry_count in DynamoDB"}
+  
+    CheckRetry -->|retry < 2| Reinvoke["Re-invoke Management Supervisor<br/>(With verbal critique on same session)"]
+    CheckRetry -->|retry >= 2| Escalate["Flag Human Review<br/>(status: needs_human_review)"]
+  
+    Reinvoke -.->|Self-Correction Loop| Analysis
+```
 
-### Data Flow: Write vs. Read
+1. Every reasoning pass exports telemetry and an LLM-as-Judge evaluation score to **Langfuse**.
+2. A high evaluation score triggers a webhook that invokes the Webhook-Handler Lambda to persist results.
+3. A low score triggers an alert webhook hitting a dedicated HMAC-verified API Gateway endpoint.
+4. The Lambda inspects an atomic `retry_count` in DynamoDB:
+   - If under the retry ceiling (`MAX_RETRY = 2`), it re-invokes the Management supervisor on the same session, injecting an actionable verbal `critique` detailing the exact deficiency.
+   - If the limit is reached, it sets status to `needs_human_review` and halts execution, guaranteeing fail-safe termination.
 
-| Phase | Flow | Rationale |
-|-------|------|-----------|
-| **Write** (pipeline completes) | S3 first → DynamoDB second | Avoid DynamoDB pointing to a file that doesn't exist yet |
-| **Read** (user opens dashboard) | DynamoDB first → S3 second (presigned URL) | Need the S3 key before generating a download URL |
+### Decoupled Data Flow: Write vs. Read
 
-These are two separate lifecycles - never chained into one.
+| Phase                                           | Execution Flow                                                                              | Architectural Rationale                                                                                           |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Write Lifecycle** (Pipeline completion) | Lambda Webhook-Handler&rarr; S3 (`PutObject`) &rarr; DynamoDB (`UpdateItem`)            | Writing to S3 first prevents DynamoDB records from referencing non-existent objects if storage fails.             |
+| **Read Lifecycle** (Dashboard access)     | Browser&rarr; AppSync &rarr; DynamoDB lookup &rarr; S3 Presigned URL &rarr; Direct download | Retrieving the S3 key from DynamoDB enables generation of short-lived presigned URLs for private asset retrieval. |
 
 ---
 
-## Deterministic Signal Scoring
+## Architecture v2 - AWS-Native Optimization
 
-The scoring engine is **pure code** - no model involvement.
+The second architecture iteration introduces an AWS-native tool gateway and memory layer for enhanced operational efficiency and distributed observability:
 
-### Event Taxonomy (7 types, fixed during build)
+![Architect v2](docs/assets/architect-v2.jpeg)
 
-| Event Type | Weight | Magnitude Examples |
-|-----------|--------|-------------------|
-| `debt_event` | 0.30 | going-concern → 1.0, downgrade/covenant → 0.8, refinancing → 0.5 |
-| `exec_departure` | 0.25 | CEO/CFO → 0.9, COO/CTO → 0.7, VP/board → 0.4 |
-| `layoff` | 0.22 | >8% workforce → 0.9, 3-8% → 0.6, <3% → 0.3 |
-| `guidance_cut` | 0.20 | Suspend dividend → 0.9, lower guidance → 0.6, cut capex → 0.5 |
-| `asset_sale` | 0.18 | Strategic BU → 0.8, other → 0.5 |
-| `facility_closure` | 0.12 | Multiple → 0.7, single → 0.3 |
-| `hiring_freeze` | 0.10 | Company-wide → 0.6, single unit → 0.3 |
+| Architectural Enhancement                 | Implementation Mechanism                                        | System Benefit                                                                                       |
+| ----------------------------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **AgentCore Gateway + MCP**         | Replaces direct HTTPS calls with a centralized MCP tool gateway | Centralized tool registry, unified rate limiting, and zero agent code changes when updating scrapers |
+| **AgentCore Memory (Short Memory)** | Dedicated session state managed by the Management supervisor    | Eliminates re-fetching context across retries, reducing Bedrock token consumption in Reflexion loops |
+| **Distributed Tracing with X-Ray**  | Integrated alongside Amazon CloudWatch and AWS CloudTrail       | End-to-end trace correlation across multi-agent A2A handoffs and Lambda webhook handlers             |
+| **Decoupled Trace Export Lambda**   | Dedicated Lambda routing between Analysis and Langfuse          | Cleanly isolates webhook processing from observability telemetry dispatch                            |
 
-### Scoring Formula
+---
 
-```
-base(company, t) = Sum [ w(event_type) x magnitude x exp(-days_since / 30) ]
-                   (only strongest signal per event_type in 90-day window)
+## Engineering Deep-Dives
+
+### Deterministic Signal Scoring
+
+Risk scoring in SignalScout is **pure code** - foundation models never compute, override, or hallucinate risk scores.
+
+```text
+base(company, t) = Sum [ w(event_type) * magnitude * exp(-days_since / 30) ]
+                   (evaluated across a 90-day rolling window; strongest signal per type)
 
 score = min(1.0, base + synergy_bonus)
 ```
 
-**Synergy bonuses** (when both types co-occur in the window):
+- `T_investigate = 0.55`: Triggers multi-agent investigative reasoning and structured timeline replay.
+- `T_alert = 0.75`: Triggers executive early-warning notification (requires Challenger non-weakening).
 
-| Combination | Bonus |
-|-------------|-------|
-| layoff + debt_event | +0.15 |
-| exec_departure(CFO) + debt_event | +0.15 |
-| layoff + exec_departure | +0.10 |
-| asset_sale + debt_event | +0.10 |
-| 4+ different event types | +0.15 |
+<details>
+<summary>View Full 7-Event Taxonomy and Synergy Bonus Rules</summary>
 
-**Thresholds:**
+#### Event Taxonomy (7 Types, Fixed Schema)
 
-- `T_investigate = 0.55` - triggers the multi-agent reasoning graph.
-- `T_alert = 0.75` - eligible for alert (requires Challenger not weakening).
+| Event Type           | Weight | Description & Magnitude Examples                                                                     |
+| -------------------- | ------ | ---------------------------------------------------------------------------------------------------- |
+| `debt_event`       | 0.30   | Going-concern warning (1.0), credit downgrade or covenant breach (0.8), distressed refinancing (0.5) |
+| `exec_departure`   | 0.25   | CEO or CFO resignation/termination (0.9), COO/CTO (0.7), VP/board member (0.4)                       |
+| `layoff`           | 0.22   | Major workforce reduction >8% (0.9), 3% - 8% (0.6), minor reduction <3% (0.3)                        |
+| `guidance_cut`     | 0.20   | Dividend suspension (0.9), lowered revenue/profit guidance (0.6), capex reduction (0.5)              |
+| `asset_sale`       | 0.18   | Sale of core strategic business unit (0.8), non-core facility/asset liquidation (0.5)                |
+| `facility_closure` | 0.12   | Multiple store/factory closures (0.7), single facility consolidation (0.3)                           |
+| `hiring_freeze`    | 0.10   | Enterprise-wide hiring freeze (0.6), single department freeze (0.3)                                  |
 
-### Why Deterministic?
+#### Synergy Bonus Matrix
 
-- Reproducible: same inputs always produce the same score.
-- Auditable: analysts can trace exactly why a score changed.
-- Tunable: weights live in configuration, not in model behavior.
-- Safe: the AI drafts explanations, but code decides whether those explanations are admissible.
+When critical events co-occur within the 90-day window, non-linear risk compounding is applied:
 
----
+| Event Combination                        | Synergy Bonus | Rationale                                                                                      |
+| ---------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------- |
+| `layoff` + `debt_event`              | +0.15         | Operational contraction coupled with liquidity pressure signals severe cash distress.          |
+| `exec_departure(CFO)` + `debt_event` | +0.15         | Financial leadership change during credit negotiations indicates internal accounting distress. |
+| `layoff` + `exec_departure`          | +0.10         | Dual disruption in human capital and executive governance.                                     |
+| `asset_sale` + `debt_event`          | +0.10         | Forced asset disposal to service maturing obligations.                                         |
+| 4+ Distinct Event Types                  | +0.15         | Broad-spectrum multi-vector operational breakdown.                                             |
 
-## Collector Routing Policy
+</details>
 
-TinyFish and Apify are invoked as **model tools** within the Crawler Subagent. Selection follows rules in code - there is no separate "Collector Router" service.
+### Evidence Gate & Temporal Integrity
 
-### Priority Order
+Before any candidate document reaches model reasoning or public presentation, the Evidence Gate enforces strict fail-closed validation:
 
-```text
-1. Approved internal cache
-2. Official structured API (SEC EDGAR)
-3. TinyFish Search (URL unknown, need discovery)
-4. TinyFish Fetch (1-10 known URLs, need clean content)
-5. TinyFish Agent (requires adaptive browser interaction)
-6. Apify Actor (batch >10 URLs, recurring, tested actor exists)
-7. Human evidence request (no permitted route)
-```
+- **Entity Resolution**: Exact CIK, legal entity, and ticker matching.
+- **Authoritative Provenance**: Canonical source URL and SEC accession number.
+- **Strict Temporal Boundary**: Enforces `publicly_available_at <= replay_as_of` to prevent hindsight bias.
+- **Immutable Hashing**: Cryptographic SHA-256 verification of frozen source HTML/PDF content.
+- **Source Deduplication**: Identical disclosures across multiple syndication outlets are normalized to a single evidence entity.
+- **Fail-Closed Gate**: Missing any mandatory attribute blocks candidate ingestion immediately.
 
-### Non-Negotiable Rules
+### Trust Boundaries & Defense-in-Depth
 
-1. Prefer official structured APIs over every crawler.
-2. Treat every TinyFish/Apify result as `UNTRUSTED_SOURCE_CANDIDATE`.
-3. A candidate becomes evidence only after the Evidence Gate approves it.
-4. Never expose API keys, credentials, or private URLs to model, UI, or logs.
-5. Never send raw collector output into scoring or factual conclusions.
-6. Stop when the evidence request is satisfied or budget is exhausted.
-7. Do not call a more expensive tool when a cheaper one suffices.
+| Subsystem                 | Trusted Role    | Untrusted Input Vector                                | Security Control                                                         |
+| ------------------------- | --------------- | ----------------------------------------------------- | ------------------------------------------------------------------------ |
+| **Search Engine**   | URL Discovery   | Malicious SERP rankings, prompt injection in snippets | Domain allowlists, query parameter sanitization, strict deduplication    |
+| **Web Fetcher**     | Raw Retrieval   | Remote web payloads, hidden CSS prompt injections     | Content-type validation, HTML stripping, max body size limits            |
+| **Evidence Store**  | Fact Repository | Unverified document excerpts                          | Cryptographic SHA-256 validation, temporal eligibility checks            |
+| **Model Reasoning** | Risk Synthesis  | Adversarial jailbreaks embedded in unstructured news  | Mandatory Amazon Bedrock Guardrails, fail-closed JSON schema enforcement |
+| **User Interface**  | Visualization   | Stale or ungrounded claims                            | Render blockers on unverified evidence IDs, citation resolution checks   |
 
-### Per-Review Budget (application-enforced)
+<details>
+<summary>View Collector Routing Policy and Invariant Rules</summary>
+
+#### Collector Routing Hierarchy
+
+TinyFish and Apify are invoked as model tools within the Crawler subagent following deterministic rules in code:
+
+1. **Approved Internal Cache**: Fast-path cache lookup for immutable filings.
+2. **Official Structured APIs**: SEC EDGAR direct ingestion.
+3. **TinyFish Search**: URL discovery when target destination is unindexed.
+4. **TinyFish Fetch**: Clean content extraction for 1 - 10 known URLs.
+5. **TinyFish Agent**: Adaptive browser interaction for complex investor-relations pages.
+6. **Apify Actors**: Batch news scraping (>10 URLs) and recurring news feeds.
+7. **Human Escalation**: Fallback when automated extraction is disallowed by policy.
+
+#### Per-Review Enforced Budget
 
 ```json
 {
@@ -209,201 +249,90 @@ TinyFish and Apify are invoked as **model tools** within the Crawler Subagent. S
 }
 ```
 
----
+</details>
 
-## Evidence Gate
+<details>
+<summary>View 12 Core Architectural Decisions</summary>
 
-Before any candidate enters scoring, reasoning, or the public UI, the Evidence Gate verifies:
+| #  | Architecture Decision                                       | Technical Rationale                                                                                  |
+| -- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| 1  | Multi-agent supervisor-worker (star topology)               | Provides centralized quality control, auditable handoffs, and decoupled worker scaling.              |
+| 2  | No Lambda-calls-Lambda or direct Runtime-calls-Runtime      | Prevents double billing during synchronous waits and eliminates tight runtime coupling.              |
+| 3  | Direct HTTPS calls from AgentCore Runtime                   | Eliminates over-engineering an MCP gateway for single-tool workers in initial production.            |
+| 4  | TinyFish and Apify as model tools within Crawler            | Allows the model to determine collection timing while selection rules stay in plain code.            |
+| 5  | Plain-code sanitization before model ingestion              | Reduces Bedrock token consumption and mitigates prompt injection before model processing.            |
+| 6  | S3 Intelligent-Tiering with multi-attempt versioning        | Optimizes storage lifecycle automatically while preserving full historical auditability.             |
+| 7  | DynamoDB atomic counter for`retry_count`                  | Guarantees race-condition prevention across concurrent asynchronous webhook retries.                 |
+| 8  | Two DynamoDB tables (`MarketThemes` vs `PipelineState`) | Isolates public display records from sensitive operational telemetry (`session_id`, `critique`). |
+| 9  | Mandatory Bedrock Guardrails on Analysis worker             | Enforces defense-in-depth where untrusted external text enters deep model reasoning.                 |
+| 10 | Cross-model Challenger (OpenAI GPT vs. Anthropic Claude)    | Mitigates correlated model biases and hallucination loops through heterogeneous reasoning.           |
+| 11 | 100% Serverless consumption-based design                    | Ensures zero idle cost; AgentCore runtimes are not billed during external I/O waits.                 |
+| 12 | Dedicated signature-verified webhook API Gateway            | Decouples third-party Langfuse callbacks (HMAC verified) from user Cognito JWT auth.                 |
 
-- Legal entity and CIK
-- Canonical source URL and accession (where applicable)
-- Public `available_at` from authoritative metadata
-- `available_at <= replay_as_of` (temporal integrity)
-- Excerpt-to-observation support
-- Frozen artifact and SHA-256 hash
-- Duplicate source bundle identity
-- Permitted source type and signal taxonomy
-- Rights status for stored and displayed content
-- Absence of later outcome leakage
-- Curator approval
-
-The gate is **fail-closed**: any missing field blocks the candidate. Approved output carries stable `evidence_id` values. AI claims must cite those IDs, not candidate IDs.
-
----
-
-## Trust Boundaries and Safety
-
-| Boundary | Trusted Role | Untrusted Input | Control |
-|----------|-------------|----------------|---------|
-| Search | URL discovery | Ranking, snippets | Allowlist/denylist, dedupe |
-| Fetch | Text retrieval | Remote content, injection | Size limits, content-type checks, no instruction execution |
-| Evidence | Historical facts | Unapproved excerpt | Source/evidence IDs, rights, `available_at` |
-| Metrics | Structured observations | Ambiguous labels | Deterministic parsing, ambiguity rejection |
-| LLM | Narrative draft | Hallucinated facts | JSON schema, tool allowlist, claim validator |
-| Bundle | Judged artifact | Secrets, raw pages | Fail-closed validator |
-| UI | Explanation | Readiness misrepresentation | Render blockers, provenance |
-
-### Guardrails Placement
-
-| Runtime | Guardrails? | Rationale |
-|---------|-------------|-----------|
-| Management | Conditional | Only if supervisor uses model reasoning to route (not just if/else) |
-| Crawler | Typically no | Code-level sanitize handles it; model doesn't reason on raw content |
-| **Analysis** | **Mandatory** | Untrusted web content enters model reasoning - highest injection risk |
-
----
-
-## AWS Technology Stack
-
-| Service | Role |
-|---------|------|
-| Amazon Route 53 | DNS |
-| AWS Amplify Gen 2 | CI/CD from Git, CDN, React dashboard hosting |
-| Amazon Cognito | User authentication (user pool + identity pool) |
-| AWS WAF | Frontend and API protection |
-| Amazon API Gateway (HTTP API) | User-facing endpoint + dedicated webhook endpoint |
-| AWS Lambda | Trigger AgentCore, AppSync resolver, webhook handler |
-| AWS AppSync | GraphQL API (Amplify Data) |
-| Amazon Bedrock AgentCore Runtime | Host Strands Agents (Management, Crawler, Analysis) |
-| Amazon Bedrock + Guardrails | Foundation model + safety filter |
-| Amazon DynamoDB (On-Demand) | Two tables: `MarketThemes` (display) + `PipelineState` (operational) |
-| Amazon S3 (Intelligent-Tiering) | Raw evidence + results, per-attempt without overwrite |
-| AWS Secrets Manager | Partner API keys + webhook signing secret |
-| Amazon CloudWatch | Logs, metrics, alarms |
-| AWS CloudTrail | Account-wide audit trail (compliance) |
-| AWS IAM | Least-privilege, one role per Runtime, specific ARNs, no wildcards |
-
-### External Services
-
-| Service | Role |
-|---------|------|
-| **TinyFish** | AI web agent - reads investor-relations pages, press releases, structured navigation |
-| **Apify** | Web scraping actors - news sites, SEC filings, batch/recurring collection |
-| **Langfuse** | LLM observability, tracing, LLM-as-Judge scoring, prompt management, self-correction webhook |
-| **OpenAI** | Challenger agent (GPT) - cross-model bias reduction |
-
----
-
-## Key Architectural Decisions
-
-| # | Decision | Rationale |
-|---|----------|-----------|
-| 1 | Multi-agent supervisor-worker (star pattern) | Centralized quality control, traceable handoffs, independent worker scaling and reuse |
-| 2 | No Lambda-calls-Lambda, no Runtime-calls-Runtime directly | Decouple via supervisor/S3; avoid double billing and tight coupling |
-| 3 | AgentCore Runtime calls partners directly via HTTPS | No Gateway/MCP needed for single-agent single-tool (avoids over-engineering) |
-| 4 | TinyFish/Apify as tool_use within Crawler | Model decides when to collect; selection rule stays in code |
-| 5 | Filter/sanitize in plain code before model | Saves tokens, prevents injection, cheaper than model processing |
-| 6 | S3 Intelligent-Tiering, multi-attempt never-overwrite | Unpredictable access pattern; history for replay, debug, compliance |
-| 7 | DynamoDB atomic counter for retry_count | Prevents race conditions on concurrent retries |
-| 8 | Two DynamoDB tables (display + operational) | Security: internal pipeline data never exposed to client |
-| 9 | Guardrails mandatory at Analysis | Where untrusted web content enters model reasoning |
-| 10 | Cross-model Challenger (GPT vs Claude) | Reduces correlated blind spots in hypothesis assessment |
-| 11 | 100% serverless, consumption-based | No cost when idle; AgentCore not billed during I/O wait |
-| 12 | Webhook endpoint separate from user-facing API | Langfuse doesn't support JWT; verify HMAC signature instead |
-
----
-
-## Cost Optimization
-
-- 100% serverless - zero cost when idle.
-- API Gateway HTTP API (~70% cheaper than REST API).
-- Bedrock On-Demand pricing (per token, no Provisioned Throughput).
-- AgentCore not billed during I/O wait (waiting for LLM or partner responses).
-- S3 Intelligent-Tiering auto-optimizes tier without retrieval fees.
-- Code-level filtering before model input reduces Bedrock token consumption.
-- DynamoDB On-Demand (pay per request).
-- Cognito free tier (50,000 MAU).
-- Event-driven architecture avoids polling.
+</details>
 
 ---
 
 ## Backtest Validation
 
-### Case A - Bed Bath & Beyond 2023
+SignalScout was rigorously validated across historical enterprise restructuring events:
 
-| Period | Event | Type |
-|--------|-------|------|
-| Aug 2022 | Workforce reductions, lower capex, store closures | layoff, guidance_cut, facility_closure |
-| Jan 2023 | Debt exchange terminated, reporting delayed | debt_event |
-| Feb-Mar 2023 | Credit-agreement defaults, lender waivers | debt_event |
-| Mar-Apr 2023 | Repeated financing amendments | debt_event |
-| Apr 23, 2023 | **Chapter 11** (ground truth) | - |
-
-**Expected:** Score exceeds `T_alert` months before the Chapter 11 filing, giving suppliers and partners meaningful lead time.
-
-### Case B - Intel 2024
-
-| Period | Event | Type |
-|--------|-------|------|
-| Aug 1, 2024 | Layoff ~15% (~15k people) | layoff (mag 0.9) |
-| Aug 1, 2024 | Suspend dividend from Q4 | guidance_cut (mag 0.9) |
-| Aug 2024 | Cut capex >$10B plan 2025 | guidance_cut |
-| Sep-Dec 2024 | Asset sale/spin-off talks (Altera) | asset_sale |
-| Dec 2024 | CEO Gelsinger departs | exec_departure (mag 0.9) |
-
-**Expected:** Alert immediately in Aug 2024 due to synergy (layoff + guidance_cut same day).
+| Target Company              | Evaluation Period   | Disclosed Real-World Signals                                                                                         | Scoring Response & Lead Time                                                                                                                                                                  |
+| --------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Bed Bath & Beyond** | Aug 2022 - Apr 2023 | 20% workforce layoff, dividend pause, debt exchange cancellation, covenant default, repeated financing amendments    | Alert triggered in**January 2023** (`score >= 0.75`), providing suppliers and counterparties **3+ months of actionable lead time** prior to Chapter 11 filing (April 23, 2023). |
+| **Intel Corporation** | Aug 2024 - Dec 2024 | 15% workforce cut (~15k staff), dividend suspension, $10B capex reduction, Altera unit spin-off talks, CEO departure | Alert triggered**immediately on August 1, 2024** driven by non-linear synergy bonus (`layoff` + `guidance_cut` co-occurring on same trading day).                                   |
 
 ---
 
-## Business Invariants
+## Infrastructure as Code & DevSecOps Workflow
 
-1. **Temporal integrity:** An evidence item is visible only when `publicly_available_at <= as_of`.
-2. **Outcome isolation:** Known outcomes appear only after their public date and cannot influence earlier frames.
-3. **Claim integrity:** Every factual claim references one or more approved evidence IDs.
-4. **Source integrity:** Every evidence/metric source ID resolves in the source registry.
-5. **Rights integrity:** Only approved excerpts in the public bundle - never raw page dumps.
-6. **Deterministic authority:** Code owns score, stage, readiness, and blocking reasons - never AI.
-7. **Missing-data honesty:** Unavailable data produces blockers, not invented values.
-8. **Scenario humility:** Outputs are structured decision support, not certified forecasts.
-9. **Replay reproducibility:** Identical input produces identical output.
-10. **Offline reliability:** Provider failure never breaks the dashboard.
+SignalScout provisions its entire cloud footprint through modular Terraform configurations (`terraform/modules/` and `terraform/environments/prod/`), implementing a zero-cloud-cost local emulation pipeline alongside production AWS deployment.
 
----
+![Terraform Provisioning Workflow](docs/diagrams/terraform-provision-workflow.png)
 
-## What SignalScout Is Not
+> **Interactive Architecture Diagram:** Explore the [interactive standalone workflow diagram](https://raw.githack.com/VectorisLabs/SignalScout/main/docs/diagrams/terraform-provision-workflow.html) featuring step-by-step trace animations, pan/zoom controls, and dark/light mode toggles.
 
-- **Not a bankruptcy predictor.** It recognizes when a cluster becomes important enough for humans to investigate.
-- **Not a calibrated probability.** The score is an explainable composite, not a statistical forecast.
-- **Not autonomous.** It supports decisions - it does not make them.
-- **Not a real-time monitor.** It demonstrates the pattern on deeply researched historical cases.
+### 3-Tier Delivery Pipeline
+
+The provisioning lifecycle enforces a strict 3-tier DevSecOps progression:
+
+- **Tier 1: Local Development & Static Verification**: Zero-comment policy (`#`) enforced across all `.tf` files with technical rationale embedded in `description` attributes; canonical formatting verification (`terraform fmt -check`); syntax validation (`terraform validate`); and 100% offline unit test coverage (`terraform test` with mock AWS provider) verifying IAM policies, encryption standards, and tags without AWS credentials.
+- **Tier 2: Floci Local Emulation & Runtime Testing**: Zero-cost containerized testing on the Quarkus Native Floci emulator (`http://localhost:4566`); dedicated local backend configuration (`backend-floci.hcl`) with path-style S3 state storage; and API feature-isolation flags (`floci.tfvars`) toggling emulator boundaries, successfully provisioning and verifying 26 core resources (S3, DynamoDB, IAM, Secrets Manager, HTTP API Gateway, Lambda, CloudWatch) via AWS CLI before cloud deployment.
+- **Tier 3: AWS Cloud Production & Governance**: Production backend configuration (`backend-prod.hcl`) leveraging remote S3 state with native S3 state locking (`use_lockfile = true`) for concurrency safety; comprehensive execution plan generation (`terraform plan -var-file=terraform.tfvars`); and mandatory Human Approval Gate (autonomous apply operations are strictly prohibited by policy, requiring explicit, documented sign-off before deploying to AWS region `ap-southeast-1`).
 
 ---
 
-## Architecture v2 - AWS-Native Cost Optimization
+## Documentation Map
 
-![Architect v2](docs/assets/architect-v2.jpeg)
+SignalScout maintains a comprehensive baseline documentation pack and architectural decision ledgers:
 
-The second iteration moves toward a fully AWS-native tool layer to reduce cost and simplify operations at scale:
+| Category                          | Document                                                 | Primary Scope & Contents                                                           |
+| --------------------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **Business Scope**          | [Product Definition](docs/business/product-definition.md) | Problem formulation, user personas, review postures, and explicit non-claims       |
+| **Business Scope**          | [Domain Invariants](docs/business/domain-invariants.md)   | 13 mandatory domain invariants governing regulated wealth-management workflows     |
+| **Business Scope**          | [Signal Taxonomy](docs/business/signal-taxonomy.md)       | Formal signal taxonomy, magnitude scales, and temporal decay policies              |
+| **Production Architecture** | [System Architecture](docs/production/architecture.md)    | Production architecture specification, component inventory, and network topologies |
+| **Production Architecture** | [Design Rationale](docs/production/design-rationale.md)   | Technical reasoning behind supervisor-worker patterns and serverless selection     |
+| **Production Architecture** | [Decision Ledger](docs/production/decision-ledger.md)     | Complete historical record of production architecture choices                      |
 
-| Change | Why |
-|--------|-----|
-| **AgentCore Gateway + MCP** replaces direct HTTPS calls | Centralized tool registry, unified rate-limiting, add/remove tools without agent code changes |
-| **AgentCore Memory (Short Memory)** added | Avoids re-fetching context on retries, reduces token cost in self-correction loops |
-| **AWS X-Ray** added alongside CloudWatch/CloudTrail | End-to-end distributed tracing across multi-agent A2A handoffs |
-| Analysis → Langfuse routed through **dedicated Lambda** | Clean separation of webhook handling and trace export |
+---
 
-The core cost model stays the same: 100% serverless, zero idle cost, AgentCore not billed during I/O wait. The Gateway adds minimal latency but removes per-agent credential management and enables budget enforcement at the tool layer.
+## Explicit Non-Claims & Invariants
+
+To maintain institutional compliance and scientific honesty, SignalScout operates under strict, load-bearing non-claims:
+
+| Code           | Non-Claim Policy                                     | Institutional Invariant                                                                                 |
+| -------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `NOCLAIM-01` | **Not a bankruptcy predictor**                 | SignalScout identifies when a cluster becomes urgent enough to warrant human analyst review.            |
+| `NOCLAIM-02` | **Not a calibrated probability**               | The risk score is an explainable composite heuristic, not an actuarial probability.                     |
+| `NOCLAIM-03` | **Decision support, not autonomous authority** | Recommendations frame choices for human leadership; they never execute financial or legal transactions. |
+| `NOCLAIM-04` | **Retrospective replay honesty**               | Historical replays represent what was publicly known at time`t`, strictly excluding future leakage.   |
 
 ---
 
 ## Built With
 
-- Amazon Bedrock AgentCore (Runtime, Memory, Identity)
-- Amazon Bedrock (foundation model + Guardrails)
-- AWS Strands Agents SDK
-- AWS Lambda
-- Amazon API Gateway (HTTP API)
-- AWS AppSync
-- AWS Amplify (Gen 2 hosting)
-- Amazon Cognito + AWS WAF
-- Amazon Route 53
-- Amazon DynamoDB
-- Amazon S3 (Intelligent-Tiering)
-- AWS Secrets Manager
-- Amazon CloudWatch + AWS CloudTrail
-- AWS IAM
-- React + TypeScript
-- TinyFish
-- Apify
-- Langfuse
-- OpenAI
+- **Cloud Infrastructure (AWS)**: Amazon Bedrock AgentCore Runtime, Amazon Bedrock & Guardrails, AWS Strands Agents SDK, AWS Lambda, Amazon API Gateway (HTTP API), AWS AppSync (GraphQL), AWS Amplify Gen 2, Amazon Cognito, Amazon DynamoDB (On-Demand), Amazon S3 (Intelligent-Tiering), AWS Secrets Manager, Amazon CloudWatch, AWS CloudTrail, AWS IAM.
+- **AI & Reasoning Framework**: Anthropic Claude 3.5 Sonnet (Amazon Bedrock), OpenAI GPT (Challenger), TinyFish AI Web Agent, Apify Scraping Actors, Langfuse (Tracing, Prompt Management, LLM-as-Judge).
+- **DevSecOps & Infrastructure as Code**: HashiCorp Terraform (v1.15.8), Native Mock Providers (`tftest`), Floci AWS Emulator (Quarkus Native), Docker.
+- **Frontend & Interface**: React 18, Vite, TypeScript, TailwindCSS v4.
