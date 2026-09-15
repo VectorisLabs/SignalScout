@@ -21,23 +21,23 @@ All modules and the root production environment include offline plan-mode unit t
 ### Run All Unit Tests
 ```powershell
 # Run unit tests across all individual modules
-terraform -chdir=terraform/modules/storage test
-terraform -chdir=terraform/modules/database test
-terraform -chdir=terraform/modules/security_iam test
-terraform -chdir=terraform/modules/api_gateway_compute test
-terraform -chdir=terraform/modules/observability test
+terraform -chdir=signalscout-prod/terraform/modules/storage test
+terraform -chdir=signalscout-prod/terraform/modules/database test
+terraform -chdir=signalscout-prod/terraform/modules/security_iam test
+terraform -chdir=signalscout-prod/terraform/modules/api_gateway_compute test
+terraform -chdir=signalscout-prod/terraform/modules/observability test
 
 # Run end-to-end orchestration unit test
-terraform -chdir=terraform/environments/prod test
+terraform -chdir=signalscout-prod/terraform/environments/prod test
 ```
 
 ### Validate Formatting and Syntax
 ```powershell
 # Verify canonical formatting (exits with code 0 on compliance)
-terraform fmt -recursive -check terraform/
+terraform fmt -recursive -check signalscout-prod/terraform/
 
 # Validate HCL syntax across configurations
-terraform -chdir=terraform/environments/prod validate
+terraform -chdir=signalscout-prod/terraform/environments/prod validate
 ```
 
 ---
@@ -59,7 +59,7 @@ aws --endpoint-url=http://localhost:4566 s3 mb s3://signalscout-floci-terraform-
 
 ### Step 2.3: Initialize Terraform with Floci Backend
 ```powershell
-cd terraform/environments/prod
+cd signalscout-prod/terraform/environments/prod
 terraform init -backend-config=backend-floci.hcl -reconfigure
 ```
 
@@ -96,7 +96,7 @@ aws sts get-caller-identity --profile duykhiem
 
 ### Step 3.2: Initialize Production S3 Backend
 ```powershell
-cd terraform/environments/prod
+cd signalscout-prod/terraform/environments/prod
 terraform init -backend-config=backend-prod.hcl -reconfigure
 ```
 

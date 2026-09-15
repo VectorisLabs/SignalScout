@@ -17,12 +17,12 @@ The target environment deploys to AWS region `ap-southeast-1` under the target p
 ## Current Truth
 SignalScout operates as a proven hackathon POC (Agentic AI Build Week runner-up). The production architecture is comprehensively specified in `docs/production/` (supervisor-worker on Amazon Bedrock AgentCore, DynamoDB On-Demand, S3 Intelligent-Tiering, Langfuse Reflexion retry loop, and HTTP API Gateway).
 
-The production Terraform infrastructure has been fully built across five reusable modules (`terraform/modules/storage`, `database`, `security_iam`, `api_gateway_compute`, `observability`) and the root production orchestration environment (`terraform/environments/prod`).
+The production Terraform infrastructure has been fully built across five reusable modules (`signalscout-prod/terraform/modules/storage`, `database`, `security_iam`, `api_gateway_compute`, `observability`) and the root production orchestration environment (`signalscout-prod/terraform/environments/prod`).
 
 All configurations have been validated (`terraform validate`), canonically formatted (`terraform fmt -check`), and verified offline with 100% passing tests via native `terraform test` and mock providers (`mock_provider "aws"`). A dual-mode configuration enables zero-cloud-cost testing via the Floci emulator on Docker alongside production AWS deployment, with 26 core resources successfully applied and verified on local Floci.
 
 ## Target
-1. Modular Architecture: Deliver a clean, decoupled IaC layout separating reusable modules (`terraform/modules/`) from environment orchestration (`terraform/environments/prod/`).
+1. Modular Architecture: Deliver a clean, decoupled IaC layout separating reusable modules (`signalscout-prod/terraform/modules/`) from environment orchestration (`signalscout-prod/terraform/environments/prod/`).
 2. Production Storage & Database: Provision an S3 bucket with Intelligent-Tiering and server-side encryption for immutable, multi-attempt raw news data (`C8`), alongside two On-Demand DynamoDB tables (`MarketThemes` and `PipelineState`) with PITR and encryption (`C9`, `C10`).
 3. Security & Least Privilege: Provision AWS Secrets Manager for external provider keys and webhook signing secrets (`C17`), and configure separate, least-privilege IAM execution roles for Crawler, Management, Analysis, and Lambda handlers without wildcards (`C16`).
 4. Compute & Ingestion API: Provision a dedicated Amazon API Gateway HTTP API for the Langfuse webhook (`C13`, `C19`, `C20`), the Lambda Webhook-Handler skeleton for atomic retry tracking (`C10`, `C11`), and Bedrock Guardrails attached to Analysis (`C12`) and Management (`O1-B`).

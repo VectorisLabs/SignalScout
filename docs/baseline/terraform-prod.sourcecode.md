@@ -12,7 +12,7 @@ code_ref: "uncommitted"
 ## Directory Topology
 
 ```text
-terraform/
+signalscout-prod/terraform/
 ├── modules/
 │   ├── storage/
 │   │   ├── terraform.tf                      # Terraform floor >= 1.14 and AWS provider >= 5.80.0
