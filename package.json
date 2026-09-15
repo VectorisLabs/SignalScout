@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "workspaces": ["backend", "frontend"],
+  "workspaces": ["signalscout-poc/backend", "signalscout-poc/frontend"],
   "scripts": {
     "dev": "concurrently -k -n backend,frontend -c blue,green \"npm --workspace @corpwatch/backend run dev\" \"npm --workspace @corpwatch/frontend run dev -- --host 127.0.0.1\"",
     "test": "npm run test --workspaces --if-present",
