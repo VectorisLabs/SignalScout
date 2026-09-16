@@ -2,9 +2,9 @@
 baseline_schema: "2.0"
 pack: "repo-restructure"
 document: "introduction"
-status: "active"
-updated: "2026-09-15"
-code_ref: "uncommitted"
+status: "complete"
+updated: "2026-09-16"
+code_ref: "b83f131"
 ---
 
 # SignalScout Repository Restructure - Introduction
@@ -15,11 +15,11 @@ This documentation pack governs the repository layout reorganization for SignalS
 It defines the target directory layout, npm workspace configuration, Vercel multi-service routing compatibility, production application code placement, and the stepwise migration plan required to execute the transition without breaking live Vercel deployments.
 
 ## Current Truth
-SignalScout currently operates with an exploratory, flat root layout where the hackathon POC components (`backend/` and `frontend/`) reside at repository root alongside production infrastructure (`terraform/`) and project documentation (`docs/`).
+SignalScout has completed its monorepo reorganization. The hackathon POC components reside under `signalscout-poc/` (`backend/` and `frontend/`), while production infrastructure and code scaffolding reside under `signalscout-prod/` (`terraform/`, `agents/`, `lambdas/`).
 
-Live production deployment for the POC demo is hosted on Vercel via a multi-service configuration defined in root `vercel.json` and `backend/vercel.json`, executed via root `package.json` with npm workspaces (`["backend", "frontend"]`). Moving `backend` and `frontend` without updating these configuration files will break active Vercel deployments.
+Live production deployment for the POC demo is hosted on Vercel via multi-service configuration in root `vercel.json` (`services.frontend.root = "signalscout-poc/frontend"`, `services.backend.root = "signalscout-poc/backend"`) and root `package.json` workspaces (`["signalscout-poc/backend", "signalscout-poc/frontend"]`).
 
-The production architecture specified in `docs/production/` (Amazon Bedrock AgentCore supervisor-worker, DynamoDB On-Demand, S3 Intelligent-Tiering) is currently implemented only at the IaC level in `terraform/`. No dedicated application code directory exists yet for the future production agents or Lambda handlers.
+All local lifecycle scripts (`npm run build`, `npm run typecheck`, `npm test`) and Terraform offline tests pass 100%. The migration is committed in git history under commits `15401f9` and `b83f131` on branch `main`.
 
 ## Target
 1. Monorepo Structural Isolation: Group all POC implementation components into `signalscout-poc/` (`signalscout-poc/backend` and `signalscout-poc/frontend`), isolating legacy hackathon demo code from production engineering.

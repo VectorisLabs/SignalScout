@@ -2,9 +2,9 @@
 baseline_schema: "2.0"
 pack: "repo-restructure"
 document: "sourcecode"
-status: "active"
-updated: "2026-09-15"
-code_ref: "uncommitted"
+status: "complete"
+updated: "2026-09-16"
+code_ref: "b83f131"
 ---
 
 # SignalScout Repository Restructure - Code Topology

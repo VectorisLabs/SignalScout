@@ -2,9 +2,9 @@
 baseline_schema: "2.0"
 pack: "repo-restructure"
 document: "hallucination"
-status: "active"
-updated: "2026-09-15"
-code_ref: "uncommitted"
+status: "complete"
+updated: "2026-09-16"
+code_ref: "b83f131"
 ---
 
 # SignalScout Repository Restructure - Decision Register
@@ -28,4 +28,12 @@ code_ref: "uncommitted"
 - Why: Enforces clear separation of concerns between Bedrock Strands Agent logic (managed via Python `uv`) and Terraform IaC lifecycles, enabling isolated unit testing and clean deployment boundaries.
 - What breaks if ignored: Application dependencies leak into Terraform module directories, complicating CI/CD packaging and inflating infrastructure blast radius.
 - Rejected alternative: Placing agent and lambda code directly inside Terraform module directories - rejected because it couples application runtime testing to Terraform provider execution.
+
+## Lessons
+
+### RR-L01: PowerShell Commit-Tree Syntax Escaping
+- Mistake: Passing `HEAD^{tree}` directly to `git commit-tree` in PowerShell.
+- Why it looked reasonable: Standard Git revision syntax in documentation and Unix shells.
+- What disproved it: PowerShell parses `^` as an escape character and drops or mangles the tree specifier, causing git commit-tree to fail.
+- Fix applied: Extract raw 40-character tree hash beforehand using `git log -1 --format=%T <hash>` and pass the bare tree hash into `git commit-tree`.
 

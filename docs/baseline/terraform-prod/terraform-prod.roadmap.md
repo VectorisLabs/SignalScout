@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "terraform-prod"
 document: "roadmap"
 status: "complete"
-updated: "2026-09-14"
-code_ref: "uncommitted"
+updated: "2026-09-16"
+code_ref: "b83f131"
 ---
 
 # SignalScout Production Terraform Infrastructure - Roadmap
@@ -84,4 +84,4 @@ graph TD
 | Inadvertent secret leakage in outputs | Sensitive credentials exposed in state/console | Mark all secret-bearing variables and outputs with `sensitive = true`. |
 
 ## Next Action
-All 6 implementation phases are complete, unit tested, and verified on the local Floci container (26 resources applied). Next action is committing staged changes to version control, followed by generating a production plan for live AWS upon user confirmation of credentials.
+All 6 implementation phases are complete, unit tested, verified on the local Floci container, and committed to version control on branch `main` (commits `15401f9` and `b83f131`). Next action is generating a production plan for live AWS upon user confirmation of credentials and AWS profile.

@@ -2,9 +2,9 @@
 baseline_schema: "2.0"
 pack: "repo-restructure"
 document: "useguide"
-status: "active"
-updated: "2026-09-15"
-code_ref: "uncommitted"
+status: "complete"
+updated: "2026-09-16"
+code_ref: "b83f131"
 ---
 
 # SignalScout Repository Restructure - Operator Guide
@@ -100,18 +100,11 @@ terraform -chdir=signalscout-prod/terraform/environments/prod validate
 
 ## 4. Migration Execution Checklist
 
-When executing the file moves:
-1. Stage all path renames via `git mv`:
-   ```powershell
-   # Move POC components
-   mkdir signalscout-poc
-   git mv backend signalscout-poc/backend
-   git mv frontend signalscout-poc/frontend
-
-   # Move Production components
-   mkdir signalscout-prod
-   git mv terraform signalscout-prod/terraform
-   ```
-2. Commit `vercel.json`, `package.json`, and the moved files in a single atomic Git commit so CI/CD does not encounter an intermediate state.
-3. Test `npm run build` and `terraform -chdir=signalscout-prod/terraform/environments/prod validate` before pushing to remote.
+The migration has been fully executed and committed on branch `main` in commit `15401f9`:
+1. Staged all path renames via `git mv`:
+   - Moved POC components into `signalscout-poc/backend` and `signalscout-poc/frontend`.
+   - Moved Production IaC into `signalscout-prod/terraform/`.
+   - Created scaffolding directories `signalscout-prod/agents/` and `signalscout-prod/lambdas/`.
+2. Committed `vercel.json`, `package.json`, and the moved files in an atomic Git commit (`15401f9`).
+3. Verified `npm run build`, `npm run typecheck`, `npm test`, and `terraform test` before locking status.
 

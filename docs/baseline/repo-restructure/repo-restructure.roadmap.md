@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "repo-restructure"
 document: "roadmap"
 status: "complete"
-updated: "2026-09-15"
-code_ref: "uncommitted"
+updated: "2026-09-16"
+code_ref: "b83f131"
 ---
 
 # SignalScout Repository Restructure - Roadmap
@@ -71,5 +71,5 @@ graph TD
 | Terraform test paths become invalid | IaC offline testing fails | Verified `terraform -chdir=signalscout-prod/terraform/environments/prod test` runs and passes. |
 
 ## Next Action
-All 5 phases of the repository restructure roadmap are completed and verified offline. The changes are left uncommitted per user explicit policy (`commit_policy = none`). Ready for user inspection or commit when authorized.
+All 5 phases of the repository restructure roadmap are completed, verified offline, and committed on branch `main` (commits `15401f9` and `b83f131`). Next action is pushing the updated branch to remote (`git push --force-with-lease origin main`) and proceeding to production agent implementation under `signalscout-prod/agents/`.
 

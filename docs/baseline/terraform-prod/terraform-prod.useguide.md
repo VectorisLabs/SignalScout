@@ -2,9 +2,9 @@
 baseline_schema: "2.0"
 pack: "terraform-prod"
 document: "useguide"
-status: "active"
-updated: "2026-09-14"
-code_ref: "uncommitted"
+status: "complete"
+updated: "2026-09-16"
+code_ref: "b83f131"
 ---
 
 # SignalScout Production Terraform Infrastructure - Operator Guide
