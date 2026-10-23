@@ -1,9 +1,9 @@
 <div align="center">
 
-<picture>
+<a href="https://vectorislabs.github.io/SignalScout/landing/"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/hero-dark.webp">
   <img src="docs/assets/readme/hero.webp" alt="signalscout - Strategic Change Radar. See the collapse coming. Prove every word of it. A forest-green owl with lime eyes above the lowercase wordmark, whose o is a watching lens, at the centre of a radar whose sweep lights up and joins a cluster of evidence dots." width="100%">
-</picture>
+</picture></a>
 
 <a href="https://youtu.be/c9ZgQTMOngM"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/nav-video-dark.webp"><img src="docs/assets/readme/nav-video.webp" alt="Video demo" height="28"></picture></a>
 <a href="#how-it-works"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/nav-how-dark.webp"><img src="docs/assets/readme/nav-how.webp" alt="How it works" height="28"></picture></a>
