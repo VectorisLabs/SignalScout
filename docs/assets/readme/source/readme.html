@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-SignalScout README illustrations: hero, problem scene, pipeline, postures.
+SignalScout README illustrations: hero, problem scene, pipeline, postures, social preview.
 Signature: shape = geometric owl in flat filled shapes (approved R8D centred badge), lime pupils as the one bright signal, lens o; type = Bricolage Grotesque 800 headings, Manrope body; palette = forest #146044, deep #123F36, lime #C9F269, paper #F3F5F1, detail #0B2A22; ground = paper / deep #0f1f1a; presentation = centred badge, evidence dots on a timeline, cards; voice = patient, sharp, quiet.
 Render the stills (not hero, problem and pipeline, which are animated and would be overwritten by a still): uvx --from playwright --with pillow python -I <frontdoor-illustrate>/scripts/render.py docs/assets/readme/source/readme.html --root docs/assets --out docs/assets/readme --items stats,before-after,tech-cta,postures...,nav-*,eng-*   (or render all, then run the animate commands below to put the moving files back)
 Then cut the pills free of their frame: uv run --with pillow python -I docs/assets/readme/source/pill.py docs/assets/readme
@@ -129,5 +129,18 @@ const pill=(id,n,label)=>items.push([id,`<div data-pill style="height:96px;width
 const CH=['Deterministic scoring','Evidence Gate','Trust boundaries','Reflexion loop','Infrastructure as Code','Cost levers'];
 items.push(['tech-cta',`<div style="height:330px;padding:30px 40px"><div style="height:270px;border-radius:26px;background:#123F36;color:#F3F5F1;display:flex;align-items:center;gap:40px;padding:0 46px;--body:#7fd3a8;--belly:#DAF0E5;--disc:#123F36;--forest:#7fd3a8">${owl(150)}<div style="flex:1;min-width:0"><div class="tag" style="color:#C9F269">For engineers</div><div style="font:800 40px/1.05 'Bricolage Grotesque';letter-spacing:-.03em;margin:10px 0 16px">Go deeper: the engineering<br>behind every alert</div><div>${CH.map(c=>`<span style="display:inline-block;font-size:14px;font-weight:800;padding:6px 12px;border-radius:99px;border:1.5px solid #3f6b5d;margin:0 8px 8px 0">${c}</span>`).join('')}</div></div><div style="flex:none;background:#C9F269;color:#123F36;font:800 20px/1 Manrope;padding:18px 24px;border-radius:99px;white-space:nowrap">Read the tech deep-dive &rarr;</div></div></div>`]);
 
-document.getElementById('sheet').innerHTML=items.map(([id,h])=>`<div class="item" id="${id}"${/data-(pill|w)/.test(h)?' style="width:max-content"':''}>${h}</div>`).join('');
+// GitHub social preview, 640x320 CSS px (1280x640 PNG): the brand name on the left, the owl at the centre of its radar on the right, and nothing else; a tagline cannot be read in a chat thumbnail. Always a still image.
+{const W=640,H=320,cx=492,cy=160,Pt=(a,r)=>[cx+r*Math.cos(a*Math.PI/180),cy+r*Math.sin(a*Math.PI/180)];
+// rings fade in from behind the wordmark so no ring crosses a letter
+const mask=`<defs><linearGradient id="rf" x1="330" x2="400" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#000"/><stop offset="1" stop-color="#fff"/></linearGradient><mask id="rm" maskUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}"><rect width="${W}" height="${H}" fill="url(#rf)"/></mask></defs>`;
+const rings=`<g mask="url(#rm)">${[84,132,180,228,276,324,372].map(r=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--cardline)" stroke-width="2"/>`).join('')}</g>`;
+// the sweep covers the upper left, -149deg to -116deg, clear of the wordmark; the owl stays at the centre
+const [x1,y1]=Pt(-116,520),[x2,y2]=Pt(-149,520);
+const wedge=`<path d="M${cx} ${cy} L${x1} ${y1} L${x2} ${y2}Z" fill="var(--forest)" opacity=".13"/><path d="M${cx} ${cy} L${x1} ${y1}" stroke="var(--forest)" stroke-width="2.5" opacity=".7"/>`;
+const lit=[[-120,150],[-126,108],[-134,170],[-141,130],[-146,215]].map(([a,r])=>Pt(a,r)).sort((a,b)=>a[0]-b[0]);
+const quiet=[[-118,96],[-131,92],[-138,200],[-147,120],[-125,205],[-143,160],[-122,125],[-148,170],[-114,185]].map(([a,r])=>Pt(a,r));
+const svg=S(W,`${mask}${rings}${wedge}<path d="M${lit.map(p=>p.join(' ')).join(' L')}" stroke="var(--forest)" stroke-width="2.5" stroke-dasharray="5 5" fill="none"/>${quiet.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="4" fill="var(--forest)" opacity=".4"/>`).join('')}${lit.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="8" fill="var(--lime)" stroke="var(--forest)" stroke-width="2.5"/>`).join('')}`,`0 0 ${W} ${H}`);
+items.push(['banner-social',`<div style="position:relative;width:${W}px;height:${H}px"><div data-bleed style="position:absolute;inset:0">${svg}</div><div style="position:absolute;left:40px;top:0;height:${H}px;display:flex;align-items:center">${word(58)}</div><div style="position:absolute;left:${cx-66}px;top:${cy-66}px">${owl(132)}</div></div>`,'social']);}
+
+document.getElementById('sheet').innerHTML=items.map(([id,h,k])=>`<div class="item" id="${id}"${k==='social'?' data-social style="width:640px;height:320px"':/data-(pill|w)/.test(h)?' style="width:max-content"':''}>${h}</div>`).join('');
 </script></body></html>
