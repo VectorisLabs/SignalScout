@@ -1,0 +1,93 @@
+<!doctype html>
+<!--
+SignalScout README illustrations: hero, problem scene, pipeline, postures.
+Signature: shape = geometric owl in flat filled shapes (approved R8D centred badge), lime pupils as the one bright signal, lens o; type = Bricolage Grotesque 800 headings, Manrope body; palette = forest #146044, deep #123F36, lime #C9F269, paper #F3F5F1, detail #0B2A22; ground = paper / deep #0f1f1a; presentation = centred badge, evidence dots on a timeline, cards; voice = patient, sharp, quiet.
+Render: uvx --from playwright --with pillow python -I <frontdoor-illustrate>/scripts/render.py docs/assets/readme/source/readme.html --root docs/assets --out docs/assets/readme
+Then cut the pills free of their frame: uv run --with pillow python -I docs/assets/readme/source/pill.py docs/assets/readme
+-->
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css"><script src="shared.js"></script>
+<style>
+.pad{padding:40px 48px}
+.sub{font:800 34px/1.05 'Bricolage Grotesque';letter-spacing:-.025em;color:var(--forest)}.line{font:500 19px/1.35 Manrope;color:var(--muted)}
+.row{display:flex;align-items:center}
+.step{flex:1;padding:18px 16px 16px;min-width:0}
+.step b{display:block;font:800 21px/1.1 'Bricolage Grotesque';letter-spacing:-.02em;margin:10px 0 6px}
+.step p{margin:0;font-size:14.5px;line-height:1.4;color:var(--muted)}
+.num{width:30px;height:30px;border-radius:50%;background:var(--forest);color:var(--paper);display:grid;place-items:center;font-weight:800;font-size:14px}
+.arrow{flex:none;width:28px;text-align:center;color:var(--forest);font-weight:800;font-size:22px;align-self:center}
+.chip{display:inline-block;font-size:12px;font-weight:800;padding:4px 8px;border-radius:99px;background:var(--soft);color:var(--ink);margin:8px 5px 0 0}
+.chip.l{background:var(--lime);color:#123F36}
+.post{flex:1;padding:24px 24px 22px}
+.post .k{font:800 30px/1 'Bricolage Grotesque';letter-spacing:-.02em;margin:14px 0 8px}
+.post p{margin:0;font-size:15.5px;line-height:1.45;color:var(--muted)}
+</style></head><body><div class="sheet" id="sheet"></div>
+<script>
+const S=(w,b,vb='0 0 100 100')=>{const[,,vw,vh]=vb.split(' ').map(Number);return `<svg width="${w}" height="${w*vh/vw}" viewBox="${vb}" style="display:block;overflow:visible">${b}</svg>`};
+// Approved 4F owl: forest body, belly lines, disc eyes with lime iris and dark pupil, lime beak.
+const owl=w=>S(w,`<path d="M20 34 L26 8 L42 22 H58 L74 8 L80 34 C88 66 74 94 50 94 C26 94 12 66 20 34Z" fill="var(--body)"/><path d="M34 70 Q50 78 66 70 M38 80 Q50 86 62 80" stroke="var(--belly)" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle cx="37" cy="44" r="14" fill="var(--disc)"/><circle cx="63" cy="44" r="14" fill="var(--disc)"/><circle cx="37" cy="44" r="8.5" fill="var(--lime)"/><circle cx="63" cy="44" r="8.5" fill="var(--lime)"/><circle cx="38.5" cy="44" r="4" fill="var(--mask)"/><circle cx="64.5" cy="44" r="4" fill="var(--mask)"/><path d="M45 56 L55 56 L50 64Z" fill="var(--lime)"/>`);
+// R3-8 lens o: thick ring, lime pupil, one highlight.
+const lens=(w,y=0)=>`<svg width="${w}" height="${w}" viewBox="0 0 78 78" style="margin:0 ${w*.03}px;transform:translateY(${y}px);flex:none"><circle cx="39" cy="39" r="31" fill="none" stroke="var(--forest)" stroke-width="14"/><circle cx="39" cy="39" r="15" fill="var(--lime)"/><circle cx="45" cy="33" r="5" fill="var(--disc)"/></svg>`;
+const word=px=>`<div class="word" style="font-size:${px}px">signalsc${lens(px*.72,px*.075)}ut</div>`;
+const T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="Manrope" font-weight="700" font-size="15" fill="var(--ink)" ${o}>${t}</text>`;
+
+const items=[];
+// Hero: centred brand at the centre of a radar; the sweep lights and joins a cluster of evidence dots.
+{const dot=(x,y,h,r=4)=>`<circle cx="${x}" cy="${y}" r="${h?10:r}" fill="${h?'var(--lime)':'var(--cardline)'}"${h?' stroke="var(--forest)" stroke-width="3"':''}/>`;
+const brand=`<div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">${owl(140)}${word(132)}<div class="sub" style="font-size:50px">Strategic Change Radar</div><div class="line" style="font-size:25px">See the collapse coming. Prove every word of it.</div></div>`;
+const H=600,cx=600,cy=300;
+const rings=[300,420,540,660,780].map(r=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--cardline)" stroke-width="2.5"/>`).join('');
+const cross=`<path d="M0 ${cy}H1200M${cx} 0V${H}" stroke="var(--cardline)" stroke-width="1.5" opacity=".6"/>`;
+// sweep wedge from centre toward the top right, angle -10deg to -38deg
+const P=(a,r)=>[cx+r*Math.cos(a*Math.PI/180),cy+r*Math.sin(a*Math.PI/180)];
+const [x1,y1]=P(-8,900),[x2,y2]=P(-40,900);
+const wedge=`<path d="M${cx} ${cy} L${x1} ${y1} L${x2} ${y2}Z" fill="var(--forest)" opacity=".13"/><path d="M${cx} ${cy} L${x1} ${y1}" stroke="var(--forest)" stroke-width="3" opacity=".7"/>`;
+// dots inside the scanning zone, outside the text block (r > 330): lit ones joined, unlit ones scattered
+const zone=[[-14,560,1],[-19,470,1],[-25,530,1],[-21,610,1],[-29,450,1],[-11,640,0],[-17,390,0],[-27,600,0],[-33,420,0],[-23,400,0],[-10,500,0],[-31,520,0],[-15,700,0],[-34,480,0],[-12,420,0],[-26,660,0]].map(([a,r,h])=>[...P(a,r),h]);
+const lit=zone.filter(z=>z[2]).sort((a,b)=>a[0]-b[0]);
+const join=`<path d="M${lit.map(([x,y])=>x+' '+y).join(' L')}" stroke="var(--forest)" stroke-width="3" stroke-dasharray="6 6" fill="none"/>`;
+const faint=[[120,90],[200,480],[70,330],[330,560],[1130,520],[900,560],[260,40],[60,560],[420,30],[1060,420]].map(([x,y])=>dot(x,y,0)).join('');
+const bg=S(1200,`${rings}${cross}${wedge}${faint}${join}${zone.map(([x,y,h])=>h?dot(x,y,1):`<circle cx="${x}" cy="${y}" r="5" fill="var(--forest)" opacity=".45"/>`).join('')}`,`0 0 1200 ${H}`);
+items.push(['hero',`<div style="height:${H}px;position:relative;display:flex;align-items:center;justify-content:center"><div data-bleed style="position:absolute;inset:0">${bg}</div>${brand}</div>`]);}
+
+// Problem scene: Bed Bath & Beyond 2022-2023, separate disclosures joined into one cluster before the filing.
+const ev=[[90,'Workforce layoffs'],[245,'Dividend pause'],[400,'Debt exchange cancelled'],[555,'Covenant default'],[705,'Financing amendments']];
+items.push(['problem',`<div class="pad" style="height:440px"><div class="row" style="justify-content:space-between"><div><div class="tag">Bed Bath &amp; Beyond, Aug 2022 - Apr 2023</div><div class="h" style="margin-top:10px">Each disclosure looks harmless alone.<br>The cluster is the warning.</div></div>${owl(96)}</div>
+<div style="margin-top:20px">${S(1104,`<path d="M20 120 H1084" stroke="var(--cardline)" stroke-width="3"/>
+<path d="M90 120 C170 40 320 40 400 96 C480 40 625 40 705 120" stroke="var(--forest)" stroke-width="2.5" fill="none" stroke-dasharray="6 6"/>
+${ev.map(([x,t],i)=>`<circle cx="${x}" cy="120" r="10" fill="var(--lime)" stroke="var(--forest)" stroke-width="3"/>${T(x,i%2?186:160,t,'text-anchor="middle"')}`).join('')}
+<rect x="842" y="82" width="124" height="76" rx="12" fill="var(--forest)"/><text x="904" y="114" text-anchor="middle" font-family="Bricolage Grotesque" font-weight="800" font-size="21" fill="var(--paper)">Alert</text><text x="904" y="140" text-anchor="middle" font-family="Manrope" font-weight="700" font-size="14" fill="var(--paper)">Jan 2023</text>
+<path d="M968 120 H1040" stroke="var(--warn)" stroke-width="3"/><text x="1004" y="108" text-anchor="middle" font-family="Manrope" font-weight="800" font-size="13" fill="var(--warn)">3+ months</text>
+<circle cx="1054" cy="120" r="10" fill="var(--warn)"/>${T(1084,166,'Chapter 11','text-anchor="end"')}<text x="1084" y="186" text-anchor="end" font-family="Manrope" font-weight="500" font-size="14" fill="var(--muted)">Apr 23, 2023</text>`,'0 0 1104 200')}</div></div>`]);
+
+// Pipeline: a landscape track of five steps so it stays legible at phone width.
+const dark=document.documentElement.dataset.theme==='dark';
+const ic=(n,w)=>`<img src="../../icon/${n}${dark?'-dark':''}.svg" width="${w}" height="${w}" style="flex:none;display:block">`;
+const st=[['Collect','funnel','untrusted candidates'],['Evidence Gate','shield-check','fail-closed'],['Score in code','gauge','alert at 0.75'],['Challenge','swords','Claude vs GPT'],['Posture','compass','human review']];
+items.push(['pipeline',`<div class="pad" style="height:350px"><div class="h" style="font-size:30px;margin-bottom:30px">Evidence first, score in code, then a second opinion.</div><div style="position:relative;display:flex;justify-content:space-between"><div style="position:absolute;left:90px;right:90px;top:52px;border-top:3px dashed var(--cardline)"></div>${st.map((s,i)=>`<div style="position:relative;width:220px;text-align:center;white-space:nowrap"><div style="width:104px;height:104px;margin:0 auto;border-radius:50%;background:var(--card);border:3px solid ${i==4?'var(--lime)':'var(--cardline)'};display:grid;place-items:center">${ic(s[1],58)}</div><div style="font:800 26px/1.1 'Bricolage Grotesque';letter-spacing:-.02em;margin-top:14px">${i+1}. ${s[0]}</div><div style="font-size:17px;font-weight:700;color:var(--muted);margin-top:6px">${s[2]}</div></div>`).join('')}</div></div>`]);
+
+// Postures: one floating card each, from least to most action.
+const P=[['posture-maintain','MAINTAIN','Monitor and preserve',1],['posture-adapt','ADAPT','Bounded adjustments',2],['posture-accelerate','ACCELERATE','Capture advantage',3]];
+P.forEach(p=>items.push([p[0],`<div style="width:520px;height:300px;padding:40px 40px;background:var(--card)" data-w><div class="row" style="gap:10px">${[1,2,3].map(n=>`<span style="width:56px;height:16px;border-radius:8px;background:${n<=p[3]?'var(--lime)':'var(--soft)'}"></span>`).join('')}</div><div style="font:800 ${p[1].length>8?62:76}px/1 'Bricolage Grotesque';letter-spacing:-.03em;margin:46px 0 18px;color:var(--forest)">${p[1]}</div><div style="font-weight:800;font-size:34px">${p[2]}</div></div>`]));
+
+// Stats strip: only figures the README states elsewhere.
+const K=[['3+','months','of warning before the Bed Bath &amp; Beyond Chapter 11 filing'],['0','scores','computed by a model - risk is scored in code'],['2','model families','Claude builds the case, GPT tries to break it'],['$0','when idle','100% serverless, pay only per run']];
+items.push(['stats',`<div style="height:230px;padding:34px 40px;display:flex;gap:18px">${K.map((k,i)=>`<div class="card" style="flex:1;padding:24px 22px;${i==0?'background:#146044;border-color:#146044;color:#F3F5F1':''}"><div class="row" style="gap:10px;align-items:baseline"><span style="font:800 64px/1 'Bricolage Grotesque';letter-spacing:-.04em;color:${i==0?'var(--lime)':'var(--forest)'}">${k[0]}</span><span style="font-weight:800;font-size:17px">${k[1]}</span></div><div style="margin-top:12px;font-size:15px;line-height:1.4;${i==0?'':'color:var(--muted)'}">${k[2]}</div></div>`).join('')}</div>`]);
+
+// Before and after: today's manual monitoring against the SignalScout review.
+const B=[['Manual searches and spreadsheets','A replayable evidence timeline'],['Disconnected news alerts','One scored cluster per company'],['Subjective analyst judgment','Deterministic score, cited claims'],['Hindsight creeps into the story','Only what was public at that date'],['One model, one blind spot','A cross-model Challenger']];
+const x='<svg width="18" height="18" viewBox="0 0 20 20"><path d="M5 5 L15 15 M15 5 L5 15" stroke="var(--warn)" stroke-width="3" stroke-linecap="round"/></svg>',v='<svg width="18" height="18" viewBox="0 0 20 20"><path d="M4 10 L8.5 14.5 L16 6" stroke="#123F36" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+items.push(['before-after',`<div class="pad" style="height:390px;display:grid;grid-template-columns:1fr 1fr;gap:22px"><div class="card" style="padding:26px 28px;background:transparent"><div class="tag">Today</div><div class="h" style="font-size:28px;margin:8px 0 18px">Watching counterparties by hand</div>${B.map(b=>`<div class="row" style="gap:12px;margin:12px 0;font-size:17px;color:var(--muted)">${x}${b[0]}</div>`).join('')}</div><div class="card" style="padding:26px 28px;background:#146044;border-color:#146044;color:#F3F5F1"><div class="tag" style="color:var(--lime)">With signalscout</div><div class="h" style="font-size:28px;margin:8px 0 18px">An auditable early-warning radar</div>${B.map(b=>`<div class="row" style="gap:12px;margin:12px 0;font-size:17px;font-weight:700"><span style="width:24px;height:24px;border-radius:50%;background:var(--lime);display:grid;place-items:center;flex:none">${v}</span>${b[1]}</div>`).join('')}</div></div>`]);
+
+// Pills: nav buttons and the engineering contents, each sized to its label; pill.py masks away the frame.
+const pill=(id,n,label)=>items.push([id,`<div data-pill style="height:96px;width:max-content;padding:0 40px 0 26px;display:flex;align-items:center;gap:18px;background:var(--card)">${ic(n,56)}<span style="font:800 44px/1 'Bricolage Grotesque';letter-spacing:-.02em;white-space:nowrap">${label}</span></div>`]);
+[['nav-video','play','Demo'],['nav-how','flow','How it works'],['nav-architecture','layers','Architecture'],['nav-quickstart','terminal','Quickstart'],['nav-engineering','braces','Engineering'],['nav-iac','cloud-code','IaC diagram'],
+['eng-architecture','layers','Architecture'],['eng-reflexion','loop','Reflexion loop'],['eng-scoring','gauge','Scoring'],['eng-evidence','shield-check','Evidence Gate'],['eng-trust','lock','Trust boundaries'],['eng-cost','coin','Cost'],['eng-iac','cloud-code','IaC &amp; DevSecOps'],['eng-invariants','checklist','Invariants'],['eng-quickstart','terminal','Quickstart'],['eng-docs','book','Docs map'],['eng-stack','wrench','Built with']].forEach(a=>pill(...a));
+
+// Tech CTA: invites engineers to the deep-dive file.
+const CH=['Deterministic scoring','Evidence Gate','Trust boundaries','Reflexion loop','Infrastructure as Code','Cost levers'];
+items.push(['tech-cta',`<div style="height:330px;padding:30px 40px"><div style="height:270px;border-radius:26px;background:#123F36;color:#F3F5F1;display:flex;align-items:center;gap:40px;padding:0 46px;--body:#7fd3a8;--belly:#DAF0E5;--disc:#123F36;--forest:#7fd3a8">${owl(150)}<div style="flex:1;min-width:0"><div class="tag" style="color:#C9F269">For engineers</div><div style="font:800 40px/1.05 'Bricolage Grotesque';letter-spacing:-.03em;margin:10px 0 16px">Go deeper: the engineering<br>behind every alert</div><div>${CH.map(c=>`<span style="display:inline-block;font-size:14px;font-weight:800;padding:6px 12px;border-radius:99px;border:1.5px solid #3f6b5d;margin:0 8px 8px 0">${c}</span>`).join('')}</div></div><div style="flex:none;background:#C9F269;color:#123F36;font:800 20px/1 Manrope;padding:18px 24px;border-radius:99px;white-space:nowrap">Read the tech deep-dive &rarr;</div></div></div>`]);
+
+document.getElementById('sheet').innerHTML=items.map(([id,h])=>`<div class="item" id="${id}"${/data-(pill|w)/.test(h)?' style="width:max-content"':''}>${h}</div>`).join('');
+</script></body></html>

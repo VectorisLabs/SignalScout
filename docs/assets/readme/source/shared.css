@@ -1,0 +1,25 @@
+/* SignalScout README illustrations. Tokens follow the approved R8D logo: forest owl, lime pupils, paper ground. */
+:root {
+  --paper: #F3F5F1; --ink: #123F36; --muted: #4e5a55; --cardline: #DCE2DC;
+  --forest: #146044; --body: #146044; --belly: #9FD3B1; --disc: #F3F5F1; --mask: #0B2A22;
+  --lime: #C9F269; --card: #FFFFFF; --soft: #E6ECE5; --warn: #b4531f;
+}
+html[data-theme="dark"] {
+  --paper: #0f1f1a; --ink: #EAF4EE; --muted: #a9bdb4; --cardline: #2c5246;
+  --forest: #7fd3a8; --body: #7fd3a8; --belly: #DAF0E5; --disc: #0f1f1a; --mask: #0B2A22;
+  --lime: #C9F269; --card: #15302a; --soft: #1f3d35; --warn: #f0a070;
+}
+
+/* CONTRACT: keep everything from here down except the font-family value, which is a placeholder. */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #888; }
+.sheet { width: max-content; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.item {
+  zoom: 2; position: relative; overflow: hidden; width: 1200px;
+  font-family: Manrope, sans-serif; color: var(--ink); background: var(--paper);
+}
+
+.word { font: 800 96px/1 'Bricolage Grotesque'; letter-spacing: -.045em; display: flex; align-items: baseline; white-space: nowrap; }
+.h { font: 800 34px/1.05 'Bricolage Grotesque'; letter-spacing: -.03em; }
+.tag { font-size: 14px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 800; }
+.card { background: var(--card); border: 1px solid var(--cardline); border-radius: 18px; }
