@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SignalScout - Strategic Change Radar</title>
+<meta name="description" content="An evidence-first, multi-agent early-warning system on AWS that turns scattered corporate-restructuring signals into one auditable risk story.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#F3F5F1">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1f1a">
+<meta property="og:title" content="SignalScout - Strategic Change Radar">
+<meta property="og:description" content="See the collapse coming. Prove every word of it.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vectorislabs.github.io/SignalScout/landing/">
+<meta property="og:image" content="https://vectorislabs.github.io/SignalScout/landing/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The SignalScout owl above the signalscout wordmark at the centre of a radar whose sweep lights a cluster of evidence dots.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SignalScout - Strategic Change Radar">
+<meta name="twitter:description" content="See the collapse coming. Prove every word of it.">
+<meta name="twitter:image" content="https://vectorislabs.github.io/SignalScout/landing/og.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M20 34 L26 8 L42 22 H58 L74 8 L80 34 C88 66 74 94 50 94 C26 94 12 66 20 34Z' fill='%23146044'/%3E%3Ccircle cx='37' cy='44' r='14' fill='%23F3F5F1'/%3E%3Ccircle cx='63' cy='44' r='14' fill='%23F3F5F1'/%3E%3Ccircle cx='37' cy='44' r='8.5' fill='%23C9F269'/%3E%3Ccircle cx='63' cy='44' r='8.5' fill='%23C9F269'/%3E%3Ccircle cx='38.5' cy='44' r='4' fill='%230B2A22'/%3E%3Ccircle cx='64.5' cy='44' r='4' fill='%230B2A22'/%3E%3Cpath d='M45 56 L55 56 L50 64Z' fill='%23C9F269'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Manrope:wght@500;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Manrope:wght@500;700;800&display=swap"></noscript>
+<script>
+var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+(function(){var t;try{t=localStorage.getItem('ss-theme')}catch(e){}
+if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;})();
+function K(){return reduce?.35:1}
+function bindToggle(){var b=document.getElementById('tog');b.setAttribute('aria-pressed',document.documentElement.dataset.theme==='dark');
+b.onclick=function(){var d=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=d;b.setAttribute('aria-pressed',d==='dark');try{localStorage.setItem('ss-theme',d)}catch(e){}}}
+function run(){var anims=[],timers=[];
+return{a:function(el,kf,o){var x=el.animate(kf,Object.assign({fill:'forwards',easing:'ease-out'},o,{duration:o.duration*K(),delay:(o.delay||0)*K()}));anims.push(x);return x},
+t:function(f,ms){timers.push(setTimeout(f,ms*K()))},
+clear:function(){anims.forEach(function(x){x.cancel()});timers.forEach(clearTimeout);anims=[];timers=[]}}}
+</script>
+<style>
+:root{--paper:#F3F5F1;--ink:#123F36;--muted:#4e5a55;--line:#DCE2DC;--forest:#146044;--lime:#C9F269;--card:#fff;--soft:#E6ECE5;--warn:#b4531f;--limeink:#123F36;--disc:#F3F5F1;--mask:#0B2A22;--belly:#9FD3B1;--body:#146044}
+:root[data-theme=dark]{--paper:#0f1f1a;--ink:#EAF4EE;--muted:#a9bdb4;--line:#2c5246;--forest:#7fd3a8;--card:#15302a;--soft:#1f3d35;--warn:#f0a070;--disc:#0f1f1a;--belly:#DAF0E5;--body:#7fd3a8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:500 17px/1.55 Manrope,system-ui,sans-serif}
+h1,h2,h3,.disp{font-family:'Bricolage Grotesque',Manrope,sans-serif;font-weight:800;letter-spacing:-.03em;line-height:1.02;margin:0}
+a{color:inherit}.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 22px;border-radius:99px;font:800 16px/1 Manrope;border:2px solid var(--forest);background:var(--forest);color:#fff;cursor:pointer;text-decoration:none}
+:root[data-theme=dark] .btn{color:#0B2A22}
+.btn.lime{background:var(--lime);border-color:var(--lime);color:#123F36}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn[disabled]{opacity:.45;cursor:default}
+.tog{min-width:46px;min-height:46px;border-radius:99px;border:2px solid var(--line);background:transparent;color:var(--ink);font:800 16px Manrope;cursor:pointer}
+.tag{font:800 13px/1 Manrope;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.status{min-height:1.6em;color:var(--muted);font-weight:700;font-size:15px}
+.grid{display:grid;gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}
+.frame{overflow-x:auto}
+footer{padding:36px 0;color:var(--muted);font-size:15px}
+@media(max-width:640px){body{font-size:16px}}
+header .btn{white-space:nowrap;padding:0 16px;font-size:14px}@media(min-width:641px){header .btn{padding:0 22px;font-size:16px}}
+:root{--quiet:#c3ccc5}:root[data-theme=dark]{--quiet:#2f5a4c}
+.ctl{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0 6px}.center .ctl{justify-content:center}
+svg.radar{display:block;width:100%;max-width:560px;height:auto;margin:0 auto}
+svg.tl{display:block;min-width:760px;width:100%;height:auto}
+.chip rect{fill:var(--card);stroke:var(--line);stroke-width:1.5}.chip text{fill:var(--ink);font:800 13px Manrope;text-anchor:middle}
+.meter{margin:14px 0 0;max-width:480px}.meter .bar{position:relative;height:14px;border-radius:9px;background:var(--soft);border:1px solid var(--line);overflow:hidden}.meter .fill{position:absolute;inset:0;width:0;background:#C9F269}
+.ticks{display:flex;justify-content:space-between;font:800 12px Manrope;color:var(--muted);margin-top:6px}
+.legend{list-style:none;counter-reset:n;display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:14px 0 0;max-width:520px}.legend li{counter-increment:n;font:800 13px Manrope;padding:6px 12px;border-radius:99px;border:1.5px solid var(--line);color:var(--muted)}.legend li::before{content:counter(n) "  ";color:var(--forest)}.legend li.on{color:#123F36;background:#C9F269;border-color:#C9F269}.legend li.on::before{color:#123F36}
+.board{display:grid;grid-template-columns:1.4fr .9fr;gap:18px;margin:14px 0 6px}@media(max-width:760px){.board{grid-template-columns:1fr}}
+.colh{font:800 13px Manrope;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.doc{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:10px}.doc b{display:block;font-size:15px}
+.checks{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.ck{font:800 12px Manrope;padding:5px 9px;border-radius:99px;border:1.5px solid var(--line);color:var(--muted)}
+.ck.ok{background:var(--forest);border-color:var(--forest);color:#fff}:root[data-theme=dark] .ck.ok{color:#0B2A22}.ck.no{background:var(--warn);border-color:var(--warn);color:#fff}
+.doc.out{opacity:.55;border-style:dashed}.ev{min-height:60px;border:2px dashed var(--line);border-radius:16px;padding:10px}.ev .doc{border-color:var(--forest);margin-bottom:8px}.why{font-size:14px;color:var(--warn);font-weight:800;margin-top:6px}
+.sec{padding:56px 0 8px}.sec h2{font-size:clamp(30px,5vw,48px);margin-bottom:10px}.sec .lead{color:var(--muted);font-size:18px;max-width:58ch;margin:0 0 18px}.center .lead{margin-left:auto;margin-right:auto}
+.three{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:40px 0}.three h3{font-size:22px;margin-bottom:6px}.three p{margin:0;color:var(--muted)}
+.lead{color:var(--muted);font-size:19px}.tl-title{margin:0}
+
+
+
+
+.topbar{position:absolute;top:0;right:0;z-index:5;padding:14px}.topbar .tog{background:var(--card)}
+.hero{position:relative;width:100%;height:100svh;min-height:560px;overflow:hidden;background:var(--paper)}
+.hero svg.field{position:absolute;inset:0;width:100%;height:100%;display:block}
+.dock{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);z-index:2;width:min(780px,calc(100% - 24px));padding:12px 16px 14px;border-radius:22px;border:1px solid var(--line);background:var(--card);background:color-mix(in srgb,var(--card) 84%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 12px 34px rgba(11,42,34,.16);text-align:center}
+.dock .drow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.dock .btn{min-height:44px;padding:0 18px;font-size:15px}
+.dock .status{margin:8px 0 6px;min-height:1.3em;font-size:14px}
+.dock .meter{margin:0 auto;max-width:none}.dock .legend{justify-content:center;margin:8px auto 0;max-width:none;gap:6px}.dock .legend li{font-size:12px;padding:4px 10px}
+h1{font-size:clamp(36px,5.6vw,64px);max-width:16ch;margin:0 auto 14px}.intro{text-align:center;padding:64px 0 8px}.intro .lead{max-width:56ch;margin:0 auto 20px}
+:root[data-theme=dark] .btn.ghost{color:var(--ink)}
+:root[data-theme=dark] .btn[disabled]{opacity:.7}
+</style>
+</head>
+<body>
+<header class="topbar"><button class="tog" id="tog" aria-label="Dark theme" aria-pressed="false">&#9680;</button></header>
+<main>
+<section class="hero" id="m-hero" aria-label="SignalScout radar"></section>
+<div class="wrap">
+<section class="intro"><h1>Risk never arrives as one headline.</h1><p class="lead">Layoffs, a cancelled debt exchange, a covenant default. Alone, each has an excuse. SignalScout sweeps for the cluster and shows its work on every dot.</p><a class="btn" href="https://vectoris-signalscout.vercel.app">Open the live replay</a></section>
+<section class="sec"><div class="tag">Proven on a real collapse</div><h2>The warning was public. It was scattered.</h2><p class="lead">Replay Bed Bath &amp; Beyond, August 2022 to April 2023.</p><div id="m-tl"></div></section>
+<section class="sec"><div class="tag">Why you can trust it</div><h2>Every claim gets a receipt.</h2><p class="lead">A fail-closed Evidence Gate lets a document in only when it proves entity, source, public date and hash.</p><div id="m-gate"></div></section>
+<section class="three"><div class="card"><h3>Zero hindsight</h3><p>Evidence appears only when it was public at the replay date.</p></div><div class="card"><h3>Scored by code, not by AI</h3><p>Models draft the explanation. Deterministic code owns the score, the stage and every blocker.</p></div><div class="card"><h3>It argues with itself</h3><p>A GPT Challenger hunts for the benign explanation behind Claude's hypothesis.</p></div></section>
+<section class="sec center" style="text-align:center;padding-bottom:40px"><h2>Replay it yourself.</h2><p class="lead">Built for strategy, risk and procurement analysts. Decision support, never a bankruptcy prediction.</p><a class="btn lime" href="https://vectoris-signalscout.vercel.app">Open the live replay</a></section>
+</div>
+</main>
+<footer class="wrap">SignalScout, Agentic AI Build Week 2026, Runner Up on the AWS Track. <a href="https://github.com/VectorisLabs/SignalScout">README on GitHub</a></footer>
+<script>
+/* Three driven figures from the README story. Each mount* builds its own markup inside a container, so a page can place any of them anywhere. */
+var NS='http://www.w3.org/2000/svg';
+function mk(n,a,p){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+function ctl(label){return '<div class="ctl"><button class="btn lime go">'+label+'</button><button class="btn ghost rs" disabled>Reset</button></div>'}
+
+function mountTimeline(root){
+var E=[[110,'20% layoff',0],[230,'Dividend paused',46],[350,'Exchange cancelled',0],[470,'Covenant default',46],[590,'Financing amended',0]];
+var IDLE='Five public disclosures are waiting at the gate.';
+root.innerHTML='<div class="frame" tabindex="0" role="region" aria-label="Animated replay of the Bed Bath and Beyond evidence timeline"><svg class="tl" viewBox="0 0 1000 330" role="img" aria-label="Five disclosures from August 2022 to April 2023 pass the Evidence Gate, join into one cluster and raise an alert in January 2023, more than three months before the Chapter 11 filing on April 23, 2023."><line x1="60" y1="250" x2="940" y2="250" stroke="var(--line)" stroke-width="3" stroke-linecap="round"/><g font-size="12" font-weight="700" fill="var(--muted)" text-anchor="middle"><text x="60" y="282">Aug 2022</text><text x="280" y="282">Oct</text><text x="500" y="282">Dec</text><text x="720" y="282">Feb 2023</text><text x="925" y="282">Apr</text></g><line x1="60" y1="128" x2="940" y2="128" stroke="var(--forest)" stroke-width="1.5" stroke-dasharray="6 7" opacity=".55"/><text x="940" y="118" text-anchor="end" font-size="12" font-weight="800" fill="var(--forest)" letter-spacing="1.5">EVIDENCE GATE</text><rect class="glow" x="60" y="124" width="880" height="8" rx="4" fill="#C9F269" opacity="0"/><polyline class="join" points="110,250 230,250 350,250 470,250 590,250" fill="none" stroke="var(--forest)" stroke-width="3" stroke-dasharray="520" stroke-dashoffset="520" stroke-linecap="round"/><g class="dots"></g><g class="chips"></g><g class="alert" opacity="0"><line x1="640" y1="250" x2="640" y2="170" stroke="var(--warn)" stroke-width="3"/><rect x="560" y="150" width="160" height="30" rx="15" fill="var(--warn)"/><text x="640" y="170" text-anchor="middle" font-size="13" font-weight="800" fill="#fff" letter-spacing="1">ALERT, JAN 2023</text></g><g class="filing" opacity=".35"><circle cx="925" cy="250" r="9" fill="var(--ink)"/><text x="925" y="226" text-anchor="middle" font-size="13" font-weight="800" fill="var(--ink)">Chapter 11, Apr 23</text></g><g class="lead" opacity="0"><path d="M640 306 H925" stroke="var(--forest)" stroke-width="2.5"/><text x="782" y="324" text-anchor="middle" font-size="14" font-weight="800" fill="var(--forest)">3+ months of lead time</text></g></svg></div>'+ctl('Replay the collapse')+'<p class="status" aria-live="polite">'+IDLE+'</p>';
+var $=function(s){return root.querySelector(s)},els=[],dots=[];
+E.forEach(function(e){var x=e[0],oy=e[2],g=mk('g',{'class':'chip'},$('.chips'));g.dataset.oy=oy;
+g.innerHTML='<rect x="'+(x-62)+'" y="'+(22+oy)+'" width="124" height="36" rx="18"/><text x="'+x+'" y="'+(45+oy)+'">'+e[1]+'</text>';els.push(g);
+dots.push(mk('circle',{cx:x,cy:250,r:9,fill:'#C9F269',stroke:'var(--forest)','stroke-width':3,opacity:0},$('.dots')))});
+var R=run(),go=$('.go'),rs=$('.rs'),st=$('.status');
+go.onclick=function(){go.disabled=true;st.textContent='Each disclosure is checked for entity, source, public date and hash.';
+els.forEach(function(g,i){var oy=+g.dataset.oy;R.a(g,[{transform:'translateY(0)'},{transform:'translateY('+(90-oy)+'px)',offset:.45},{transform:'translateY('+(150-oy)+'px)'}],{duration:900,delay:i*700});
+R.t(function(){R.a($('.glow'),[{opacity:0},{opacity:.9},{opacity:0}],{duration:500})},i*700+420);
+R.t(function(){dots[i].setAttribute('opacity',1);R.a(g,[{opacity:1},{opacity:0}],{duration:300})},i*700+850)});
+R.t(function(){st.textContent='Admitted evidence joins into one cluster.';R.a($('.join'),[{strokeDashoffset:520},{strokeDashoffset:0}],{duration:900})},3700);
+R.t(function(){st.textContent='Score reaches 0.75: an alert is raised in January 2023.';R.a($('.alert'),[{opacity:0},{opacity:1}],{duration:500})},4800);
+R.t(function(){st.textContent='Chapter 11 follows on April 23, 2023, more than three months later.';R.a($('.filing'),[{opacity:.35},{opacity:1}],{duration:500});R.a($('.lead'),[{opacity:0},{opacity:1}],{duration:500,delay:300})},6000);
+R.t(function(){rs.disabled=false},6900)};
+rs.onclick=function(){R.clear();dots.forEach(function(d){d.setAttribute('opacity',0)});go.disabled=false;rs.disabled=true;st.textContent=IDLE};
+}
+
+function mountGate(root){
+var C=['Entity','Source URL','Public date','SHA-256'];
+var D=[['Quarterly filing, company site'],['Press release on the IR page'],['Forum post about layoffs','Public date missing',2],['Scraped page, source not registered','Source URL not registered',1]];
+var IDLE='Illustrative run: four candidate documents wait outside the gate.';
+root.innerHTML=ctl('Run the Evidence Gate')+'<p class="status" aria-live="polite">'+IDLE+'</p><div class="board"><div><h3 class="colh">Candidates, untrusted</h3><div class="cands"></div></div><div><h3 class="colh">Admitted evidence</h3><div class="ev" role="group" aria-label="Admitted evidence"></div></div></div>';
+var $=function(s){return root.querySelector(s)},docs=[],cands=$('.cands'),ev=$('.ev');
+D.forEach(function(d){var e=document.createElement('div');e.className='doc';e.innerHTML='<b>'+d[0]+'</b><div class="checks">'+C.map(function(c){return '<span class="ck">'+c+'</span>'}).join('')+'</div><div class="why"></div>';cands.appendChild(e);docs.push(e)});
+var R=run(),go=$('.go'),rs=$('.rs'),st=$('.status');
+go.onclick=function(){go.disabled=true;st.textContent='Each candidate is checked in turn: entity, source URL, public date, hash.';
+docs.forEach(function(e,i){var d=D[i],cks=e.querySelectorAll('.ck'),base=i*1800,fail=d[2];
+cks.forEach(function(c,j){R.t(function(){if(fail!==undefined&&j===fail){c.classList.add('no');e.classList.add('out');e.querySelector('.why').textContent=d[1];st.textContent='Refused: '+d[0]+'. '+d[1]+'.'}else if(fail===undefined||j<fail){c.classList.add('ok')}},base+j*320)});
+if(fail===undefined)R.t(function(){var cp=e.cloneNode(true);cp.className='doc in';ev.appendChild(cp);R.a(cp,[{opacity:0},{opacity:1}],{duration:400});st.textContent='Admitted: '+d[0]+'.'},base+1450)});
+R.t(function(){st.textContent='Two admitted, two refused. Only admitted evidence can raise a score.';rs.disabled=false},7300)};
+rs.onclick=function(){R.clear();docs.forEach(function(e){e.className='doc';e.querySelector('.why').textContent='';e.querySelectorAll('.ck').forEach(function(c){c.className='ck'})});ev.innerHTML='';go.disabled=false;rs.disabled=true;st.textContent=IDLE};
+}
+
+/* Full-screen hero: the banner radar fills the viewport, rings and sweep start at the owl, a floating dock holds the controls. */
+function mountHero(root){
+var CX=600,CY=200,DUR=3600,CW=1200,CH=720;
+var P=[[1090,300,'20% layoff'],[940,590,'Dividend paused'],[640,640,'Exchange cancelled'],[300,600,'Covenant default'],[110,330,'Financing amended']];
+var IDLE='Quiet signals and public disclosures, not yet joined.';
+var rings=[];for(var r=160;r<=2400;r+=160)rings.push('<circle cx="'+CX+'" cy="'+CY+'" r="'+r+'"/>');
+var HTML='<svg class="field" role="img" aria-label="signalscout. A radar centred on the owl sweeps one full circle, then a second pass lights five public disclosures and joins them into one cluster."><g fill="none" stroke="var(--line)" stroke-width="2">'+rings.join('')+'<path d="M-3000 200H4200M600 -3000V3000" opacity=".55"/></g><g class="q"></g><g class="sweep" opacity="0" style="transform-origin:600px 200px"><path d="M600 200 L3600 200 A3000 3000 0 0 0 3057 -1521Z" fill="var(--forest)" opacity=".16"/><line x1="600" y1="200" x2="3600" y2="200" stroke="var(--forest)" stroke-width="3" opacity=".7"/></g><polyline class="join" fill="none" stroke="var(--forest)" stroke-width="3.5" stroke-dasharray="9 9" opacity="0"/><g class="lit"></g><g class="nums"></g>'
++'<svg x="515" y="115" width="170" height="170" viewBox="0 0 100 100" aria-hidden="true"><path d="M20 34 L26 8 L42 22 H58 L74 8 L80 34 C88 66 74 94 50 94 C26 94 12 66 20 34Z" fill="var(--body)"/><path d="M34 70 Q50 78 66 70 M38 80 Q50 86 62 80" stroke="var(--belly)" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle cx="37" cy="44" r="14" fill="var(--disc)"/><circle cx="63" cy="44" r="14" fill="var(--disc)"/><circle cx="37" cy="44" r="8.5" fill="#C9F269"/><circle cx="63" cy="44" r="8.5" fill="#C9F269"/><circle cx="38.5" cy="44" r="4" fill="var(--mask)"/><circle cx="64.5" cy="44" r="4" fill="var(--mask)"/><path d="M45 56 L55 56 L50 64Z" fill="#C9F269"/></svg>'
++'<g aria-hidden="true" style="font:800 130px \'Bricolage Grotesque\',Manrope,sans-serif;letter-spacing:-.045em" fill="var(--ink)"><text class="wl" y="450">signalsc</text><svg class="lens" width="93.6" height="93.6" viewBox="0 0 78 78"><circle cx="39" cy="39" r="31" fill="none" stroke="var(--forest)" stroke-width="14"/><circle cx="39" cy="39" r="15" fill="#C9F269"/><circle cx="45" cy="33" r="5" fill="var(--disc)"/></svg><text class="wr" y="450">ut</text></g></svg>'
++'<div class="dock" role="group" aria-label="Radar controls"><div class="drow"><button class="btn lime go">Sweep the radar</button><button class="btn ghost rs" disabled>Reset</button></div><p class="status" aria-live="polite">'+IDLE+'</p><div class="meter"><div class="bar"><div class="fill"></div></div><div class="ticks"><span>0</span><span>investigate 0.55</span><span>alert 0.75</span></div></div><ol class="legend" aria-label="Public disclosures"></ol></div>';
+root.insertAdjacentHTML('beforeend',HTML);
+var $=function(s){return root.querySelector(s)},svg=$('.field'),dock=$('.dock'),lit=[],nums=[],legs=[],ang=[];
+var seed=7;function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647}
+for(var i=0;i<110;i++){var x=-1500+rnd()*3300,y=-1300+rnd()*2500;if(x>100&&x<1100&&y>300&&y<520)continue;if(x>480&&x<720&&y>90&&y<310)continue;mk('circle',{cx:x,cy:y,r:7,fill:'var(--quiet)'},$('.q'))}
+var pts=[];
+P.forEach(function(p,i){pts.push(p[0]+','+p[1]);var a=Math.atan2(p[1]-CY,p[0]-CX)*180/Math.PI;if(a<0)a+=360;ang.push(a);
+lit.push(mk('circle',{cx:p[0],cy:p[1],r:20,fill:'#C9F269',stroke:'var(--forest)','stroke-width':3.5,opacity:0},$('.lit')));
+var n=mk('text',{x:p[0],y:p[1]+6,'text-anchor':'middle','font-size':20,'font-weight':800,fill:'#123F36',opacity:0},$('.nums'));n.textContent=i+1;nums.push(n);
+var li=document.createElement('li');li.textContent=p[2];$('.legend').appendChild(li);legs.push(li)});
+$('.join').setAttribute('points',pts.join(' '));
+function layout(){var wl=$('.wl'),wr=$('.wr'),lens=$('.lens'),D=93.6,g=2.8,a=wl.getComputedTextLength(),b=wr.getComputedTextLength(),t=a+g+D+g+b,x=CX-t/2;
+wl.setAttribute('x',x);lens.setAttribute('x',x+a+g);lens.setAttribute('y',450+9.75-D);wr.setAttribute('x',x+a+g+D+g)}
+function field(){var vw=root.clientWidth,vh=root.clientHeight,res=dock.offsetHeight+36,s=Math.min(vw/CW,(vh-res)/CH),w=vw/s,h=vh/s,y0=((vh-res)/s-CH)/2;
+svg.setAttribute('viewBox',(CX-w/2)+' '+(-y0)+' '+w+' '+h)}
+layout();field();addEventListener('resize',field);function relayout(){layout();field()}if(document.fonts){if(document.fonts.ready)document.fonts.ready.then(relayout);if(document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',relayout)}addEventListener('load',relayout);
+var R=run(),go=$('.go'),rs=$('.rs'),st=$('.status');
+go.onclick=function(){go.disabled=true;st.textContent='Scanning one full circle. Nothing detected yet.';
+R.a($('.sweep'),[{opacity:0,transform:'rotate(0deg)'},{opacity:1,transform:'rotate(0deg)',offset:.02},{opacity:1,transform:'rotate(720deg)',offset:.98},{opacity:0,transform:'rotate(720deg)'}],{duration:DUR*2,easing:'linear'});
+R.t(function(){st.textContent='Second pass: the sweep lights each public disclosure.'},DUR);
+lit.forEach(function(c,i){var d=DUR+DUR*ang[i]/360+120;R.a(c,[{opacity:0,r:10},{opacity:1,r:26},{opacity:1,r:20}],{duration:500,delay:d});R.a(nums[i],[{opacity:0},{opacity:1}],{duration:300,delay:d+150});R.t(function(){legs[i].classList.add('on')},d+150)});
+R.t(function(){st.textContent='The five join into one cluster and the score climbs.';R.a($('.join'),[{opacity:0},{opacity:.9}],{duration:700});R.a($('.fill'),[{width:'0%'},{width:'78%'}],{duration:1500})},DUR*2+300);
+R.t(function(){st.textContent='Past the alert line at 0.75: sent to a human analyst, with every claim cited.'},DUR*2+2100);
+R.t(function(){rs.disabled=false},DUR*2+2300)};
+rs.onclick=function(){R.clear();legs.forEach(function(l){l.classList.remove('on')});go.disabled=false;rs.disabled=true;st.textContent=IDLE};
+}
+
+bindToggle();
+mountHero(document.getElementById('m-hero'));
+mountTimeline(document.getElementById('m-tl'));
+mountGate(document.getElementById('m-gate'));
+</script>
+</body>
+</html>
