@@ -36,15 +36,15 @@ const items=[];
 // Hero: centred brand at the centre of a radar; the sweep lights and joins a cluster of evidence dots.
 {const dot=(x,y,h,r=4)=>`<circle cx="${x}" cy="${y}" r="${h?10:r}" fill="${h?'var(--lime)':'var(--cardline)'}"${h?' stroke="var(--forest)" stroke-width="3"':''}/>`;
 const brand=`<div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">${owl(140)}${word(132)}<div class="sub" style="font-size:50px">Strategic Change Radar</div><div class="line" style="font-size:25px">See the collapse coming. Prove every word of it.</div></div>`;
-const H=600,cx=600,cy=300;
+const H=600,cx=600,cy=177;
 const rings=[300,420,540,660,780].map(r=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--cardline)" stroke-width="2.5"/>`).join('');
 const cross=`<path d="M0 ${cy}H1200M${cx} 0V${H}" stroke="var(--cardline)" stroke-width="1.5" opacity=".6"/>`;
-// sweep wedge from centre toward the top right, angle -10deg to -38deg
+// the owl is the scanner: rings and sweep start at the owl, wedge covers -3deg to -34deg toward the top right
 const P=(a,r)=>[cx+r*Math.cos(a*Math.PI/180),cy+r*Math.sin(a*Math.PI/180)];
-const [x1,y1]=P(-8,900),[x2,y2]=P(-40,900);
+const [x1,y1]=P(-3,900),[x2,y2]=P(-34,900);
 const wedge=`<path d="M${cx} ${cy} L${x1} ${y1} L${x2} ${y2}Z" fill="var(--forest)" opacity=".13"/><path d="M${cx} ${cy} L${x1} ${y1}" stroke="var(--forest)" stroke-width="3" opacity=".7"/>`;
-// dots inside the scanning zone, outside the text block (r > 330): lit ones joined, unlit ones scattered
-const zone=[[-14,560,1],[-19,470,1],[-25,530,1],[-21,610,1],[-29,450,1],[-11,640,0],[-17,390,0],[-27,600,0],[-33,420,0],[-23,400,0],[-10,500,0],[-31,520,0],[-15,700,0],[-34,480,0],[-12,420,0],[-26,660,0]].map(([a,r,h])=>[...P(a,r),h]);
+// dots inside the scanning wedge, clear of the wordmark: lit ones joined, unlit ones scattered
+const zone=[[900,95,1],[985,42,1],[1060,125,1],[1120,52,1],[1152,138,1],[860,150,0],[960,100,0],[1030,70,0],[1085,20,0],[930,22,0],[1010,160,0],[1110,100,0],[820,110,0],[1150,20,0],[900,170,0],[1070,190,0]];
 const lit=zone.filter(z=>z[2]).sort((a,b)=>a[0]-b[0]);
 const join=`<path d="M${lit.map(([x,y])=>x+' '+y).join(' L')}" stroke="var(--forest)" stroke-width="3" stroke-dasharray="6 6" fill="none"/>`;
 const faint=[[120,90],[200,480],[70,330],[330,560],[1130,520],[900,560],[260,40],[60,560],[420,30],[1060,420]].map(([x,y])=>dot(x,y,0)).join('');
