@@ -2,8 +2,14 @@
 <!--
 SignalScout README illustrations: hero, problem scene, pipeline, postures.
 Signature: shape = geometric owl in flat filled shapes (approved R8D centred badge), lime pupils as the one bright signal, lens o; type = Bricolage Grotesque 800 headings, Manrope body; palette = forest #146044, deep #123F36, lime #C9F269, paper #F3F5F1, detail #0B2A22; ground = paper / deep #0f1f1a; presentation = centred badge, evidence dots on a timeline, cards; voice = patient, sharp, quiet.
-Render: uvx --from playwright --with pillow python -I <frontdoor-illustrate>/scripts/render.py docs/assets/readme/source/readme.html --root docs/assets --out docs/assets/readme
+Render the stills (not hero, problem and pipeline, which are animated and would be overwritten by a still): uvx --from playwright --with pillow python -I <frontdoor-illustrate>/scripts/render.py docs/assets/readme/source/readme.html --root docs/assets --out docs/assets/readme --items stats,before-after,tech-cta,postures...,nav-*,eng-*   (or render all, then run the animate commands below to put the moving files back)
 Then cut the pills free of their frame: uv run --with pillow python -I docs/assets/readme/source/pill.py docs/assets/readme
+Social preview (still PNG, upload by hand in Settings, Social preview): render.py ... --items banner-social --themes light
+Animated WebP, one per item, from this page (<skill>/frontdoor-readme/scripts/animate.py, run from the repo root):
+  hero      uvx --from playwright --with pillow python -I animate.py docs/assets/readme/source/readme.html --root docs/assets --item hero     --call "drawHero({v})"     --motion loop --frames 48 --fps 12 --size 1440x720 --out docs/assets/readme
+  pipeline  ... --item pipeline --call "drawPipeline({v})" --motion loop --frames 40 --fps 12 --size 1440x420 --out docs/assets/readme
+  problem   ... --item problem  --call "drawProblem({v})"  --motion loop --frames 48 --fps 12 --size 1440x528 --out docs/assets/readme
+Motion is slow and small (a sweep turn takes 4 s, a pulse crosses in about 3 s), never flashes, and frame 0 is the still picture. pipeline-still*.webp keep the still pipeline for the landing page under prefers-reduced-motion.
 -->
 <html><head><meta charset="utf-8">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
@@ -34,38 +40,72 @@ const T=(x,y,t,o='')=>`<text x="${x}" y="${y}" font-family="Manrope" font-weight
 
 const items=[];
 // Hero: centred brand at the centre of a radar; the sweep lights and joins a cluster of evidence dots.
-{const dot=(x,y,h,r=4)=>`<circle cx="${x}" cy="${y}" r="${h?10:r}" fill="${h?'var(--lime)':'var(--cardline)'}"${h?' stroke="var(--forest)" stroke-width="3"':''}/>`;
-const brand=`<div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">${owl(140)}${word(132)}<div class="sub" style="font-size:50px">Strategic Change Radar</div><div class="line" style="font-size:25px">See the collapse coming. Prove every word of it.</div></div>`;
-const H=600,cx=600,cy=177;
+// heroBg(v) draws the radar for one turn position v in 0..1; v=0 is the still picture (wedge from -34deg to -3deg toward the top right, five lime dots lit and joined).
+// The animated banner calls drawHero(v) per frame: the sweep makes one full turn, every dot flares as the leading edge passes and fades behind it, the join line marches.
+const HERO={H:600,cx:600,cy:177,W:31,// wedge width in degrees
+zone:[[900,95,1],[985,42,1],[1060,125,1],[1120,52,1],[1152,138,1],[860,150,0],[960,100,0],[1030,70,0],[1085,20,0],[930,22,0],[1010,160,0],[1110,100,0],[820,110,0],[1150,20,0],[900,170,0],[1070,190,0]],
+faint:[[120,90],[200,480],[70,330],[330,560],[1130,520],[900,560],[260,40],[60,560],[420,30],[1060,420]]};
+function heroBg(v){const{H,cx,cy,W,zone,faint}=HERO;
+const L=-3+360*v;// leading edge of the sweep, degrees, clockwise on screen
+const ang=(x,y)=>Math.atan2(y-cy,x-cx)*180/Math.PI;
+// 1 while the dot is inside the wedge, then fades over half a turn behind the edge
+const glow=(x,y)=>{const age=((((L-ang(x,y))%360)+360)%360)/360,w=W/360;return age<=w?1:Math.max(0,1-(age-w)/.5)};
 const rings=[300,420,540,660,780].map(r=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--cardline)" stroke-width="2.5"/>`).join('');
 const cross=`<path d="M0 ${cy}H1200M${cx} 0V${H}" stroke="var(--cardline)" stroke-width="1.5" opacity=".6"/>`;
-// the owl is the scanner: rings and sweep start at the owl, wedge covers -3deg to -34deg toward the top right
+// the owl is the scanner: rings and sweep start at the owl
 const P=(a,r)=>[cx+r*Math.cos(a*Math.PI/180),cy+r*Math.sin(a*Math.PI/180)];
-const [x1,y1]=P(-3,900),[x2,y2]=P(-34,900);
+const [x1,y1]=P(L,900),[x2,y2]=P(L-W,900);
 const wedge=`<path d="M${cx} ${cy} L${x1} ${y1} L${x2} ${y2}Z" fill="var(--forest)" opacity=".13"/><path d="M${cx} ${cy} L${x1} ${y1}" stroke="var(--forest)" stroke-width="3" opacity=".7"/>`;
-// dots inside the scanning wedge, clear of the wordmark: lit ones joined, unlit ones scattered
-const zone=[[900,95,1],[985,42,1],[1060,125,1],[1120,52,1],[1152,138,1],[860,150,0],[960,100,0],[1030,70,0],[1085,20,0],[930,22,0],[1010,160,0],[1110,100,0],[820,110,0],[1150,20,0],[900,170,0],[1070,190,0]];
 const lit=zone.filter(z=>z[2]).sort((a,b)=>a[0]-b[0]);
-const join=`<path d="M${lit.map(([x,y])=>x+' '+y).join(' L')}" stroke="var(--forest)" stroke-width="3" stroke-dasharray="6 6" fill="none"/>`;
-const faint=[[120,90],[200,480],[70,330],[330,560],[1130,520],[900,560],[260,40],[60,560],[420,30],[1060,420]].map(([x,y])=>dot(x,y,0)).join('');
-const bg=S(1200,`${rings}${cross}${wedge}${faint}${join}${zone.map(([x,y,h])=>h?dot(x,y,1):`<circle cx="${x}" cy="${y}" r="5" fill="var(--forest)" opacity=".45"/>`).join('')}`,`0 0 1200 ${H}`);
-items.push(['hero',`<div style="height:${H}px;position:relative;display:flex;align-items:center;justify-content:center"><div data-bleed style="position:absolute;inset:0">${bg}</div>${brand}</div>`]);}
+const gl=lit.map(([x,y])=>glow(x,y)),mean=gl.reduce((s,g)=>s+g,0)/gl.length;
+const join=`<path d="M${lit.map(([x,y])=>x+' '+y).join(' L')}" stroke="var(--forest)" stroke-width="3" stroke-dasharray="6 6" stroke-dashoffset="${-144*v}" fill="none" opacity="${(.3+.7*mean).toFixed(3)}"/>`;
+// a dim base dot stays; the lit overlay grows and fades with glow
+const faintDots=faint.map(([x,y])=>{const g=glow(x,y);return `<circle cx="${x}" cy="${y}" r="4" fill="var(--cardline)"/><circle cx="${x}" cy="${y}" r="${4+3*g}" fill="var(--forest)" opacity="${(.45*g).toFixed(3)}"/>`}).join('');
+const zoneDots=zone.map(([x,y,h])=>{const g=glow(x,y);return h
+ ?`<circle cx="${x}" cy="${y}" r="5" fill="var(--cardline)"/><circle cx="${x}" cy="${y}" r="${(5+5*g).toFixed(2)}" fill="var(--lime)" stroke="var(--forest)" stroke-width="3" opacity="${g.toFixed(3)}"/>`
+ :`<circle cx="${x}" cy="${y}" r="5" fill="var(--forest)" opacity="${(.3+.15*g).toFixed(3)}"/>`}).join('');
+return S(1200,`${rings}${cross}${wedge}${faintDots}${join}${zoneDots}`,`0 0 1200 ${H}`)}
+function drawHero(v){document.getElementById('hero-bg').innerHTML=heroBg(v)}
+{const brand=`<div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">${owl(140)}${word(132)}<div class="sub" style="font-size:50px">Strategic Change Radar</div><div class="line" style="font-size:25px">See the collapse coming. Prove every word of it.</div></div>`;
+items.push(['hero',`<div style="height:${HERO.H}px;position:relative;display:flex;align-items:center;justify-content:center"><div data-bleed id="hero-bg" style="position:absolute;inset:0">${heroBg(0)}</div>${brand}</div>`]);}
 
 // Problem scene: Bed Bath & Beyond 2022-2023, separate disclosures joined into one cluster before the filing.
+// drawProblem(v) is called per frame by the animated banner: one pulse travels the timeline and lights each disclosure, the cluster join, the alert and the Chapter 11 filing, then the full picture holds. v=0 is the still picture.
 const ev=[[90,'Workforce layoffs'],[245,'Dividend pause'],[400,'Debt exchange cancelled'],[555,'Covenant default'],[705,'Financing amendments']];
 items.push(['problem',`<div class="pad" style="height:440px"><div class="row" style="justify-content:space-between"><div><div class="tag">Bed Bath &amp; Beyond, Aug 2022 - Apr 2023</div><div class="h" style="margin-top:10px">Each disclosure looks harmless alone.<br>The cluster is the warning.</div></div>${owl(96)}</div>
 <div style="margin-top:20px">${S(1104,`<path d="M20 120 H1084" stroke="var(--cardline)" stroke-width="3"/>
-<path d="M90 120 C170 40 320 40 400 96 C480 40 625 40 705 120" stroke="var(--forest)" stroke-width="2.5" fill="none" stroke-dasharray="6 6"/>
-${ev.map(([x,t],i)=>`<circle cx="${x}" cy="120" r="10" fill="var(--lime)" stroke="var(--forest)" stroke-width="3"/>${T(x,i%2?186:160,t,'text-anchor="middle"')}`).join('')}
-<rect x="842" y="82" width="124" height="76" rx="12" fill="var(--forest)"/><text x="904" y="114" text-anchor="middle" font-family="Bricolage Grotesque" font-weight="800" font-size="21" fill="var(--paper)">Alert</text><text x="904" y="140" text-anchor="middle" font-family="Manrope" font-weight="700" font-size="14" fill="var(--paper)">Jan 2023</text>
-<path d="M968 120 H1040" stroke="var(--warn)" stroke-width="3"/><text x="1004" y="108" text-anchor="middle" font-family="Manrope" font-weight="800" font-size="13" fill="var(--warn)">3+ months</text>
-<circle cx="1054" cy="120" r="10" fill="var(--warn)"/>${T(1084,166,'Chapter 11','text-anchor="end"')}<text x="1084" y="186" text-anchor="end" font-family="Manrope" font-weight="500" font-size="14" fill="var(--muted)">Apr 23, 2023</text>`,'0 0 1104 200')}</div></div>`]);
+<path id="pb-join" d="M90 120 C170 40 320 40 400 96 C480 40 625 40 705 120" stroke="var(--forest)" stroke-width="2.5" fill="none" stroke-dasharray="6 6"/>
+${ev.map(([x,t],i)=>`<circle cx="${x}" cy="120" r="10" fill="var(--card)" stroke="var(--cardline)" stroke-width="3"/><circle class="pb-dot" data-x="${x}" cx="${x}" cy="120" r="10" fill="var(--lime)" stroke="var(--forest)" stroke-width="3"/>${T(x,i%2?186:160,t,'text-anchor="middle"')}`).join('')}
+<g id="pb-alert"><rect x="842" y="82" width="124" height="76" rx="12" fill="var(--forest)"/><text x="904" y="114" text-anchor="middle" font-family="Bricolage Grotesque" font-weight="800" font-size="21" fill="var(--paper)">Alert</text><text x="904" y="140" text-anchor="middle" font-family="Manrope" font-weight="700" font-size="14" fill="var(--paper)">Jan 2023</text></g>
+<g id="pb-gap"><path d="M968 120 H1040" stroke="var(--warn)" stroke-width="3"/><text x="1004" y="108" text-anchor="middle" font-family="Manrope" font-weight="800" font-size="13" fill="var(--warn)">3+ months</text></g>
+<circle id="pb-end" cx="1054" cy="120" r="10" fill="var(--warn)"/><circle id="pb-pulse" cx="20" cy="120" r="12" fill="var(--lime)" stroke="var(--forest)" stroke-width="3" opacity="0"/>${T(1084,166,'Chapter 11','text-anchor="end"')}<text x="1084" y="186" text-anchor="end" font-family="Manrope" font-weight="500" font-size="14" fill="var(--muted)">Apr 23, 2023</text>`,'0 0 1104 200')}</div></div>`]);
+function drawProblem(v){const $=s=>document.getElementById(s),cl=(a,b,c)=>Math.min(c,Math.max(a,b));
+// the finished picture holds, blanks out, one pulse lights it left to right, then it holds again: v=0 and v=1 are the same frame
+const A=.12,B=.18,C=.78,D=.88;
+const px=v<B?20:v<C?20+(1054-20)*(v-B)/(C-B):1054;
+const f=x=>v<A||v>=C?1:v<B?1-(v-A)/(B-A):cl(0,(px-x)/24+.5,1);
+document.querySelectorAll('.pb-dot').forEach(d=>d.setAttribute('opacity',f(+d.dataset.x).toFixed(3)));
+$('pb-join').setAttribute('opacity',(.25+.75*f(705)).toFixed(3));
+$('pb-join').setAttribute('stroke-dashoffset',-120*v);
+$('pb-alert').setAttribute('opacity',(.3+.7*f(842)).toFixed(3));
+$('pb-gap').setAttribute('opacity',f(968).toFixed(3));
+$('pb-end').setAttribute('opacity',(.25+.75*f(1054)).toFixed(3));
+const p=$('pb-pulse');p.setAttribute('cx',px);p.setAttribute('opacity',(v<B||v>=D?0:v<C?1:1-(v-C)/(D-C)).toFixed(3))}
 
 // Pipeline: a landscape track of five steps so it stays legible at phone width.
 const dark=document.documentElement.dataset.theme==='dark';
 const ic=(n,w)=>`<img src="../../icon/${n}${dark?'-dark':''}.svg" width="${w}" height="${w}" style="flex:none;display:block">`;
 const st=[['Collect','funnel','untrusted candidates'],['Evidence Gate','shield-check','fail-closed'],['Score in code','gauge','alert at 0.75'],['Challenge','swords','Claude vs GPT'],['Posture','compass','human review']];
-items.push(['pipeline',`<div class="pad" style="height:350px"><div class="h" style="font-size:30px;margin-bottom:30px">Evidence first, score in code, then a second opinion.</div><div style="position:relative;display:flex;justify-content:space-between"><div style="position:absolute;left:90px;right:90px;top:52px;border-top:3px dashed var(--cardline)"></div>${st.map((s,i)=>`<div style="position:relative;width:220px;text-align:center;white-space:nowrap"><div style="width:104px;height:104px;margin:0 auto;border-radius:50%;background:var(--card);border:3px solid ${i==4?'var(--lime)':'var(--cardline)'};display:grid;place-items:center">${ic(s[1],58)}</div><div style="font:800 26px/1.1 'Bricolage Grotesque';letter-spacing:-.02em;margin-top:14px">${i+1}. ${s[0]}</div><div style="font-size:17px;font-weight:700;color:var(--muted);margin-top:6px">${s[2]}</div></div>`).join('')}</div></div>`]);
+// drawPipeline(v) is called per frame by the animated banner: one lime pulse travels the dashed track and each step flares as it passes. v=0 is the still picture.
+items.push(['pipeline',`<div class="pad" style="height:350px"><div class="h" style="font-size:30px;margin-bottom:30px">Evidence first, score in code, then a second opinion.</div><div id="pl-track" style="position:relative;display:flex;justify-content:space-between"><div style="position:absolute;left:90px;right:90px;top:52px;border-top:3px dashed var(--cardline)"></div>${st.map((s,i)=>`<div style="position:relative;width:220px;text-align:center;white-space:nowrap"><div class="pl-c" data-end="${i==4?1:0}" style="width:104px;height:104px;margin:0 auto;border-radius:50%;background:var(--card);border:3px solid ${i==4?'var(--lime)':'var(--cardline)'};display:grid;place-items:center">${ic(s[1],58)}</div><div style="font:800 26px/1.1 'Bricolage Grotesque';letter-spacing:-.02em;margin-top:14px">${i+1}. ${s[0]}</div><div style="font-size:17px;font-weight:700;color:var(--muted);margin-top:6px">${s[2]}</div></div>`).join('')}<div id="pl-pulse" style="position:absolute;left:0;top:43px;width:18px;height:18px;border-radius:50%;background:var(--lime);border:3px solid var(--forest);opacity:0"></div></div></div>`]);
+function drawPipeline(v){const cs=document.querySelectorAll('.pl-c'),pu=document.getElementById('pl-pulse');
+// step centres inside the track box: 110 + 221 i; the pulse enters before the first step and leaves after the last
+const a=.1,b=.9,x=-30+(1164+30)*Math.min(1,Math.max(0,(v-a)/(b-a))),on=v>=a&&v<b;
+cs.forEach((c,i)=>{const d=Math.abs(x-(110+221*i)),s=on?Math.max(0,1-d/95):0;
+c.style.boxShadow=s?`0 0 0 ${(10*s).toFixed(1)}px rgba(201,242,105,${(.6*s).toFixed(3)})`:'none';
+c.style.borderColor=s>.35||c.dataset.end==='1'?'var(--lime)':'var(--cardline)';
+c.style.transform=`scale(${(1+.07*s).toFixed(3)})`});
+pu.style.left=(x-9)+'px';pu.style.opacity=on?(Math.min(1,(v-a)/.04,(b-v)/.04)).toFixed(3):0}
 
 // Postures: one floating card each, from least to most action.
 const P=[['posture-maintain','MAINTAIN','Monitor and preserve',1],['posture-adapt','ADAPT','Bounded adjustments',2],['posture-accelerate','ACCELERATE','Capture advantage',3]];
