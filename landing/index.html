@@ -87,6 +87,18 @@ svg.tl{display:block;min-width:760px;width:100%;height:auto}
 h1{font-size:clamp(36px,5.6vw,64px);max-width:16ch;margin:0 auto 14px}.intro{text-align:center;padding:64px 0 8px}.intro .lead{max-width:56ch;margin:0 auto 20px}
 :root[data-theme=dark] .btn.ghost{color:var(--ink)}
 :root[data-theme=dark] .btn[disabled]{opacity:.7}
+/* Animated pipeline banner: light and dark pair follow the page's own theme toggle; ambient motion stops under reduce, so the still pair takes over. Wide figure keeps 760 px and scrolls on a phone. */
+.plf{margin:18px 0 0;border-radius:18px;overflow-x:auto}
+.plf img{display:none;width:100%;min-width:760px;height:auto}
+.plf .pl-mo.pl-lt{display:block}
+:root[data-theme=dark] .plf .pl-mo.pl-lt{display:none}
+:root[data-theme=dark] .plf .pl-mo.pl-dk{display:block}
+@media(prefers-reduced-motion:reduce){
+.plf .pl-mo.pl-lt{display:none}
+:root[data-theme=dark] .plf .pl-mo.pl-dk{display:none}
+.plf .pl-st.pl-lt{display:block}
+:root[data-theme=dark] .plf .pl-st.pl-lt{display:none}
+:root[data-theme=dark] .plf .pl-st.pl-dk{display:block}}
 </style>
 </head>
 <body>
@@ -97,6 +109,7 @@ h1{font-size:clamp(36px,5.6vw,64px);max-width:16ch;margin:0 auto 14px}.intro{tex
 <section class="intro"><h1>Risk never arrives as one headline.</h1><p class="lead">Layoffs, a cancelled debt exchange, a covenant default. Alone, each has an excuse. SignalScout sweeps for the cluster and shows its work on every dot.</p><a class="btn" href="https://vectoris-signalscout.vercel.app">Open the live replay</a></section>
 <section class="sec"><div class="tag">Proven on a real collapse</div><h2>The warning was public. It was scattered.</h2><p class="lead">Replay Bed Bath &amp; Beyond, August 2022 to April 2023.</p><div id="m-tl"></div></section>
 <section class="sec"><div class="tag">Why you can trust it</div><h2>Every claim gets a receipt.</h2><p class="lead">A fail-closed Evidence Gate lets a document in only when it proves entity, source, public date and hash.</p><div id="m-gate"></div></section>
+<section class="sec"><div class="tag">How it works</div><h2>Evidence first, score in code, then a second opinion.</h2><p class="lead">Five steps take untrusted candidates to a review posture for a human analyst.</p><div class="plf" tabindex="0" role="region" aria-label="Five-step pipeline, scrolls sideways on a narrow screen"><img class="pl-mo pl-lt" src="../docs/assets/readme/pipeline.webp" width="1200" height="350" loading="lazy" alt="Five-step pipeline: 1 Collect untrusted candidates, 2 Evidence Gate fail-closed, 3 Score in code with an alert at 0.75, 4 Challenge Claude versus GPT, 5 Posture for human review. A pulse travels along the track and lights each step in turn."><img class="pl-mo pl-dk" src="../docs/assets/readme/pipeline-dark.webp" width="1200" height="350" loading="lazy" alt="Five-step pipeline: 1 Collect untrusted candidates, 2 Evidence Gate fail-closed, 3 Score in code with an alert at 0.75, 4 Challenge Claude versus GPT, 5 Posture for human review. A pulse travels along the track and lights each step in turn."><img class="pl-st pl-lt" src="../docs/assets/readme/pipeline-still.webp" width="1200" height="350" loading="lazy" alt="Five-step pipeline: 1 Collect untrusted candidates, 2 Evidence Gate fail-closed, 3 Score in code with an alert at 0.75, 4 Challenge Claude versus GPT, 5 Posture for human review."><img class="pl-st pl-dk" src="../docs/assets/readme/pipeline-still-dark.webp" width="1200" height="350" loading="lazy" alt="Five-step pipeline: 1 Collect untrusted candidates, 2 Evidence Gate fail-closed, 3 Score in code with an alert at 0.75, 4 Challenge Claude versus GPT, 5 Posture for human review."></div></section>
 <section class="three"><div class="card"><h3>Zero hindsight</h3><p>Evidence appears only when it was public at the replay date.</p></div><div class="card"><h3>Scored by code, not by AI</h3><p>Models draft the explanation. Deterministic code owns the score, the stage and every blocker.</p></div><div class="card"><h3>It argues with itself</h3><p>A GPT Challenger hunts for the benign explanation behind Claude's hypothesis.</p></div></section>
 <section class="sec center" style="text-align:center;padding-bottom:40px"><h2>Replay it yourself.</h2><p class="lead">Built for strategy, risk and procurement analysts. Decision support, never a bankruptcy prediction.</p><a class="btn lime" href="https://vectoris-signalscout.vercel.app">Open the live replay</a></section>
 </div>
