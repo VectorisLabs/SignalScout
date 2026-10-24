@@ -1,27 +1,37 @@
 <!doctype html>
 <!--
-Social preview for the SignalScout landing page, 1200x630. The README header banner at 1200x630: owl above the signalscout wordmark with the lens o, rings and sweep from the owl, evidence dots joined into one cluster.
+Social preview for the SignalScout landing page, 1200x630. The same composition as the GitHub social banner of the README (docs/assets/readme/banner-social.png): the brand name on the left, the owl at the centre of its radar on the right, nothing else, so it reads as a small thumbnail in chat and mail apps. No tagline: the tagline travels in the og:description tag.
 Render: uvx --from playwright python -I ~/.claude/skills/frontdoor-landing/scripts/shoot.py og landing/source/og.html --out landing/og.png --root landing
-Signature: forest #146044, deep #123F36, lime #C9F269, paper #F3F5F1; Bricolage Grotesque 800 and Manrope.
+Signature: forest #146044, deep #123F36, lime #C9F269, paper #F3F5F1; Bricolage Grotesque 800 and Manrope. Always a still image.
 -->
 <html><head><meta charset="utf-8">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
 <style>html,body{margin:0;width:1200px;height:630px;overflow:hidden;background:#F3F5F1}svg{display:block}</style></head>
 <body>
-<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
-<g fill="none" stroke="#DCE2DC" stroke-width="2"><circle cx="600" cy="170" r="140"/><circle cx="600" cy="170" r="280"/><circle cx="600" cy="170" r="420"/><circle cx="600" cy="170" r="560"/><circle cx="600" cy="170" r="700"/><circle cx="600" cy="170" r="840"/><path d="M0 170H1200M600 0V630" opacity=".55"/></g>
-<g fill="#c3ccc5"><circle cx="90" cy="70" r="7"/><circle cx="210" cy="300" r="7"/><circle cx="70" cy="540" r="7"/><circle cx="300" cy="590" r="7"/><circle cx="940" cy="580" r="7"/><circle cx="1130" cy="500" r="7"/><circle cx="170" cy="150" r="7"/><circle cx="430" cy="60" r="7"/><circle cx="760" cy="40" r="7"/><circle cx="1060" cy="330" r="7"/></g>
-<path d="M600 170 L1499 123 L1346 -333Z" fill="#146044" opacity=".13"/><path d="M600 170 L1499 123" stroke="#146044" stroke-width="3" opacity=".7"/>
-<polyline points="900,88 985,35 1060,118 1120,45 1152,131" fill="none" stroke="#146044" stroke-width="3.5" stroke-dasharray="9 9"/>
-<g fill="#4e8a72" opacity=".6"><circle cx="860" cy="143" r="7"/><circle cx="960" cy="93" r="7"/><circle cx="1030" cy="63" r="7"/><circle cx="1085" cy="13" r="7"/><circle cx="930" cy="15" r="7"/><circle cx="1010" cy="153" r="7"/><circle cx="1110" cy="93" r="7"/><circle cx="820" cy="103" r="7"/><circle cx="1150" cy="13" r="7"/><circle cx="900" cy="163" r="7"/><circle cx="1070" cy="183" r="7"/></g>
-<g fill="#C9F269" stroke="#146044" stroke-width="3.5"><circle cx="900" cy="88" r="18"/><circle cx="985" cy="35" r="18"/><circle cx="1060" cy="118" r="18"/><circle cx="1120" cy="45" r="18"/><circle cx="1152" cy="131" r="18"/></g>
-<svg x="525" y="95" width="150" height="150" viewBox="0 0 100 100"><path d="M20 34 L26 8 L42 22 H58 L74 8 L80 34 C88 66 74 94 50 94 C26 94 12 66 20 34Z" fill="#146044"/><path d="M34 70 Q50 78 66 70 M38 80 Q50 86 62 80" stroke="#9FD3B1" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle cx="37" cy="44" r="14" fill="#F3F5F1"/><circle cx="63" cy="44" r="14" fill="#F3F5F1"/><circle cx="37" cy="44" r="8.5" fill="#C9F269"/><circle cx="63" cy="44" r="8.5" fill="#C9F269"/><circle cx="38.5" cy="44" r="4" fill="#0B2A22"/><circle cx="64.5" cy="44" r="4" fill="#0B2A22"/><path d="M45 56 L55 56 L50 64Z" fill="#C9F269"/></svg>
-<g style="font:800 130px 'Bricolage Grotesque',Manrope,sans-serif;letter-spacing:-.045em" fill="#123F36"><text id="wl" y="400">signalsc</text><svg id="lens" width="93.6" height="93.6" viewBox="0 0 78 78"><circle cx="39" cy="39" r="31" fill="none" stroke="#146044" stroke-width="14"/><circle cx="39" cy="39" r="15" fill="#C9F269"/><circle cx="45" cy="33" r="5" fill="#F3F5F1"/></svg><text id="wr" y="400">ut</text></g>
-<text x="600" y="478" text-anchor="middle" style="font:800 46px 'Bricolage Grotesque',Manrope,sans-serif;letter-spacing:-.025em" fill="#146044">Strategic Change Radar</text>
-<text x="600" y="530" text-anchor="middle" style="font:500 26px Manrope,sans-serif" fill="#4e5a55">See the collapse coming. Prove every word of it.</text>
-</svg>
+<svg id="art" width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg"></svg>
 <script>
-function lay(){var wl=document.getElementById('wl'),wr=document.getElementById('wr'),l=document.getElementById('lens'),D=93.6,g=2.8,a=wl.getComputedTextLength(),b=wr.getComputedTextLength(),x=600-(a+g+D+g+b)/2;wl.setAttribute('x',x);l.setAttribute('x',x+a+g);l.setAttribute('y',400+9.75-D);wr.setAttribute('x',x+a+g+D+g)}
+// Drawn on the 640x320 grid of the README social banner, scaled 1.875x and centred in the taller 1200x630 frame.
+var K=1.875,cx=492,cy=160;
+function Pt(a,r){return[cx+r*Math.cos(a*Math.PI/180),cy+r*Math.sin(a*Math.PI/180)]}
+var lit=[[-120,150],[-126,108],[-134,170],[-141,130],[-146,215]].map(function(p){return Pt(p[0],p[1])}).sort(function(a,b){return a[0]-b[0]});
+var quiet=[[-118,96],[-131,92],[-138,200],[-147,120],[-125,205],[-143,160],[-122,125],[-148,170],[-114,185]].map(function(p){return Pt(p[0],p[1])});
+var a=Pt(-116,520),b=Pt(-149,520),o='';
+o+='<defs><linearGradient id="rf" x1="330" x2="400" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#000"/><stop offset="1" stop-color="#fff"/></linearGradient><mask id="rm" maskUnits="userSpaceOnUse" x="-100" y="-100" width="900" height="520"><rect x="-100" y="-100" width="900" height="520" fill="url(#rf)"/></mask></defs>';
+o+='<g transform="translate(0 15) scale('+K+')">';
+o+='<g mask="url(#rm)">'+[84,132,180,228,276,324,372].map(function(r){return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="#DCE2DC" stroke-width="2"/>'}).join('')+'</g>';
+o+='<path d="M'+cx+' '+cy+' L'+a.join(' ')+' L'+b.join(' ')+'Z" fill="#146044" opacity=".13"/><path d="M'+cx+' '+cy+' L'+a.join(' ')+'" stroke="#146044" stroke-width="2.5" opacity=".7"/>';
+o+='<path d="M'+lit.map(function(p){return p.join(' ')}).join(' L')+'" stroke="#146044" stroke-width="2.5" stroke-dasharray="5 5" fill="none"/>';
+o+=quiet.map(function(p){return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="4" fill="#146044" opacity=".4"/>'}).join('');
+o+=lit.map(function(p){return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="8" fill="#C9F269" stroke="#146044" stroke-width="2.5"/>'}).join('');
+o+='<svg x="'+(cx-66)+'" y="'+(cy-66)+'" width="132" height="132" viewBox="0 0 100 100"><path d="M20 34 L26 8 L42 22 H58 L74 8 L80 34 C88 66 74 94 50 94 C26 94 12 66 20 34Z" fill="#146044"/><path d="M34 70 Q50 78 66 70 M38 80 Q50 86 62 80" stroke="#9FD3B1" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle cx="37" cy="44" r="14" fill="#F3F5F1"/><circle cx="63" cy="44" r="14" fill="#F3F5F1"/><circle cx="37" cy="44" r="8.5" fill="#C9F269"/><circle cx="63" cy="44" r="8.5" fill="#C9F269"/><circle cx="38.5" cy="44" r="4" fill="#0B2A22"/><circle cx="64.5" cy="44" r="4" fill="#0B2A22"/><path d="M45 56 L55 56 L50 64Z" fill="#C9F269"/></svg>';
+o+='</g>';
+// wordmark: signalsc + lens o + ut, at 109 px, left edge on the 75 px margin (40 px of the 640 grid), clear of every ring
+var FS=109,D=FS*.72,g=FS*.0215,BASE=358;
+o+='<g style="font:800 '+FS+'px \'Bricolage Grotesque\',Manrope,sans-serif;letter-spacing:-.045em" fill="#123F36"><text id="wl" y="'+BASE+'">signalsc</text><svg id="lens" width="'+D+'" height="'+D+'" viewBox="0 0 78 78"><circle cx="39" cy="39" r="31" fill="none" stroke="#146044" stroke-width="14"/><circle cx="39" cy="39" r="15" fill="#C9F269"/><circle cx="45" cy="33" r="5" fill="#F3F5F1"/></svg><text id="wr" y="'+BASE+'">ut</text></g>';
+document.getElementById('art').innerHTML=o;
+function lay(){var wl=document.getElementById('wl'),wr=document.getElementById('wr'),l=document.getElementById('lens'),x=75;
+wl.setAttribute('x',x);var w1=wl.getComputedTextLength();l.setAttribute('x',x+w1+g);l.setAttribute('y',BASE+FS*.075-D);wr.setAttribute('x',x+w1+g+D+g)}
 lay();document.fonts.ready.then(lay);
 </script>
-</body></html>
+</body>
+</html>
